@@ -45,8 +45,6 @@ void BaseMesh::simpleInit(std::vector<Triangle>* tris)
 			added_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
 	);
 
-	
-	
 	this->log->logf("[INFO] Mesh.%s - Simple initialization happend, total count of vertices is %u, buffer size is %lu bytes\n",
 		this->name.c_str(), this->total_count, bytes);
 };
@@ -111,6 +109,7 @@ void BaseMesh::draw()
 		
 		this->enable_attributes();
 		
+		// printf("Mesh.%s - Draw call...\n", this->name.c_str());
 		glDrawArrays(GL_TRIANGLES, 0, this->total_count);
 		
 		this->disable_attributes();
@@ -119,7 +118,7 @@ void BaseMesh::draw()
 	}
 };
 
-Triangle* BaseMesh::getMeshData()
+Triangle* BaseMesh::getMeshData() const
 {
 	if (this->tris != nullptr)
 		return this->tris;
@@ -130,14 +129,32 @@ Triangle* BaseMesh::getMeshData()
 	}
 };
 
+unsigned BaseMesh::getTotal() const
+{
+	return this->total_count;
+}
+
+GLuint BaseMesh::getLastBuffer() const
+{
+	return this->vbos.back();
+}
+std::string BaseMesh::getName() const
+{
+	return this->name;
+}
+
+void BaseMesh::setTotal(unsigned verts)
+{
+	this->total_count = verts;
+}
+
 void BaseMesh::clear()
 {
 	for (GLuint& vbo : this->vbos)
 		glDeleteBuffers(1, &vbo);
 	
 	glDeleteVertexArrays(1, &this->vao);
-	this->log->logf("[INFO] Mesh.%s - VAO & VBO cleared\n",
-		this->name.c_str());
+	this->log->logf("[INFO] Mesh.%s - VAO & VBO cleared\n", this->name.c_str());
 }
 
 BaseMesh::~BaseMesh()

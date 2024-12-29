@@ -13,18 +13,30 @@ Program::Program(Log* logger, std::string progname)
 
 	b_Utils::read_file_lines(vs_filepath.c_str(), vs_source);
 	b_Utils::read_file_lines(fs_filepath.c_str(), fs_source);
-
-	try
+	
+	/*
+		Setting the program id to 0 is necessary in case \
+		of unsuccessful shader compilation
+	*/
+	this->id = 0u;
+	if (vs_source[0] != '\0' && fs_source[0] != '\0')
 	{
-		GLuint vs_id = Program::CompileShader(this->log, vs_source.c_str(), GL_VERTEX_SHADER);
-		GLuint fs_id = Program::CompileShader(this->log, fs_source.c_str(), GL_FRAGMENT_SHADER);
-		this->shaders.push_back(vs_id);
-		this->shaders.push_back(fs_id);
-		this->id = Program::CreateAndLinkProgram(this->log, 2, vs_id, fs_id);
+		try
+		{
+			GLuint vs_id = Program::CompileShader(this->log, vs_source.c_str(), GL_VERTEX_SHADER);
+			GLuint fs_id = Program::CompileShader(this->log, fs_source.c_str(), GL_FRAGMENT_SHADER);
+			this->shaders.push_back(vs_id);
+			this->shaders.push_back(fs_id);
+			this->id = Program::CreateAndLinkProgram(this->log, 2, vs_id, fs_id);
+		}
+		catch (...)
+		{
+			fprintf(stderr, "Exception: Shader program initialization error!\n");
+		}
 	}
-	catch (...)
+	else
 	{
-		fprintf(stderr, "Exception: Program initialization error!\n");
+		fprintf(stderr, "Warning: Shaders file source is empty\n");
 	}
 };
 
@@ -47,15 +59,22 @@ GLuint Program::CompileShader(Log* log, const char* source, GLuint type)
 	GLuint id = glCreateShader(type);
 	glShaderSource(id, 1, &source, NULL);
 	glCompileShader(id);
-	int success; char compile_log[512];
+
+	GLint success; char compile_log[512];
 	glGetShaderiv(id, GL_COMPILE_STATUS, &success);
-	if (!success)
+
+	if (success == GL_FALSE)
 	{
-		glGetShaderInfoLog(id, 512, NULL, compile_log);
-		log->logf("[WARNING] Program - Shader with type %X compiled with errors\nError log: %s\n", type, log);
+		GLint log_length = 0;
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
+
+		glGetShaderInfoLog(id, log_length, &log_length, &compile_log[0]);
+		log->logf("[WARNING] Program - Shader with type 0x%X compiled with errors\nError log: %s\n", type, compile_log);
+		glDeleteShader(id);
 		throw "Shader compilation error";
 	}
-	log->logf("[INFO] Program - shader id = %u type = %u compiled successfully!\n", id, type);
+
+	log->logf("[INFO] Program - shader id = %u type = 0x%X compiled successfully!\n", id, type);
 	return id;
 };
 GLuint Program::CreateAndLinkProgram(Log* log, size_t count, ...)
@@ -63,7 +82,7 @@ GLuint Program::CreateAndLinkProgram(Log* log, size_t count, ...)
 	GLuint prog_id = glCreateProgram();
 
 	va_list shaders;
-	va_start(shaders, log);
+	va_start(shaders, count);
 	for (size_t i = 0; i < count; i++)
 	{
 		GLuint s_id = va_arg(shaders, GLuint);
@@ -72,9 +91,9 @@ GLuint Program::CreateAndLinkProgram(Log* log, size_t count, ...)
 
 	glLinkProgram(prog_id);
 
-	int success; char info_log[512];
+	GLint success; char info_log[512];
 	glGetProgramiv(prog_id, GL_LINK_STATUS, &success);
-	if (!success)
+	if (success = GL_FALSE)
 	{
 		glGetProgramInfoLog(prog_id, 512, NULL, info_log);
 		log->logf("[WARNING] Program id = %u linked with errors\nError log: %s", prog_id, info_log);
@@ -84,7 +103,7 @@ GLuint Program::CreateAndLinkProgram(Log* log, size_t count, ...)
 	return prog_id;
 };
 
-GLuint Program::GetUniformID(Log* log, GLuint programID, const char* name)
+inline GLuint Program::GetUniformID(Log* log, GLuint programID, const char* name)
 {
 	GLuint id = glGetUniformLocation(programID, name);
 	if (id < 0)
@@ -92,7 +111,7 @@ GLuint Program::GetUniformID(Log* log, GLuint programID, const char* name)
 		log->logf("[WARNING] Program %u: Non-existent uniform with name %s\n", programID, name);
 		return -1;
 	};
-	
+	// printf("Program: Uniform named %s id is %u\n", name, id);
 	return id;
 };
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "deps.h"
+#include "utils/deps.h"
 #include "log.h"
-#include "utils.h"
+#include "utils/utils.h"
 
 class Program
 {
@@ -18,7 +18,7 @@ public:
 	static GLuint CompileShader(Log* log, const char* source, GLuint type);
 	static GLuint CreateAndLinkProgram(Log* log, size_t count, ...);
 
-	static GLuint GetUniformID(Log* log, GLuint programID, const char* name);
+	static inline GLuint GetUniformID(Log* log, GLuint programID, const char* name);
 
 	// Uniform setters
 	void set1f(float value, const char* name);

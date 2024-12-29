@@ -1,10 +1,5 @@
 #include "scene.h"
 
-Scene::Scene()
-{
-
-};
-
 /*
 Scene::Scene(Scene& b)
 {
@@ -28,10 +23,20 @@ void Scene::update()
 		entity->update();
 };
 
-std::vector<Entity *> Scene::getEntities()
+std::vector<Entity *> Scene::getEntities() const
 {
 	return this->objects;
-}
+};
+
+SceneTypes Scene::getType()
+{
+	return this->type;
+};
+
+Camera* Scene::getCameraMain()
+{
+	return nullptr;
+};
 
 
 Scene::~Scene()

@@ -1,24 +1,29 @@
 #pragma once
 
-#include "deps.h"
+#include "utils/deps.h"
 
 #include "game_object/entity.h"
+#include "camera.h"
 
 class Scene
 {
 public:
-	Scene();
+	Scene() : type(SCENE_FLAT) {};
 	~Scene();
 
-	// Copy operator
-	Scene& operator=(Scene& b) noexcept;
-	// std::move operator
-	Scene(Scene& b) noexcept;
+	// Delete copy constructors
+	Scene& operator=(Scene&) = delete;
+	Scene(Scene& b) = delete;
+	Scene(const Scene& b) = delete;
 
-	void update();
+	virtual void update();
 	void append(Entity* entity);
 
-	std::vector<Entity *> getEntities();
-private:
+	std::vector<Entity *> getEntities() const;
+	SceneTypes getType();
+
+	virtual Camera* getCameraMain();
+protected:
 	std::vector<Entity *> objects;
+	SceneTypes type;
 };

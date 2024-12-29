@@ -13,8 +13,11 @@
 
 // Math and linal
 #include <math.h>
+// GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 // OpenGL includes
 #include <GL/glew.h>
@@ -23,4 +26,3 @@
 
 // Misc
 #include "defs.h"
-#include "assets.h"

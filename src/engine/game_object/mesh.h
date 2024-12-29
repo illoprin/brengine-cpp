@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../deps.h"
+#include "../utils/deps.h"
 #include "../log.h"
 
 struct ModelVertex {
@@ -33,10 +33,16 @@ public:
 	);
 	// Delete VAO&VBO buffers, prepare to rewriting
 	void clear();
+	// Render
 	void draw();
 
-	unsigned getTotal();
-	Triangle* getMeshData();
+	// Set total count of verts
+	void setTotal(unsigned verts);
+	
+	unsigned getTotal() const;
+	GLuint getLastBuffer() const;
+	Triangle* getMeshData() const;
+	std::string getName() const;
 private:
 	GLuint vao;
 	std::string name;
