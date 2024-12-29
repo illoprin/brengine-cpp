@@ -1,6 +1,5 @@
 #include "utils.h"
 
-
 void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 {
 	FILE* src = fopen(filepath, "r");
@@ -25,4 +24,70 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 	{
 		printf("Warning: File with path %s, string length is less than 2\n", filepath);
 	}
+};
+
+std::string b_Utils::current_time_s()
+{
+	time_t current_time = time(NULL);
+	char c_time_str[256];
+	strftime(
+		c_time_str, 256, 
+		"%d-%m-%Y %H:%M:%S",
+		localtime(&current_time)
+	);
+	std::string time_s{c_time_str};
+	return time_s;
+}
+
+void b_ImageIO::GenBytes(std::vector<unsigned char>& bytes, unsigned width, unsigned height)
+{
+	unsigned char r, g, b;
+	for (unsigned i = 0; i < width * height; i++)
+	{
+		float factor = (float)i / (float)(width * height);
+		
+		// Generate gradient
+		r = (unsigned char) floor(255.f * factor); 
+		g = (unsigned char) floor(255.f * factor); 
+		b = (unsigned char) floor(255.f * factor); 
+
+		// Set values to vector
+		// RGB - stride is 3
+		bytes[i * 3 + 0] = r; bytes[i * 3 + 1] = g; bytes[i * 3 + 2] = b;
+	}
+};
+
+void b_ImageIO::WriteBytes(
+	std::vector<unsigned char>& byteData,
+	int width, 
+	int height, 
+	int components, 
+	const char* path
+)
+{
+	if (byteData.size() < components)
+	{
+		fprintf(stderr, "ImageIO - Could not write, byte data size is less then %d\n", components);
+		return;
+	}
+
+	if (strlen(path) < 2)
+	{
+		fprintf(stderr, "ImageIO - Could not write, file path field is empty\n");
+		return;
+	}
+
+	for (int i = 0; i < width * height; i++)
+	{
+		printf("Readed pixels: %u %u %u %u\n",
+			byteData[i * 4 + 0], byteData[i * 4 + 1],
+			byteData[i * 4 + 2], byteData[i * 4 + 3]);
+	}
+	
+	if (!stbi_write_png(path, width, height, components, &byteData[0], components * width))
+	{
+		fprintf(stderr, "ImageIO - ERROR Could not write\n");
+		return;
+	}
+	printf("ImageIO - png file with path %s writed!\n", path);
 };

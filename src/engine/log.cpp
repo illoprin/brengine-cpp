@@ -3,17 +3,10 @@
 Log::Log(const char* path)
 {
 	// Create file name
-	time_t current_time = time(NULL);
-	char file_name[MAX_FILENAME];
-	strftime(
-		file_name, 
-		MAX_FILENAME, 
-		"%d-%m-%Y %H:%M:%S.log",
-		localtime(&current_time)
-	);
+	std::string file_name{b_Utils::current_time_s() + ".log"};
 
 	// Open new file
-	std::string file_path = std::string(path) + "/" + std::string(file_name);
+	std::string file_path{std::string(path) + "/" + file_name};
 	this->file = fopen(file_path.c_str(), "w");
 	if (this->file == NULL)
 	{

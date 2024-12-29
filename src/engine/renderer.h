@@ -37,6 +37,15 @@ public:
 	void start();
 	void render(Scene& scene);
 
+	void setRenderMode(RenderMode mode);
+	void switchRenderMode();
+
+	inline void ctxEnableFaceCulling();
+	inline void ctxDisableFaceCulling();
+
+	inline void ctxEnableDepthTest();
+	inline void ctxDisableDepthTest();
+
 	Program* getProgramFlat() const;
 	Program* getProgramStandart() const;
 	Program* getProgramCanvas() const;
@@ -44,11 +53,15 @@ public:
 private:
 	GLFWwindow* window;
 	Log* log;
-
+	
 	void ctxPrepare();
 	void initPrograms();
+
+	void render_flat(Scene& scene);
+	void render_3d(Scene& scene);
 	
-	// 
+	RenderMode r_mode;
+
 	Program* p_flat;
 	Program* p_standart;
 };

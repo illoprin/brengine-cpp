@@ -1,6 +1,7 @@
 #pragma once
 
 #include "utils/deps.h"
+#include "utils/utils.h"
 
 class Log
 {

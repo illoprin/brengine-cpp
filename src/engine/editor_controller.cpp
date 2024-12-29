@@ -45,11 +45,11 @@ void EditorController::handle_key_events()
 };
 void EditorController::handle_mouse_events()
 {
-	double factor = engine->getClock()->getDeltaTime() * PLAYER_SENSITIVITY;
+	float factor = PLAYER_SENSITIVITY * engine->getClock()->getDeltaTime();
 	
 	this->camera->rotate(
-		-engine->getIO()->getMouse()->m_delta_y * factor,
-		engine->getIO()->getMouse()->m_delta_x * factor
+		(float)-engine->getIO()->getMouse()->m_delta_y * factor,
+		(float)engine->getIO()->getMouse()->m_delta_x * factor
 	);
 };
 

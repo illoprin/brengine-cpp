@@ -10,6 +10,7 @@
 #include <random>
 #include <vector>
 #include <iostream>
+#include <string>
 
 // Math and linal
 #include <math.h>
@@ -23,6 +24,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
+
+// STB image
+#include <stb_image_write.h>
+#include <stb_image.h>
 
 // Misc
 #include "defs.h"

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../utils/deps.h"
-#include "mesh.h"
+#include "base_mesh.h"
 #include "../program.h"
 #include "../texture.h"
 

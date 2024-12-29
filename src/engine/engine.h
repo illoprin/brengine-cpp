@@ -17,6 +17,7 @@ public:
 	Engine();
 	~Engine();
 
+	void render_start();
 	void render(Scene& scene);
 	void update(Scene& scene);
 	void prepare();
@@ -25,6 +26,8 @@ public:
 	void setVidMode(unsigned w, unsigned h);
 	// Toggle cursor
 	void toggleGameMode();
+	// Save main framebuffer pixel data to image
+	void takeScreenshot();
 
 	GLFWwindow* getWindow() const;
 	Renderer* getRenderer() const;

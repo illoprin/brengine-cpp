@@ -16,6 +16,9 @@ uniform vec3 u_camera_position;
 // Lighting
 uniform vec3 u_ambient_light = vec3(0.96, 0.97, 1.0);
 
+// Debug
+uniform bool u_depth = false;
+
 out vec4 _fragColor;
 
 void main()
@@ -41,5 +44,6 @@ void main()
 	vec3 lighting = u_ambient_light * (.7 + factor);
 
 	// Final color
-	_fragColor = diffuse_color * vec4(lighting, 1.0);
+	if (!u_depth) _fragColor = diffuse_color * vec4(lighting, 1.0); // Textured
+	else _fragColor = vec4(vec3(gl_FragCoord.w), 1.0); // Depth
 }

@@ -19,6 +19,9 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 			}
 			
 			if (key == GLFW_KEY_TAB) e_ptr->toggleGameMode();
+
+			if (key == GLFW_KEY_F5) e_ptr->getRenderer()->switchRenderMode();
+			if (key == GLFW_KEY_F2) e_ptr->takeScreenshot();
 		}
 		b_UserKeyCallback user_func = e_ptr->getIO()->getKeyCallback();
 		if (user_func != nullptr) user_func(key, action, mods);
@@ -51,23 +54,14 @@ static void resizeCallback(GLFWwindow* window, int width, int height)
 	Engine* e_ptr = reinterpret_cast<Engine *>(glfwGetWindowUserPointer(window));
 	if (e_ptr != NULL)
 	{
-
+		e_ptr->setVidMode((unsigned)width, (unsigned)height);
+		printf("Window resized: %d %d\n", e_ptr->getVidMode().x, e_ptr->getVidMode().y);
+		glViewport(0, 0, width, height);
 	}
-	e_ptr->setVidMode((unsigned)width, (unsigned)height);
-
-	printf("Window resized: %d %d\n", e_ptr->getVidMode().x, e_ptr->getVidMode().y);
-	glViewport(0, 0, width, height);
 };
 
 Engine::Engine()
 {
-	// Set OpenGL version
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// Set MSAA parametres
-	glfwWindowHint(GLFW_SAMPLES, 4);
-
 	this->init_window();
 	// Create pointer to Logger instance 
 	this->log = new Log("tmp");
@@ -75,6 +69,7 @@ Engine::Engine()
 	this->renderer = new Renderer(this->log, window);
 	// Create poiner to Clock instance
 	this->clock = new Clock();
+
 	this->init_io();
 };
 
@@ -117,6 +112,7 @@ void Engine::setVidMode(unsigned w, unsigned h)
 	this->vid_mode.x = w;
 	this->vid_mode.y = h;
 };
+
 void Engine::toggleGameMode()
 {
 	is_game_mode = !is_game_mode;
@@ -130,6 +126,29 @@ void Engine::toggleGameMode()
 		glfwSetInputMode(
 			this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL
 		);
+};
+
+void Engine::takeScreenshot()
+{
+	unsigned char pixels[this->vid_mode.x * this->vid_mode.y * 3];
+	// Bind main framebuffer
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+	// Read pixels from main framebuffer
+	glReadPixels(0, 0, this->vid_mode.x, this->vid_mode.y, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+	
+	// Get filename
+	std::string file_name{"screenshots/Screenshot " + b_Utils::current_time_s() + ".png"};
+	
+	// Write pixels to image
+	stbi_flip_vertically_on_write(1);
+	int write_status = stbi_write_png(
+		file_name.c_str(), this->vid_mode.x, this->vid_mode.y,
+		3, pixels, this->vid_mode.x * 3
+	);
+	stbi_flip_vertically_on_write(0);
+	if (!write_status)
+		this->log->logf("[WARNING] Engine - Could not take screenshot\n");
 };
 
 glm::ivec2 Engine::getVidMode()
@@ -171,6 +190,10 @@ void Engine::prepare()
 void Engine::update(Scene& scene)
 {
 	scene.update();
+};
+void Engine::render_start()
+{
+	renderer->start();
 };
 void Engine::render(Scene& scene)
 {

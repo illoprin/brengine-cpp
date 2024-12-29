@@ -17,6 +17,13 @@ enum SceneTypes
 	SCENE_CANVAS = 1 << 4
 };
 
+enum RenderMode
+{
+	RENDER_TEXTURED = 0,
+	RENDER_WIRE,
+	RENDER_DEPTH,
+};
+
 // World
 #define DIR_UP glm::vec3(0, 1, 0)
 #define DIR_RIGHT glm::vec3(1, 0, 0)
@@ -28,7 +35,7 @@ enum SceneTypes
 #define CAM_FAR 100.f
 
 // Player
-#define PLAYER_SENSITIVITY 50.f
+#define PLAYER_SENSITIVITY 14.3f
 #define PLAYER_SPEED 3.f
 #define PLAYER_SPEED_MODIFER 1.78f // Sprint ratio
 

@@ -19,16 +19,26 @@ int main()
 	Renderer* rend = engine.getRenderer();
 	engine.getIO()->setKeyCallback(key_callback);
 
-	std::vector<Triangle> quad_mesh_data = b_AssetManager::QuadTriangles(.5f);
+	ModelTriangles quad_tris = b_AssetManager::QuadTriangles(.5f);
 
-	BaseMesh qm(engine.getLogger(), "quad");
-	qm.simpleInit(&quad_mesh_data);
+	SimpleMesh qm(engine.getLogger(), "quad");
+	qm.initFromModel(&quad_tris);
 
 	TextureImage2D t_engine_label{engine.getLogger(), false};
-	t_engine_label.initFromFile("textures/ui_label");
+	t_engine_label.FromFile("textures/ui_label");
 
 	TextureImage2D t_null{engine.getLogger(), false};
-	t_null.initFromFile("textures/NULL");
+	t_null.FromFile("textures/NULL");
+
+	TextureImage2D t_brick (engine.getLogger(), false);
+	t_brick.FromFile("textures/brick_1");
+	t_brick.setFiltering(GL_NEAREST);
+
+	std::vector<unsigned char> gradient_b(64 * 64 * 3);
+	b_ImageIO::GenBytes(gradient_b, 64, 64);
+	TextureImage2D t_grad (engine.getLogger(), false);
+	t_grad.FromBytes(64, 64, 3, GL_RGB, gradient_b);
+	t_grad.setFiltering(GL_LINEAR);
 
 	// Init UI
 	Entity label{ 
@@ -53,9 +63,14 @@ int main()
 	Scene3D test_level{&engine, player.getCamera()};
 
 	Entity l_quad{&qm, rend->getProgramStandart()};
-	l_quad.setTexture(&t_null);
+	l_quad.setTexture(&t_brick);
+
+	Entity l_quad_1{&qm, rend->getProgramStandart()};
+	l_quad_1.setTexture(&t_grad);
+	l_quad_1.setPosition(glm::vec3(-3, 1, -1));
 	
 	test_level.append(&l_quad);
+	test_level.append(&l_quad_1);
 
 	while (!glfwWindowShouldClose(engine.getWindow()))
 	{
@@ -74,7 +89,7 @@ int main()
 		engine.update(test_level);
 		
 		// Rendering
-		engine.getRenderer()->start();
+		engine.render_start();
 		engine.render(test_level);
 		engine.render(ui_scene);
 
