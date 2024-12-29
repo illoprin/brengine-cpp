@@ -9,7 +9,7 @@ public:
 	Camera(glm::vec3 pos);
 	~Camera();
 
-	void update();
+	void update(glm::ivec2 win_size);
 
 	void setPosition(glm::vec3 pos);
 	void move(glm::vec3 delta);
@@ -39,4 +39,6 @@ private:
 	glm::vec3 forward;
 	glm::vec3 right;
 	glm::vec3 up;
+
+	unsigned vid_mode[2];
 };

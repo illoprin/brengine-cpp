@@ -11,12 +11,21 @@ Input::~Input()
 	printf("IO: Released\n");
 };
 
+void Input::resetMouse()
+{
+	this->mouse.m_delta_x = 0;
+	this->mouse.m_delta_y = 0; 
+}
+
 void Input::updateMouse(double x, double y)
 {
 	this->mouse.m_x = x; this->mouse.m_y = y;
 	this->mouse.m_delta_x = this->mouse.m_x - this->mouse.m_last_x;
 	this->mouse.m_delta_y = this->mouse.m_y - this->mouse.m_last_y;
 	this->mouse.m_last_x = x; this->mouse.m_last_y = y;
+
+	printf ("IO: Mouse delta x: %.2f y: %.2f\n", 
+		this->mouse.m_delta_x, this->mouse.m_delta_y);
 };
 
 void Input::setKeyCallback(b_UserKeyCallback func)

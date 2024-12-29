@@ -2,7 +2,6 @@
 
 #include "utils/deps.h"
 #include "scene.h"
-#include "scene_3d.h"
 #include "camera.h"
 #include "program.h"
 

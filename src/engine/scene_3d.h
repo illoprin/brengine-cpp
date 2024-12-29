@@ -2,6 +2,7 @@
 
 #include "scene.h"
 #include "camera.h"
+#include "engine.h"
 
 /*
  *	
@@ -11,11 +12,12 @@
 class Scene3D : public Scene
 {
 public:
-	Scene3D(Camera* cam);
+	Scene3D(Engine* eng, Camera* cam);
 
 	void update() override;
 
 	Camera* getCameraMain() override;
 protected:
 	Camera* c_main;
+	Engine* engine;
 };

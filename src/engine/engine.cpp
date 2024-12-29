@@ -10,10 +10,15 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 	Engine* e_ptr = reinterpret_cast<Engine *>(glfwGetWindowUserPointer(window));
 	if (e_ptr != NULL)
 	{
-		if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE)
+		if (action == GLFW_PRESS)
 		{
-			printf("Closing...\n");
-			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			if (key == GLFW_KEY_ESCAPE)
+			{
+				printf("Closing...\n");
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
+			}
+			
+			if (key == GLFW_KEY_TAB) e_ptr->toggleGameMode();
 		}
 		b_UserKeyCallback user_func = e_ptr->getIO()->getKeyCallback();
 		if (user_func != nullptr) user_func(key, action, mods);
@@ -63,17 +68,17 @@ Engine::Engine()
 	// Set MSAA parametres
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	this->initWindow();
+	this->init_window();
 	// Create pointer to Logger instance 
 	this->log = new Log("tmp");
 	// Create pointer to Renderer instance
 	this->renderer = new Renderer(this->log, window);
 	// Create poiner to Clock instance
 	this->clock = new Clock();
-	this->initIO();
+	this->init_io();
 };
 
-void Engine::initWindow()
+void Engine::init_window()
 {
 	if (!glfwInit())
 	{
@@ -96,7 +101,7 @@ void Engine::initWindow()
 	glfwSetWindowUserPointer(this->window, this);
 };
 
-void Engine::initIO()
+void Engine::init_io()
 {
 	this->input = new Input(this->log);
 	glfwSetErrorCallback(errorCallback);
@@ -112,6 +117,20 @@ void Engine::setVidMode(unsigned w, unsigned h)
 	this->vid_mode.x = w;
 	this->vid_mode.y = h;
 };
+void Engine::toggleGameMode()
+{
+	is_game_mode = !is_game_mode;
+	if (is_game_mode)
+		/* Hide and lock cursor */
+		glfwSetInputMode(
+			this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED
+		);
+	else
+		/* Set cursor visible */
+		glfwSetInputMode(
+			this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL
+		);
+};
 
 glm::ivec2 Engine::getVidMode()
 {
@@ -125,7 +144,6 @@ Log* Engine::getLogger() const
 {
 	return this->log;
 };
-
 Clock* Engine::getClock() const
 {
 	return this->clock;
@@ -138,11 +156,17 @@ Input* Engine::getIO() const
 {
 	return this->input;
 };
+bool Engine::isGameMode() const
+{
+	return this->is_game_mode;
+};
 
 /* ================== Update Methods ================== */
 void Engine::prepare()
 {
 	this->clock->start();
+	this->input->resetMouse();
+	glfwPollEvents();
 };
 void Engine::update(Scene& scene)
 {

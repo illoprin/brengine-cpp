@@ -39,6 +39,7 @@ public:
 
 	Mouse* getMouse();
 	void updateMouse(double x, double y);
+	void resetMouse();
 private:
 	Log* log;
 

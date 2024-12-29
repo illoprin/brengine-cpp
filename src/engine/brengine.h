@@ -7,9 +7,10 @@
 #include "scene_3d.h"
 #include "game_object/mesh.h"
 #include "program.h"
-#include "game_object/entity.h"
-#include "texture.h"
 #include "camera.h"
+#include "texture.h"
+#include "game_object/entity.h"
+#include "editor_controller.h"
 #include "assets.h"
 
 #endif

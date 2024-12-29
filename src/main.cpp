@@ -49,8 +49,8 @@ int main()
 	ui_scene.append(&test_quad);
 
 
-	Camera camera{glm::vec3(0, 0, -3)};
-	Scene3D test_level{&camera};
+	EditorController player{&engine};
+	Scene3D test_level{&engine, player.getCamera()};
 
 	Entity l_quad{&qm, rend->getProgramStandart()};
 	l_quad.setTexture(&t_null);
@@ -60,8 +60,6 @@ int main()
 	while (!glfwWindowShouldClose(engine.getWindow()))
 	{
 		engine.prepare();
-
-		glfwPollEvents();
 		
 		// UI Scene update
 		float time = (float) engine.getClock()->getTime();
@@ -71,6 +69,8 @@ int main()
 
 		// 3D Scene update
 		if (quad_rot_active) l_quad.rotate(glm::vec3(engine.getClock()->getDeltaTime() * 100.f));
+		
+		player.update();
 		engine.update(test_level);
 		
 		// Rendering

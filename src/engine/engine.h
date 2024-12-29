@@ -5,7 +5,6 @@
 #include "log.h"
 #include "renderer.h"
 #include "clock.h"
-#include "log.h"
 #include "program.h"
 #include "input.h"
 
@@ -24,12 +23,15 @@ public:
 	void close();
 
 	void setVidMode(unsigned w, unsigned h);
+	// Toggle cursor
+	void toggleGameMode();
 
 	GLFWwindow* getWindow() const;
 	Renderer* getRenderer() const;
 	Log* getLogger() const;
 	Clock* getClock() const;
 	Input* getIO() const;
+	bool isGameMode() const;
 	glm::ivec2 getVidMode();
 
 	// Delete copy operators
@@ -45,7 +47,11 @@ private:
 	Clock* clock;
 	Log* log;
 	Input* input;
-	// TODO: Scene/Framebuffer and other stuff
-	void initWindow();
-	void initIO();
+
+	void init_window();
+	void init_io();
+
+	/* TODO: Scene/Framebuffer and other stuff */
+
+	bool is_game_mode = false;
 };

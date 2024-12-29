@@ -34,7 +34,7 @@ void Camera::update_matrices()
 {
 	this->projection = glm::perspective(
 		glm::radians(CAM_FOV),
-		(float) WIN_WIDTH / (float) WIN_HEIGHT,
+		(float) this->vid_mode[0] / (float) this->vid_mode[1],
 		CAM_NEAR, CAM_FAR
 	);
 	this->view = glm::lookAt(
@@ -42,8 +42,11 @@ void Camera::update_matrices()
 	);
 };
 
-void Camera::update()
+void Camera::update(glm::ivec2 win_size)
 {
+	this->vid_mode[0] = win_size.x;
+	this->vid_mode[1] = win_size.y;
+	
 	this->update_vectors();
 	this->update_matrices();	
 };
