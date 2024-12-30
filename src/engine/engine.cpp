@@ -62,9 +62,11 @@ static void resizeCallback(GLFWwindow* window, int width, int height)
 
 Engine::Engine()
 {
+	b_Files::InitFilesystem();
+
 	this->init_window();
 	// Create pointer to Logger instance 
-	this->log = new Log("tmp");
+	this->log = new Log();
 	// Create pointer to Renderer instance
 	this->renderer = new Renderer(this->log, window);
 	// Create poiner to Clock instance
@@ -130,25 +132,42 @@ void Engine::toggleGameMode()
 
 void Engine::takeScreenshot()
 {
-	unsigned char pixels[this->vid_mode.x * this->vid_mode.y * 3];
-	// Bind main framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
-	// Read pixels from main framebuffer
-	glReadPixels(0, 0, this->vid_mode.x, this->vid_mode.y, GL_RGB, GL_UNSIGNED_BYTE, pixels);
-	
-	// Get filename
-	std::string file_name{"screenshots/Screenshot " + b_Utils::current_time_s() + ".png"};
-	
-	// Write pixels to image
-	stbi_flip_vertically_on_write(1);
-	int write_status = stbi_write_png(
-		file_name.c_str(), this->vid_mode.x, this->vid_mode.y,
-		3, pixels, this->vid_mode.x * 3
-	);
-	stbi_flip_vertically_on_write(0);
-	if (!write_status)
-		this->log->logf("[WARNING] Engine - Could not take screenshot\n");
+	int width, height;
+    glfwGetFramebufferSize(this->window, &width, &height);
+
+	// !!! Creates "Segmentation fault" error when vidmode != (1920, 1020) or (WIN_WIDTH, WIN_HEIGHT)
+	if ((width == WIN_WIDTH || width == 1920)
+		&& height == WIN_HEIGHT || height == 1020)
+	{
+		unsigned char* pixels = new unsigned char[width * height * 3];
+
+		// Bind main framebuffer
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
+		// Read pixels from main framebuffer
+		glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+		// Get filename
+		std::string file_name{
+			fs::path(FS_SCREENSHOTS_PATH) / ("Screenshot " + b_Utils::current_time_s() + ".png")
+		};
+		
+		// Write pixels to image
+		stbi_flip_vertically_on_write(1);
+		int write_status = stbi_write_png(
+			file_name.c_str(), width, height,
+			3, pixels, width * 3
+		);
+		stbi_flip_vertically_on_write(0);
+		if (!write_status)
+			this->log->logf("[WARNING] Engine - Could not take screenshot\n");
+
+		delete[] pixels;
+	}
+	else
+	{
+		printf ("Engine - Sorry, cannot take screenshot =(\n");
+	}
 };
 
 glm::ivec2 Engine::getVidMode()

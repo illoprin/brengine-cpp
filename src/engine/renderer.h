@@ -40,11 +40,11 @@ public:
 	void setRenderMode(RenderMode mode);
 	void switchRenderMode();
 
-	inline void ctxEnableFaceCulling();
-	inline void ctxDisableFaceCulling();
+	void ctxEnableFaceCulling();
+	void ctxDisableFaceCulling();
 
-	inline void ctxEnableDepthTest();
-	inline void ctxDisableDepthTest();
+	void ctxEnableDepthTest();
+	void ctxDisableDepthTest();
 
 	Program* getProgramFlat() const;
 	Program* getProgramStandart() const;

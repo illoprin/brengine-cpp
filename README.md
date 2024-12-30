@@ -7,7 +7,9 @@ Full scale 3D game engine for personal proposes
 # Controls
 
 W/A/S/D - movement
+
 F5 - change render mode
+
 F2 - take screenshot
 
 # Stack

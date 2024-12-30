@@ -20,3 +20,12 @@ namespace b_ImageIO
 		const char* path
 	);
 };
+
+// Utils namespace for service engine's filesystem (directories and etc)
+namespace b_Files
+{ 
+	// Init engine's directories
+	void InitFilesystem();
+
+	std::vector<std::string> AllFilesByPathWithExtension(const char* path, const char* ext);
+};

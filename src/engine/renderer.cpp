@@ -42,23 +42,23 @@ void Renderer::ctxPrepare()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Set alpha blending model
 };
 
-inline void Renderer::ctxEnableFaceCulling()
+void Renderer::ctxEnableFaceCulling()
 {
 	glEnable(GL_CULL_FACE); // Enable backface culling
 	glCullFace(GL_BACK); // Set backface culling model - vertices order is counter clockwise
-	glFrontFace(GL_CW); // Face culling - front face is in clockwise
+	glFrontFace(GL_CCW); // Face culling - front face is in clockwise
 };
 
-inline void Renderer::ctxDisableFaceCulling()
+void Renderer::ctxDisableFaceCulling()
 {
 	glDisable(GL_CULL_FACE);
 };
 
-inline void Renderer::ctxEnableDepthTest()
+void Renderer::ctxEnableDepthTest()
 {
 	glEnable(GL_DEPTH_TEST);
 };
-inline void Renderer::ctxDisableDepthTest()
+void Renderer::ctxDisableDepthTest()
 {
 	glDisable(GL_DEPTH_TEST);
 };
@@ -66,9 +66,12 @@ inline void Renderer::ctxDisableDepthTest()
 void Renderer::initPrograms()
 {
 	// Use this shader_program to render 2D textured stuff
-	this->p_flat = new Program{this->log, "b_flat"};
+	this->p_flat = new Program{this->log};
+	this->p_flat->InitVertexAndFragment("b_flat");
+	
 	// Use this to shader_program 3D textured stuff
-	this->p_standart = new Program{this->log, "b_standart"};
+	this->p_standart = new Program{this->log};
+	this->p_standart->InitVertexAndFragment("b_standart");
 };
 
 void Renderer::start()
@@ -104,7 +107,7 @@ void Renderer::render_flat(Scene& scene)
 		/* 2D - Model view */
 		p_current->setmat4(entity->getModelMatrix(), "u_model");
 
-		/* 3D - Projection */
+		/* 2D - Ortho Projection */
 		float aspect = (float)width / (float)height;
 		glm::mat4 ortho_projection = glm::ortho(
 			-aspect, aspect, // X
@@ -134,7 +137,7 @@ void Renderer::render_flat(Scene& scene)
 			// Send alpha value
 			p_current->set1f(entity->getAlpha(), "u_alpha");
 		}
-		// Wireframe rendering
+		// 2D Renderer - Wireframe rendering
 		else if (this->r_mode == RENDER_WIRE)
 		{
 			p_current->set1i(0, "u_use_texturing");

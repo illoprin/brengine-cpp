@@ -16,7 +16,8 @@ void TextureImage2D::bind()
 
 void TextureImage2D::FromFile(std::string assets_path)
 {
-	std::string file_path{"assets/" + assets_path + ".png"};
+	std::string file_path = 
+		fs::path(FS_ASSETS_PATH) / (assets_path + ".png");
 
 	int _width, _height, _channels;
 
@@ -72,16 +73,19 @@ void TextureImage2D::FromBytes(
 	std::vector<unsigned char>& bytes
 )
 {
-	if (bytes.size() < channels)
-	{
-		this->log->logf("[ERROR] Texture - could not init, byte size is less then %u\n", channels);
-		return;
-	}
 	if (width < 1 || height < 1 || channels < 1)
 	{
 		this->log->logf("[ERROR] Texture - could not init, components value is less than 1\n");
 		return;
-	}
+	};
+
+	size_t size_required = (size_t)(channels * width * height);
+	if (bytes.size() < size_required)
+	{
+		this->log->logf("[ERROR] Texture - could not init, byte size is less then %lu\n", size_required);
+		return;
+	};
+	
 	
 	this->width = width;
 	this->height = height;
@@ -98,26 +102,26 @@ void TextureImage2D::FromBytes(
 	this->setImagePointer(components, components, GL_UNSIGNED_BYTE, &bytes[0]);
 	
 	this->log->logf(
-		"[INFO] Texture - Inited from bytes, width is %u height is %u\n",
-		this->width, this->height
+		"[INFO] Texture id = %u inited from bytes, size is %lu bytes\n",
+		this->id, bytes.size()
 	);
 };
 
-inline void TextureImage2D::setWrapping(GLint type)
+void TextureImage2D::setWrapping(GLint type)
 {
 	this->bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, type);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, type);
 };
 
-inline void TextureImage2D::setFiltering(GLint type)
+void TextureImage2D::setFiltering(GLint type)
 {
 	this->bind();
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, type);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, type);
 };
 
-inline void TextureImage2D::setFilteringMipmap(GLint type_min, GLint type_mag)
+void TextureImage2D::setFilteringMipmap(GLint type_min, GLint type_mag)
 {
 	this->bind();
 	if (this->use_mipmaps)

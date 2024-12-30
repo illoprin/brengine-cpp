@@ -7,8 +7,10 @@
 class Program
 {
 public:
-	Program(Log* logger, std::string progname);
+	Program(Log* logger);
 	~Program();
+
+	void InitVertexAndFragment(std::string progname);
 
 	// Delete copy operators
 	Program(Program&) = delete;
@@ -16,7 +18,7 @@ public:
 	Program& operator=(const Program&) = delete;
 
 	static GLuint CompileShader(Log* log, const char* source, GLuint type);
-	static GLuint CreateAndLinkProgram(Log* log, size_t count, ...);
+	void LinkProgram(size_t count, ...);
 
 	static inline GLuint GetUniformID(Log* log, GLuint programID, const char* name);
 
@@ -31,8 +33,7 @@ public:
 	void use();
 
 	GLuint getID();
-	GLuint getFragmentID();
-	GLuint getVertexID();
+	GLuint getShaderID(unsigned id);
 private:
 	Log* log;
 	GLuint id;

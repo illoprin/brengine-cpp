@@ -1,8 +1,8 @@
 #include "assets.h"
 
-std::vector<Triangle> b_AssetManager::QuadTriangles(float size)
+b_Model::ModelTriangles b_AssetManager::QuadTriangles(float size)
 {
-	std::vector<Triangle> tris{
+	std::vector<b_Model::Triangle> tris{
 		{
 			{
 				{size, size, 0.f, 1.f, 1.f, 0.f, 0.f, -1.f},
@@ -21,8 +21,8 @@ std::vector<Triangle> b_AssetManager::QuadTriangles(float size)
 	return tris;
 };
 
-std::vector<Triangle> b_AssetManager::CubeTriangles(float size)
+b_Model::ModelTriangles b_AssetManager::CubeTriangles(float size)
 {
-	std::vector<Triangle> tris(12);
+	std::vector<b_Model::Triangle> tris(12);
 	return tris;
 };

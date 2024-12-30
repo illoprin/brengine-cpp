@@ -15,7 +15,7 @@ all:
 	./$(TARGET)
 
 clear:
-	rm -f tmp/* bin/*
+	rm -f tmp/* bin/* screenshots/*
 
 test:
 	$(CC) $(CFLAGS) _test/$(TEST_SRC) -o bin/test -I $(INCLUDES_PATH) $(LIBS)

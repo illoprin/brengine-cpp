@@ -1,3 +1,48 @@
+# Documentation
+
+### Namespaces
+
+**b_Model**
+
+	Functions and structures related to creation of model triangles
+	b_Model::ModelTriangles is std::vector<b_Model::Triangle>
+
+**b_Assets**
+
+	Gives access to prepared assets such as meshes, textures and etc
+
+**b_ImageIO**
+
+	Functions for generating and writing images
+
+**b_Files**
+
+	Functions for service engine filesystem and other file-stuff
+
+**b_Utils**
+
+	Some utils functions
+
+### Engine entities
+
+**Entity**
+	
+	Stores information about texture (or color), mesh, collider of entire object
+	The entity is required to be stored within the Scene.
+
+**Scene**
+
+	Collection of several entities.
+	Could be processed by Renderer and drawed on screen
+
+**Scene3D**
+
+	The same Scene.
+	Unlike the usual one, stores information about Camera from whose point of view render will be performed
+
+### Simple usage of engine `Dec 2024 Version`
+
+```c++
 #include "engine/brengine.h"
 
 Engine engine;
@@ -122,3 +167,4 @@ int main()
 
 	return 0;
 }
+```

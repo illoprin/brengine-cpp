@@ -1,8 +1,13 @@
 #ifndef B_DEFS
 #define B_DEFS
 
-#define WIN_WIDTH 1024
-#define WIN_HEIGHT 768
+#define FS_TEMP_PATH "tmp"
+#define FS_SCREENSHOTS_PATH "screenshots"
+#define FS_ASSETS_PATH "assets"
+#define FS_LOG_PATH "log"
+
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720
 #define WIN_TITLE "Game"
 
 #define MAX_PATH 256
@@ -35,7 +40,7 @@ enum RenderMode
 #define CAM_FAR 100.f
 
 // Player
-#define PLAYER_SENSITIVITY 14.3f
+#define PLAYER_SENSITIVITY 35.8f
 #define PLAYER_SPEED 3.f
 #define PLAYER_SPEED_MODIFER 1.78f // Sprint ratio
 

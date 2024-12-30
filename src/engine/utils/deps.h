@@ -11,6 +11,9 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 // Math and linal
 #include <math.h>

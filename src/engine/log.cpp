@@ -1,12 +1,13 @@
 #include "log.h"
 
-Log::Log(const char* path)
+Log::Log()
 {
 	// Create file name
 	std::string file_name{b_Utils::current_time_s() + ".log"};
 
 	// Open new file
-	std::string file_path{std::string(path) + "/" + file_name};
+	std::string file_path = 
+		fs::path(FS_TEMP_PATH) / fs::path(FS_LOG_PATH) / (file_name);
 	this->file = fopen(file_path.c_str(), "w");
 	if (this->file == NULL)
 	{

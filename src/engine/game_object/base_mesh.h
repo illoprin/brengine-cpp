@@ -5,6 +5,8 @@
 
 #include "mesh.h"
 
+using namespace b_Model;
+
 class BaseMesh
 {
 public:

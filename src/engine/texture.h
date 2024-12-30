@@ -35,9 +35,9 @@ struct TextureImage2D {
 		std::vector<unsigned char>& bytes
 	);
 
-	inline void setWrapping(GLint type);
-	inline void setFiltering(GLint type);
-	inline void setFilteringMipmap(GLint type_min, GLint type_mag);
+	void setWrapping(GLint type);
+	void setFiltering(GLint type);
+	void setFilteringMipmap(GLint type_min, GLint type_mag);
 	/*
 	 * 	Sends bytes to vidmemory
 	 *	UNSIGNED_BYTE only

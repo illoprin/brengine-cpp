@@ -6,7 +6,7 @@
 class Log
 {
 public:
-	Log(const char* path);
+	Log();
 
 	// Delete copy operators
 	Log(Log&) = delete;

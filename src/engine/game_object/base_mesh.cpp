@@ -10,19 +10,19 @@ BaseMesh::BaseMesh(Log* logger, const char* name)
 	glGenVertexArrays(1, &this->vao);
 };
 
-void BaseMesh::enable_attributes()
+inline void BaseMesh::enable_attributes()
 {
 	for (GLuint i = 0u; i < this->attrs_list; i++)
 		glEnableVertexAttribArray(i);
 };
 
-void BaseMesh::disable_attributes()
+inline void BaseMesh::disable_attributes()
 {
 	for (GLuint i = 0u; i < this->attrs_list; ++i)
 		glDisableVertexAttribArray(i);
 };
 
-void BaseMesh::reset_attributes()
+inline void BaseMesh::reset_attributes()
 {
 	this->attrs_list = 0;
 };
@@ -74,12 +74,12 @@ void BaseMesh::addattr(GLuint buffer, unsigned components, size_t stride, size_t
 	++this->attrs_list;
 };
 
-void BaseMesh::bind()
+inline void BaseMesh::bind()
 {
 	glBindVertexArray(this->vao);
 }
 
-void BaseMesh::draw(GLint mode)
+inline void BaseMesh::draw(GLint mode)
 {
 	if (this->total_count > 0)
 	{
