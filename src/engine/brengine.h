@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "texture.h"
 #include "program.h"
+#include "game_object/transform.h"
 #include "game_object/entity.h"
 
 #include "scene.h"

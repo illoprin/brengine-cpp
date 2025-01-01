@@ -136,6 +136,12 @@ void Program::set3f(glm::vec3 value, const char* name)
 	GLuint uid = Program::GetUniformID(this->log, this->id, name);
 	if (uid >= 0) glUniform3fv(uid, 1, glm::value_ptr(value));
 };
+void Program::set4f(glm::vec4 value, const char* name)
+{
+	GLuint uid = Program::GetUniformID(this->log, this->id, name);
+	if (uid >= 0) glUniform4fv(uid, 1, glm::value_ptr(value));
+};
+
 void Program::setmat4(glm::mat4 value, const char* name)
 {
 	GLuint uid = Program::GetUniformID(this->log, this->id, name);

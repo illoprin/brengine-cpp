@@ -47,7 +47,7 @@ void b_ImageIO::GenBytes(std::vector<unsigned char>& bytes, unsigned width, unsi
 		float factor = (float)i / (float)(width * height);
 		
 		// Generate gradient
-		r = (unsigned char) floor(255.f * factor); 
+		r = (unsigned char) floor(255.f * factor);
 		g = (unsigned char) floor(255.f * factor); 
 		b = (unsigned char) floor(255.f * factor); 
 

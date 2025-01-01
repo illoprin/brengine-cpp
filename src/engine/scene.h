@@ -5,6 +5,8 @@
 #include "game_object/entity.h"
 #include "camera.h"
 
+using namespace b_GameObject;
+
 class Scene
 {
 public:

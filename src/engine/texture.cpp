@@ -141,12 +141,34 @@ void TextureImage2D::setImagePointer(
 	this->bind();
 	if (!this->inited_with_image)
 	{
+		// Allocate vidmemory for texture
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
 			this->width, this->height, 0,
 			format, dataType, bytes
 		);
 		if (this->use_mipmaps)	glGenerateMipmap(GL_TEXTURE_2D);
 	}
+};
+
+
+GLuint TextureImage2D::getID()
+{
+	return this->id;
+};
+
+unsigned TextureImage2D::getWidth()
+{
+	return this->width;
+};
+
+unsigned TextureImage2D::getHeight()
+{
+	return this->height;
+};
+
+unsigned TextureImage2D::getComponents()
+{
+	return this->components;
 };
 
 TextureImage2D::~TextureImage2D()

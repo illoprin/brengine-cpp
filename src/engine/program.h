@@ -7,7 +7,7 @@
 class Program
 {
 public:
-	Program(Log* logger);
+	Program(Log*);
 	~Program();
 
 	void InitVertexAndFragment(std::string progname);
@@ -17,23 +17,24 @@ public:
 	Program& operator=(Program&) = delete;
 	Program& operator=(const Program&) = delete;
 
-	static GLuint CompileShader(Log* log, const char* source, GLuint type);
+	static GLuint CompileShader(Log*, const char* source, GLuint type);
 	void LinkProgram(size_t count, ...);
 
-	static inline GLuint GetUniformID(Log* log, GLuint programID, const char* name);
+	static inline GLuint GetUniformID(Log*, GLuint programID, const char* name);
 
 	// Uniform setters
-	void set1f(float value, const char* name);
-	void set1i(int value, const char* name);
-	void set2f(glm::vec2 value, const char* name);
-	void set3f(glm::vec3 value, const char* name);
-	void setmat4(glm::mat4 value, const char* name);
-	void setmat2(glm::mat2 value, const char* name);
+	void set1f(float, const char* name);
+	void set1i(int, const char* name);
+	void set2f(glm::vec2, const char* name);
+	void set3f(glm::vec3, const char* name);
+	void set4f(glm::vec4, const char* name);
+	void setmat4(glm::mat4, const char* name);
+	void setmat2(glm::mat2, const char* name);
 
 	void use();
 
 	GLuint getID();
-	GLuint getShaderID(unsigned id);
+	GLuint getShaderID(unsigned);
 private:
 	Log* log;
 	GLuint id;

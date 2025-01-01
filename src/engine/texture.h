@@ -4,18 +4,21 @@
 #include "log.h"
 
 struct TextureImage2D {
-	Log* log;
 
-	unsigned width;
-	unsigned height;
-	unsigned components;
+private:
+	Log* log;
 	bool inited_with_image;
 	bool use_mipmaps;
 	GLuint id;
 
+public:
 	// Gen OpenGL texture object, mp - use MipMapping
 	TextureImage2D(Log* logger, bool mp);
 	~TextureImage2D();
+	
+	unsigned width;
+	unsigned height;
+	unsigned components;
 
 	// Delete copy constructor
 	TextureImage2D& operator=(TextureImage2D&) = delete;
@@ -46,8 +49,12 @@ struct TextureImage2D {
 	 */
 	void setImagePointer(GLint internalFormat, GLint format, GLint dataType, unsigned char* bytes);
 
-
 	void bind();
+
+	GLuint getID();
+	unsigned getWidth();
+	unsigned getHeight();
+	unsigned getComponents();
 };
 
 inline void useTextureInSlot(GLint slot, TextureImage2D image);

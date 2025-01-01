@@ -4,53 +4,48 @@
 #include "base_mesh.h"
 #include "../program.h"
 #include "../texture.h"
+#include "transform.h"
 
-
-class Entity
+namespace b_GameObject
 {
+	class Entity
+	{
 
-public:
-	Entity(BaseMesh* mesh, Program* prog);
-	Entity(BaseMesh* m, Program* p, glm::vec3 pos, glm::vec3 scl, glm::vec3 rot);
-	~Entity();
+	public:
+		Entity(std::string);
+		Entity(std::string, b_GameObject::Transform);
+		~Entity();
 
-	void setTexture(TextureImage2D* texture);
-	void setColor(glm::vec3 color);
-	void setAlpha(float value);
-	
-	TextureImage2D* getTexture() const;
-	glm::vec3 getColor() const;
-	float getAlpha() const;
+		// --- Methods
+		virtual void update();
+		bool hasView();
+		
+		// -- Getters
+		TextureImage2D* getTexture() const;
+		glm::vec4 getColor() const;
+		virtual BaseMesh* getMesh() const;
+		virtual Program* getProgram() const;
+		std::string getName() const;
 
-	void setPosition(glm::vec3 pos);
-	void setScale(glm::vec3 scl);
-	void setRotation(glm::vec3 rot);
+		// -- Setters
+		void setColor(glm::vec3);
+		void setAlpha(float);
+		void setMesh(BaseMesh*);
+		void setProgram(Program*);
+		void setTexture(TextureImage2D*);
 
-	void move(glm::vec3 pos);
-	void rotate(glm::vec3 rot);
-	void resize(glm::vec3 scl);
+		b_GameObject::Transform transform;
+	protected:
+		// Base
+		std::string name{"default"};
 
-	void update();
+		// Rendering
+		TextureImage2D* texture;
+		glm::vec4 color;
+		BaseMesh* mesh;
+		Program* program;
 
-	BaseMesh* getMesh() const;
-	Program* getProgram() const;
-	glm::mat4 getModelMatrix() const;
-
-protected:
-	BaseMesh* mesh;
-	Program* program;
-
-	// Rendering
-	TextureImage2D* texture;
-	glm::vec3 color;
-	float alpha;
-
-	// Transformation info
-	glm::vec3 position;
-	glm::vec3 rotation;
-	glm::vec3 scale;
-	glm::mat4 model;
-
-	void update_model();
-	void init_view();
-};
+		// -- Private Methods
+		virtual void init_view();
+	};
+}

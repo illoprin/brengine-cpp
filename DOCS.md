@@ -11,6 +11,11 @@
 
 	Gives access to prepared assets such as meshes, textures and etc
 
+**b_GameObject**
+
+	Transform struct (that has position, rotation, scale vectors and model matrix)
+	Entity class - stores information about entire object (mesh, texture, color, alpha, and its transform)
+
 **b_ImageIO**
 
 	Functions for generating and writing images

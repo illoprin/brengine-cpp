@@ -99,58 +99,11 @@ void Renderer::render_flat(Scene& scene)
 	glfwGetWindowSize(this->window, &width, &height);
 	for (Entity* entity : scene.getEntities())
 	{
-		Program* p_current = entity->getProgram();
-		p_current->use();
-
-		// In position
-
-		/* 2D - Model view */
-		p_current->setmat4(entity->getModelMatrix(), "u_model");
-
-		/* 2D - Ortho Projection */
-		float aspect = (float)width / (float)height;
-		glm::mat4 ortho_projection = glm::ortho(
-			-aspect, aspect, // X
-			-1.f, 1.f, // Y
-			0.f, 1.f // Near Far
-		);
-		p_current->setmat4(
-			ortho_projection, "u_projection"
-		);
-
-		// In color
-
-		// 2D Renderer - textured rendering
-		if (this->r_mode == RENDER_TEXTURED
-			|| this->r_mode == RENDER_DEPTH)
+		if (entity->hasView())
 		{
-			if (entity->getTexture() != nullptr)
-			{
-				p_current->set1i(1, "u_use_texturing");
-				entity->getTexture()->bind();
-			}
-			else
-			{
-				p_current->set1i(0, "u_use_texturing");
-				p_current->set3f(entity->getColor(), "u_color");
-			}
-			// Send alpha value
-			p_current->set1f(entity->getAlpha(), "u_alpha");
+			Program* prog = entity->getProgram();
+			this->render_flat_entity(entity, prog, width, height);
 		}
-		// 2D Renderer - Wireframe rendering
-		else if (this->r_mode == RENDER_WIRE)
-		{
-			p_current->set1i(0, "u_use_texturing");
-			p_current->set3f(glm::vec3(1.f, 0.09f, 0.79f), "u_color");
-			p_current->set1f(1.f, "u_alpha");
-		}
-		this->ctxDisableFaceCulling();
-		this->ctxDisableDepthTest();
-
-		// Render lines if mode is RENDER_WIRE, else render solid triangles
-		entity->getMesh()->draw(
-			r_mode != RENDER_WIRE ? GL_TRIANGLES : GL_LINE_STRIP
-		);
 	};
 };
 
@@ -158,63 +111,122 @@ void Renderer::render_3d(Scene& scene)
 {
 	for (Entity* entity : scene.getEntities())
 	{
-		Program* p_current = entity->getProgram();
-		Camera* s_cam = scene.getCameraMain();
-		
-		p_current->use();
-		
-		// In position
-		p_current->setmat4(entity->getModelMatrix(), "u_model");
-		p_current->setmat4(
-			s_cam->getProjectionMatrix(), "u_projection"
-		);
-		p_current->setmat4(
-			s_cam->getViewMatrix(), "u_view"
-		);
-		p_current->set3f(
-			s_cam->getPosition(), "u_camera_position"
-		);
-
-		// In color
-		p_current->set1i(0, "u_depth");	
-		switch (this->r_mode)
+		if (entity->hasView())
 		{
-			// Textured rendering
-			case RENDER_TEXTURED:
-				if (entity->getTexture() != nullptr)
-				{
-					p_current->set1i(1, "u_use_texturing");
-					entity->getTexture()->bind();
-				}
-				else
-				{
-					p_current->set1i(0, "u_use_texturing");
-					p_current->set3f(entity->getColor(), "u_color");
-				}
-				p_current->set1f(entity->getAlpha(), "u_alpha");
-			break;
-
-			// Wireframe rendering
-			case RENDER_WIRE:
-				p_current->set1i(0, "u_use_texturing");
-				p_current->set3f(glm::vec3(1.f, 0.09f, 0.79f), "u_color");
-				p_current->set1f(1.f, "u_alpha");
-			break;
-
-			// Depth rendering
-			case RENDER_DEPTH:
-				p_current->set1i(1, "u_depth");	
-			break;
+			Program* prog = entity->getProgram();
+			Camera* cam = scene.getCameraMain();
+			this->render_3d_entity(entity, prog, cam);
 		};
-
-		this->ctxEnableFaceCulling();
-		this->ctxEnableDepthTest();
-
-		// Render lines if render mode is RENDER_WIRE, else render solid triangles
-		entity->getMesh()->draw(
-			r_mode != RENDER_WIRE ? GL_TRIANGLES : GL_LINE_STRIP
-		);
 	};
+};
+
+void Renderer::render_flat_entity(Entity* e, Program* p, int w, int h)
+{
+	p->use();
+
+	// In position
+
+	/* 2D - Model view */
+	e->transform.UpdateModel();
+	p->setmat4(e->transform.getModel(), "u_model");
+
+	/* 2D - Ortho Projection */
+	float aspect = (float)w / (float)h;
+	glm::mat4 ortho_projection = glm::ortho(
+		-aspect, aspect, // X
+		-1.f, 1.f, // Y
+		0.f, 1.f // Near Far
+	);
+	p->setmat4(
+		ortho_projection, "u_projection"
+	);
+
+	/* =============== Color =============== */
+	// 2D Renderer - textured rendering
+	if (this->r_mode == RENDER_TEXTURED
+		|| this->r_mode == RENDER_DEPTH)
+	{
+		if (e->getTexture() != nullptr)
+		{
+			p->set1i(1, "u_use_texturing");
+			e->getTexture()->bind();
+		}
+		else
+		{
+			p->set1i(0, "u_use_texturing");
+		}
+		p->set4f(e->getColor(), "u_color");
+	}
+	// 2D Renderer - Wireframe rendering
+	else if (this->r_mode == RENDER_WIRE)
+	{
+		p->set1i(0, "u_use_texturing");
+		p->set4f(glm::vec4(1.f, 0.09f, 0.79f, 1.f), "u_color");
+		p->set1f(1.f, "u_alpha");
+	}
+	this->ctxDisableFaceCulling();
+	this->ctxDisableDepthTest();
+
+	// Render lines if mode is RENDER_WIRE, else render solid triangles
+	e->getMesh()->draw(
+		r_mode != RENDER_WIRE ? GL_TRIANGLES : GL_LINE_STRIP
+	);
+};
+void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
+{
+	p->use();
+	
+	// In position
+	e->transform.UpdateModel();
+	p->setmat4(e->transform.getModel(), "u_model");
+	
+	p->setmat4(
+		c->getProjectionMatrix(), "u_projection"
+	);
+	p->setmat4(
+		c->getViewMatrix(), "u_view"
+	);
+	p->set3f(
+		c->getPosition(), "u_camera_position"
+	);
+
+	/* =============== Color =============== */
+	p->set1i(0, "u_depth");	
+	switch (this->r_mode)
+	{
+		// Textured rendering
+		case RENDER_TEXTURED:
+			if (e->getTexture() != nullptr)
+			{
+				p->set1i(1, "u_use_texturing");
+				e->getTexture()->bind();
+			}
+			else
+			{
+				p->set1i(0, "u_use_texturing");
+			}
+			p->set4f(e->getColor(), "u_color");
+		break;
+
+		// Wireframe rendering
+		case RENDER_WIRE:
+			p->set1i(0, "u_use_texturing");
+			p->set4f(glm::vec4(1.f, 0.09f, 0.79f, 1.f), "u_color");
+		break;
+
+		// Depth rendering
+		case RENDER_DEPTH:
+			p->set1i(1, "u_depth");	
+		break;
+	};
+
+	this->ctxEnableFaceCulling();
+	this->ctxEnableDepthTest();
+
+	// Render lines if render mode is RENDER_WIRE, else render solid triangles
+	e->getMesh()->draw(
+		r_mode != RENDER_WIRE ? GL_TRIANGLES : GL_LINE_STRIP
+	);
 };
 
 void Renderer::setRenderMode(RenderMode mode)
@@ -228,8 +240,8 @@ void Renderer::switchRenderMode()
 	current_mode = (current_mode + 1) % 3;
 	this->r_mode = (RenderMode)current_mode;
 	log->logf(
-			"[INFO] Renderer - render mode switched to %d\n", 
-			(int)this->r_mode);
+		"[INFO] Renderer - render mode switched to %d\n", 
+		(int)this->r_mode);
 };
 
 Program* Renderer::getProgramFlat() const

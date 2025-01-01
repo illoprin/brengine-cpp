@@ -59,6 +59,9 @@ private:
 
 	void render_flat(Scene& scene);
 	void render_3d(Scene& scene);
+
+	void render_flat_entity(Entity*, Program*, int, int);
+	void render_3d_entity(Entity*, Program*, Camera*);
 	
 	RenderMode r_mode;
 
