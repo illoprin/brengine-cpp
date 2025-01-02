@@ -10,7 +10,6 @@ private:
 	bool inited_with_image;
 	bool use_mipmaps;
 	GLuint id;
-
 public:
 	// Gen OpenGL texture object, mp - use MipMapping
 	TextureImage2D(Log* logger, bool mp);
@@ -56,5 +55,7 @@ public:
 	unsigned getHeight();
 	unsigned getComponents();
 };
-
-inline void useTextureInSlot(GLint slot, TextureImage2D image);
+namespace b_Texture
+{
+	void bindToSlot(unsigned, TextureImage2D*);
+}

@@ -7,18 +7,22 @@
 struct Framebuffer
 {
 public:
-Framebuffer(Log* logger, const char* name);
+	Framebuffer(Log* logger, const char* name);
 	~Framebuffer();
 	void initColorAttachment(unsigned, unsigned);
-	void initDepthAttachment();
+	void initDepthAttachment(unsigned, unsigned);
 	void bind();
 	void clear(glm::vec4);
-	void unbind();
-
+	void check();
+	// -- Getters
 	GLuint getID();
+	TextureImage2D* getColorAttachment();
+	TextureImage2D* getDepthAttachment();
+	std::string getName();
 private:
 	GLuint id;
-	std::string name;
+	std::string name{"fb_custom"};
+	void unbind();
 
 	TextureImage2D* color_attachment = nullptr;
 	TextureImage2D* depth_attachment = nullptr;

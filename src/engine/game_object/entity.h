@@ -26,6 +26,7 @@ namespace b_GameObject
 		virtual BaseMesh* getMesh() const;
 		virtual Program* getProgram() const;
 		std::string getName() const;
+		float getUVScaling() const;
 
 		// -- Setters
 		void setColor(glm::vec3);
@@ -33,6 +34,7 @@ namespace b_GameObject
 		void setMesh(BaseMesh*);
 		void setProgram(Program*);
 		void setTexture(TextureImage2D*);
+		void setUVScaling(float);
 
 		b_GameObject::Transform transform;
 	protected:
@@ -41,6 +43,7 @@ namespace b_GameObject
 
 		// Rendering
 		TextureImage2D* texture;
+		float uv_scaling = 1.f;
 		glm::vec4 color;
 		BaseMesh* mesh;
 		Program* program;

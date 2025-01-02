@@ -37,8 +37,8 @@ public:
 	b_UserMouseMotionCallback getMouseMotionCallback() const;
 	b_UserCharacterCallback getCharacterCallback() const;
 
-	Mouse* getMouse();
-	void updateMouse(double x, double y);
+	const Mouse& getMouse();
+	void updateMouse(GLFWwindow*);
 	void resetMouse();
 private:
 	Log* log;

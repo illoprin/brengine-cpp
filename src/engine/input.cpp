@@ -8,24 +8,23 @@ Input::Input(Log* logger)
 
 Input::~Input()
 {
-	printf("IO: Released\n");
+	printf("IO - Released\n");
 };
 
 void Input::resetMouse()
 {
 	this->mouse.m_delta_x = 0;
-	this->mouse.m_delta_y = 0; 
+	this->mouse.m_delta_y = 0;
 }
 
-void Input::updateMouse(double x, double y)
+void Input::updateMouse(GLFWwindow* window)
 {
-	this->mouse.m_x = x; this->mouse.m_y = y;
+	double mx, my;
+	glfwGetCursorPos(window, &mx, &my);
+	this->mouse.m_x = mx; this->mouse.m_y = my;
 	this->mouse.m_delta_x = this->mouse.m_x - this->mouse.m_last_x;
 	this->mouse.m_delta_y = this->mouse.m_y - this->mouse.m_last_y;
-	this->mouse.m_last_x = x; this->mouse.m_last_y = y;
-
-	printf ("IO: Mouse delta x: %.2f y: %.2f\n", 
-		this->mouse.m_delta_x, this->mouse.m_delta_y);
+	this->mouse.m_last_x = mx; this->mouse.m_last_y = my;
 };
 
 void Input::setKeyCallback(b_UserKeyCallback func)
@@ -66,7 +65,7 @@ b_UserCharacterCallback Input::getCharacterCallback() const
 	return this->u_cc;
 };
 
-Mouse* Input::getMouse()
+const Mouse& Input::getMouse()
 {
-	return &(this->mouse);
+	return this->mouse;
 };

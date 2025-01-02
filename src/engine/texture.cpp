@@ -177,8 +177,8 @@ TextureImage2D::~TextureImage2D()
 	glDeleteTextures(1, &this->id);
 };
 
-inline void useTextureInSlot(GLint slot, TextureImage2D& tex)
+void b_Texture::bindToSlot(unsigned slot, TextureImage2D* tex)
 {
-	glActiveTexture(slot);
-	tex.bind();
+	glActiveTexture(GL_TEXTURE0 + slot);
+	tex->bind();
 };

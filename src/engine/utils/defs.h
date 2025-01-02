@@ -6,9 +6,9 @@
 #define FS_ASSETS_PATH "assets"
 #define FS_LOG_PATH "log"
 
-#define WIN_WIDTH 1280
-#define WIN_HEIGHT 720
-#define WIN_TITLE "Game"
+#define WIN_WIDTH 1600
+#define WIN_HEIGHT 900
+#define WIN_TITLE "Brengine 3D Alpha"
 
 #define MAX_PATH 256
 #define MAX_FILENAME 64
@@ -25,6 +25,7 @@ enum SceneTypes
 enum RenderMode
 {
 	RENDER_TEXTURED = 0,
+	RENDER_NORMAL,
 	RENDER_WIRE,
 	RENDER_DEPTH,
 };
@@ -40,7 +41,7 @@ enum RenderMode
 #define CAM_FAR 100.f
 
 // Player
-#define PLAYER_SENSITIVITY 35.8f
+#define PLAYER_SENSITIVITY 10.8f
 #define PLAYER_SPEED 3.f
 #define PLAYER_SPEED_MODIFER 1.78f // Sprint ratio
 

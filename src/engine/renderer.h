@@ -4,6 +4,8 @@
 #include "scene.h"
 #include "camera.h"
 #include "program.h"
+#include "texture.h"
+#include "framebuffer.h"
 
 /*
 	Renderer Program Types:
@@ -34,8 +36,14 @@ public:
 	Renderer& operator=(Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	
-	void start();
-	void render(Scene& scene);
+	// Clear main framebuffer
+	void ctxClear();
+	// Clear all framebuffers
+	void ClearCanvas();
+	// Render scene
+	void RenderScene(Scene& scene);
+	// Blit rendered pixels on screen
+	void Flush();
 
 	void setRenderMode(RenderMode mode);
 	void switchRenderMode();
@@ -46,16 +54,22 @@ public:
 	void ctxEnableDepthTest();
 	void ctxDisableDepthTest();
 
+	// Use this to render 2D textured/colored stuff
 	Program* getProgramFlat() const;
+	// Use this to render 3D textured/colored stuff
 	Program* getProgramStandart() const;
+	// Use this to render screenquad
 	Program* getProgramCanvas() const;
-
 private:
 	GLFWwindow* window;
 	Log* log;
 	
 	void ctxPrepare();
-	void initPrograms();
+	void ctxBind();
+
+	void init_programs();
+	void init_framebuffers();
+	void init_help_meshes();
 
 	void render_flat(Scene& scene);
 	void render_3d(Scene& scene);
@@ -65,6 +79,14 @@ private:
 	
 	RenderMode r_mode;
 
+	// Shader Programs
 	Program* p_flat;
 	Program* p_standart;
+	Program* p_mixer;
+
+	// Screen quad
+	BaseMesh* m_squad;
+	// Framebuffers
+	Framebuffer* fb_scene;
+	Framebuffer* fb_ui;
 };

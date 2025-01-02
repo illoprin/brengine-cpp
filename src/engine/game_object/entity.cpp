@@ -52,6 +52,10 @@ TextureImage2D* Entity::getTexture() const
 { return this->texture; }
 std::string Entity::getName() const
 { return (this->name); };
+float Entity::getUVScaling() const
+{
+	return this->uv_scaling;
+};
 
 /* ==== Setters ==== */
 void Entity::setTexture(TextureImage2D* t)
@@ -68,6 +72,10 @@ void Entity::setColor(glm::vec3 c)
 void Entity::setAlpha(float a)
 {
 	this->color.a = a;
+};
+void Entity::setUVScaling(float v)
+{
+	this->uv_scaling = v;
 };
 void Entity::setMesh(BaseMesh* m)
 {

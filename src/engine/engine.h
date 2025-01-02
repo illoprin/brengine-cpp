@@ -17,11 +17,8 @@ public:
 	Engine();
 	~Engine();
 
-	void render_start();
-	void render(Scene& scene);
-	void update(Scene& scene);
-	void prepare();
-	void close();
+	void OpenGameLoop();
+	void CloseGameLoop();
 
 	void setVidMode(unsigned w, unsigned h);
 	// Toggle cursor

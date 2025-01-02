@@ -13,15 +13,18 @@ uniform vec4 u_color;
 uniform vec3 u_camera_position;
 
 // Lighting
+uniform float u_gamma = 2.2;
 uniform vec3 u_ambient_light = vec3(0.96, 0.97, 1.0);
 
 // Debug
 uniform bool u_depth = false;
+uniform bool u_rnormal = false;
 
 out vec4 _fragColor;
 
 void main()
 {
+	const float inv_gamma = 1 / u_gamma;
 	vec4 diffuse_color;
 
 	// Texturing
@@ -35,6 +38,9 @@ void main()
 		if (diffuse_color.a <= 0.05) discard;
 	}
 
+	// Enter gamma to changing mode
+	diffuse_color.rgb = pow(diffuse_color.rgb, vec3(u_gamma));
+
 	// Lighting
 	float factor = dot(
 		normalize(u_camera_position - out_fragcoord), 
@@ -42,8 +48,15 @@ void main()
 	) * .3;
 	vec3 lighting = u_ambient_light * (.7 + factor);
 
+	// Return to standart gamma
+	diffuse_color.rgb = pow(diffuse_color.rgb, vec3(inv_gamma));
+
+
 	// Final color
-	if (!u_depth)
+	if (u_depth)
+		_fragColor = vec4(vec3(gl_FragCoord.w), 1.0); // Depth
+	else if (u_rnormal)
+		_fragColor = vec4(normalize(vec3(1.0) + out_normal), 1.0);
+	else
 		_fragColor = diffuse_color * vec4(lighting, 1.0); // Textured
-	else _fragColor = vec4(vec3(gl_FragCoord.w), 1.0); // Depth
 }

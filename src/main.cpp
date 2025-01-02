@@ -50,6 +50,17 @@ int main()
 	t_brick.FromFile("textures/brick_1");
 	t_brick.setFiltering(GL_NEAREST);
 
+	// Init brown rock texture
+	TextureImage2D t_rock (engine.getLogger(), false);
+	t_rock.FromFile("textures/brown_rock");
+	t_rock.setFiltering(GL_NEAREST);
+
+	// Init brown rock texture
+	TextureImage2D t_gray_rock (engine.getLogger(), false);
+	t_gray_rock.FromFile("textures/gray_rock");
+	t_gray_rock.setFiltering(GL_NEAREST);
+
+
 	// Init gradient texture
 	// Generate bytes
 	std::vector<unsigned char> gradient_b(64 * 64 * 3);
@@ -97,20 +108,36 @@ int main()
 	l_cube.setProgram(rend->getProgramStandart());
 	l_cube.setTexture(&t_brick);
 
+	b_GameObject::Entity l_cube_1{"3d_cube"};
+	l_cube_1.setMesh(&cubem);
+	l_cube_1.setProgram(rend->getProgramStandart());
+	l_cube_1.setTexture(&t_rock);
+	l_cube_1.transform.setPosition(glm::vec3(-1.5, 0, 2));
+
 	b_GameObject::Entity l_quad_1{ "3d_quad" };
 	l_quad_1.setMesh(&qm);
 	l_quad_1.setProgram(rend->getProgramStandart());
-	l_quad_1.transform.setPosition(glm::vec3(-3, 1, -1));
+	l_quad_1.transform.setPosition(glm::vec3(-3, .5f, -1));
 	l_quad_1.setTexture(&t_grad);
+
+	b_GameObject::Entity l_ground{ "3d_ground" };
+	l_ground.setMesh(&qm);
+	l_ground.setProgram(rend->getProgramStandart());
+	l_ground.transform.setScale(glm::vec3(10.f));
+	l_ground.transform.setRotation(glm::vec3(90.f, 0.f, 0.f));
+	l_ground.setTexture(&t_gray_rock);
+	l_ground.setUVScaling(10.f);
 	
 	test_level_3d.append(&l_cube);
 	test_level_3d.append(&l_quad_1);
+	test_level_3d.append(&l_ground);
+	test_level_3d.append(&l_cube_1);
 
 	std::vector<Scene *> scenes_to_render{&ui_scene, &test_level_3d};
 
 	while (!glfwWindowShouldClose(engine.getWindow()))
 	{
-		engine.prepare();
+		engine.OpenGameLoop();
 		
 		// UI Scene update
 		float time = (float) engine.getClock()->getTime();
@@ -124,25 +151,20 @@ int main()
 				glm::vec3(engine.getClock()->getDeltaTime() * 100.f));
 		l_quad_1.setColor(glm::vec3( 1.f + sinf(time), 1.f + cosf(time), 1.f + sinf(time) ));
 
-
+		// Update player's position and rotation
 		player.update();
-		engine.update(ui_scene); // Now do nothing
-		engine.update(test_level_3d); // Now only updates camera
 
-		/*
-			Rendering multiple scenes to fbos:
-			engine.render_start();
-				engine.rendering_queue(std::vector<Scene *>);
-			engine.render_flush();
-			engine.close_game_loop();
-		*/
+		// Updates scenes
+		ui_scene.update(); 
+		test_level_3d.update();
 		
 		// Rendering
-		engine.render_start();
-		engine.render(test_level_3d);
-		engine.render(ui_scene);
+		rend->ClearCanvas();
+		rend->RenderScene(test_level_3d);
+		rend->RenderScene(ui_scene);
+		rend->Flush();
 
-		engine.close();
+		engine.CloseGameLoop();
 	}
 
 	return 0;

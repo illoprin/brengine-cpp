@@ -27,13 +27,14 @@ void b_Model::loadFromOBJ(
 		{
 			// Get name
 			char* raw_name = strtok(NULL, " ");
-			// Length of obj name without \0\n escape sequence
-			unsigned name_len = strlen(raw_name) - 2;
+			// Length of obj name without \n escape sequence
+			unsigned name_len = strlen(raw_name) - 1;
 			
 			char _name[name_len]; 
 			strncpy(_name, raw_name, name_len);
 
 			name = {_name};
+			printf("OBJ Loader - Loading obj named %s\n", _name);
 		}
 		if (strcmp(token, "v") == 0)
 		{
@@ -80,6 +81,6 @@ void b_Model::loadFromOBJ(
 	// Close obj file source
 	fclose(obj_src);
 
-	printf("OBJ Loader - loaded model with name %s from file %s", 
+	printf("OBJ Loader - loaded model with name %s from file %s\n", 
 		name.c_str(), filepath.c_str());
 };

@@ -23,6 +23,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 			if (key == GLFW_KEY_F5) e_ptr->getRenderer()->switchRenderMode();
 			if (key == GLFW_KEY_F2) e_ptr->takeScreenshot();
 		}
+		// Execute user function
 		b_UserKeyCallback user_func = e_ptr->getIO()->getKeyCallback();
 		if (user_func != nullptr) user_func(key, action, mods);
 	}
@@ -33,7 +34,7 @@ static void mouseMotionCallback(GLFWwindow* window, double x, double y)
 	Engine* e_ptr = reinterpret_cast<Engine *>(glfwGetWindowUserPointer(window));
 	if (e_ptr != NULL)
 	{
-    	e_ptr->getIO()->updateMouse(x, y);
+		// Execute user function
 		b_UserMouseMotionCallback user_func = e_ptr->getIO()->getMouseMotionCallback();
 		if (user_func != nullptr) user_func(x, y);
 	}
@@ -44,6 +45,7 @@ static void mouseButtonCallback(GLFWwindow* window, int button, int action, int 
 	Engine* e_ptr = reinterpret_cast<Engine *>(glfwGetWindowUserPointer(window));
 	if (e_ptr != NULL)
 	{
+		// Execute user function
 		b_UserMouseButtonCallback user_func = e_ptr->getIO()->getMouseButtonCallback();
 		if (user_func != nullptr) user_func(button, action);
 	}
@@ -57,6 +59,7 @@ static void resizeCallback(GLFWwindow* window, int width, int height)
 		e_ptr->setVidMode((unsigned)width, (unsigned)height);
 		printf("Window resized: %d %d\n", e_ptr->getVidMode().x, e_ptr->getVidMode().y);
 		glViewport(0, 0, width, height);
+
 	}
 };
 
@@ -83,6 +86,14 @@ void Engine::init_window()
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	// Set OpenGL version
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	// Set MSAA parametres
+	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	this->window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, WIN_TITLE, NULL, NULL);
 	this->vid_mode = glm::ivec2(WIN_WIDTH, WIN_HEIGHT);
@@ -200,27 +211,15 @@ bool Engine::isGameMode() const
 };
 
 /* ================== Update Methods ================== */
-void Engine::prepare()
+void Engine::OpenGameLoop()
 {
 	this->clock->start();
-	this->input->resetMouse();
 	glfwPollEvents();
+	this->input->resetMouse();
+	this->input->updateMouse(this->window);
 };
-void Engine::update(Scene& scene)
+void Engine::CloseGameLoop()
 {
-	scene.update();
-};
-void Engine::render_start()
-{
-	renderer->start();
-};
-void Engine::render(Scene& scene)
-{
-	renderer->render(scene);
-};
-void Engine::close()
-{
-	glfwSwapBuffers(this->window);
 	this->clock->end();
 };
 /* ==================================================== */

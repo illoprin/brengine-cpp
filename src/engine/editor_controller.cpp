@@ -48,8 +48,8 @@ void EditorController::handle_mouse_events()
 	float factor = PLAYER_SENSITIVITY * engine->getClock()->getDeltaTime();
 	
 	this->camera->rotate(
-		(float)-engine->getIO()->getMouse()->m_delta_y * factor,
-		(float)engine->getIO()->getMouse()->m_delta_x * factor
+		(float)-engine->getIO()->getMouse().m_delta_y * factor,
+		(float)engine->getIO()->getMouse().m_delta_x * factor
 	);
 };
 
