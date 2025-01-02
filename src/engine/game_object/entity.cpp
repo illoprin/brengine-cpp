@@ -23,7 +23,7 @@ void Entity::init_view()
 	this->program = nullptr;
 	this->texture = nullptr;
 	this->color = glm::vec4(1.f);
-	printf("Entity.%s - Created!", this->name.c_str());
+	printf("Entity.%s - Created!\n", this->name.c_str());
 };
 
 bool Entity::hasView()
@@ -53,9 +53,9 @@ TextureImage2D* Entity::getTexture() const
 std::string Entity::getName() const
 { return (this->name); };
 float Entity::getUVScaling() const
-{
-	return this->uv_scaling;
-};
+{ return this->uv_scaling; };
+bool Entity::getFaceCulling() const
+{ return this->cull_faces; }
 
 /* ==== Setters ==== */
 void Entity::setTexture(TextureImage2D* t)
@@ -84,4 +84,8 @@ void Entity::setMesh(BaseMesh* m)
 void Entity::setProgram(Program* p)
 {
 	this->program = p;
+};
+void Entity::setFaceCullingUsing(bool v)
+{
+	this->cull_faces = v;
 };

@@ -10,6 +10,8 @@
 #include "game_object/base_mesh.h"
 #include "game_object/simple_mesh.h"
 
+#include "level/level_data.h"
+
 #include "camera.h"
 #include "texture.h"
 #include "program.h"

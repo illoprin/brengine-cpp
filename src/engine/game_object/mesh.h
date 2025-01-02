@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../utils/deps.h"
+#include "../level/level_data.h"
 
 namespace b_Model
 {
@@ -15,7 +16,11 @@ namespace b_Model
 	typedef std::vector<Triangle> ModelTriangles;
 
 	void loadFromOBJ(
-		std::string filename, std::string& name, std::vector<Triangle>& tris
+		std::string filename, std::string& name,
+		std::vector<Triangle>& tris
 	);
 
+	void LevelToTriangles(b_Level::LevelData&, ModelTriangles&);
+
+	void printTriangles(ModelTriangles& tris);
 };

@@ -3,6 +3,7 @@
 
 #define FS_TEMP_PATH "tmp"
 #define FS_SCREENSHOTS_PATH "screenshots"
+#define FS_LEVELS_PATH "levels"
 #define FS_ASSETS_PATH "assets"
 #define FS_LOG_PATH "log"
 
@@ -57,5 +58,9 @@ enum PlayerActionList {
 	PL_M_RIGHT,
 	PL_M_MODIFY,
 };
+
+// Level
+#define LVL_SCALING 1.f
+
 
 #endif

@@ -138,7 +138,6 @@ void Renderer::RenderScene(Scene& scene)
 	switch(scene.getType())
 	{
 		case SCENE_STANDART:
-			this->ctxEnableFaceCulling();
 			this->ctxEnableDepthTest();
 
 			this->fb_scene->bind();
@@ -310,6 +309,13 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 			p->set1i(1, "u_rnormal");
 		break;
 	};
+	
+	// OpenGL statements preparations
+	if (e->getFaceCulling())
+		this->ctxEnableFaceCulling();
+	else
+		this->ctxDisableFaceCulling();
+	
 
 	e->getMesh()->draw();
 };
