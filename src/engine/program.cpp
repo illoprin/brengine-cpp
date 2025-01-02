@@ -94,7 +94,7 @@ void Program::LinkProgram(size_t count, ...)
 
 	GLint success; char info_log[512];
 	glGetProgramiv(this->id, GL_LINK_STATUS, &success);
-	if (success = GL_FALSE)
+	if (success == GL_FALSE)
 	{
 		glGetProgramInfoLog(this->id, 512, NULL, info_log);
 		log->logf("[WARNING] Program id = %u linked with errors\nError log: %s", this->id, info_log);
