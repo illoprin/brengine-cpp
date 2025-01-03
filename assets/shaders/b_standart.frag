@@ -16,6 +16,9 @@ uniform vec3 u_camera_position;
 uniform float u_gamma = 2.2;
 uniform vec3 u_ambient_light = vec3(0.96, 0.97, 1.0);
 
+// Fog
+vec3 fog_color = vec3(0.14, 0.16, 0.17);
+
 // Debug
 uniform bool u_depth = false;
 uniform bool u_rnormal = false;
@@ -47,6 +50,12 @@ void main()
 		out_normal
 	) * .3;
 	vec3 lighting = u_ambient_light * (.7 + factor);
+	diffuse_color.rgb *= lighting;
+
+	// Fog
+    float fog_dist = gl_FragCoord.w;
+	float fog_factor = max(1.0 - exp(fog_dist - .2), 0.0);
+	diffuse_color.rgb = mix(diffuse_color.rgb, fog_color, fog_factor);
 
 	// Return to standart gamma
 	diffuse_color.rgb = pow(diffuse_color.rgb, vec3(inv_gamma));
@@ -58,5 +67,5 @@ void main()
 	else if (u_rnormal)
 		_fragColor = vec4(normalize(vec3(1.0) + out_normal), 1.0);
 	else
-		_fragColor = diffuse_color * vec4(lighting, 1.0); // Textured
+		_fragColor = diffuse_color; // Textured
 }

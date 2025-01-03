@@ -80,7 +80,6 @@ int main()
 	e_level.setProgram(rend->getProgramStandart());
 	e_level.setMesh(&levelm);
 	e_level.setTexture(&t_brick);
-
 	s_level.append(&e_level);
 
 	while (!glfwWindowShouldClose(engine.getWindow()))

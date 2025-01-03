@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <algorithm>
 
 namespace fs = std::filesystem;
 

@@ -131,9 +131,14 @@ void Renderer::RenderScene(Scene& scene)
 {
 	// Render lines if render mode is RENDER_WIRE, else render solid
 	if (this->r_mode == RENDER_WIRE)
+	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		this->ctxDisableFaceCulling();
+	}
 	else
+	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 	
 	switch(scene.getType())
 	{
@@ -249,10 +254,7 @@ void Renderer::render_flat_entity(Entity* e, Program* p, int w, int h)
 		p->set1f(1.f, "u_alpha");
 	}
 
-	// Render lines if mode is RENDER_WIRE, else render solid triangles
-	e->getMesh()->draw(
-		r_mode != RENDER_WIRE ? GL_TRIANGLES : GL_LINE_STRIP
-	);
+	e->getMesh()->draw();
 };
 void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 {
@@ -311,7 +313,7 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 	};
 	
 	// OpenGL statements preparations
-	if (e->getFaceCulling())
+	if (e->getFaceCulling() && this->r_mode != RENDER_WIRE)
 		this->ctxEnableFaceCulling();
 	else
 		this->ctxDisableFaceCulling();

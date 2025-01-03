@@ -129,6 +129,62 @@ static void TriangulateWall(
 	};
 };
 
+/*
+	Indicate vertices of quads in CCW starting from left bottom
+*/
+static void TriangulateFloor(
+	glm::vec3 v1,
+	glm::vec3 v2,
+	glm::vec3 v3,
+	glm::vec3 v4,
+	glm::vec3 nq,
+	Triangle& t1,
+	Triangle& t2,
+	glm::vec2& vt1,
+	glm::vec2& vt2,
+	glm::vec2& vt3,
+	glm::vec2& vt4
+)
+{
+	v1.x *= LVL_SCALING; v1.z *= LVL_SCALING;
+	v2.x *= LVL_SCALING; v2.z *= LVL_SCALING;
+	v3.x *= LVL_SCALING; v3.z *= LVL_SCALING;
+	v4.x *= LVL_SCALING; v4.z *= LVL_SCALING;
+
+	
+	// Left top triangle
+	t1 = {
+		{
+			{v1.x, v1.y, v1.z, vt1.x, vt1.y, nq.x, nq.y, nq.z},
+			{v4.x, v4.y, v4.z, vt4.x, vt4.y, nq.x, nq.y, nq.z},
+			{v3.x, v3.y, v3.z, vt3.x, vt3.y, nq.x, nq.y, nq.z},
+		}
+	};
+	// Right bottom triangle
+	t2 = {
+		{
+			{v1.x, v1.y, v1.z, vt1.x, vt1.y, nq.x, nq.y, nq.z},
+			{v3.x, v3.y, v3.z, vt3.x, vt3.y, nq.x, nq.y, nq.z},
+			{v2.x, v2.y, v2.z, vt2.x, vt2.y, nq.x, nq.y, nq.z},
+		}
+	};
+};
+
+bool isUniqueVec2InVector (glm::vec2& v, std::vector<glm::vec2>& l)
+{
+	if (l.size() > 0)
+	{
+		int comps = 0;
+		for (unsigned i = 0; i < l.size(); i++)
+		{
+			glm::vec2& c = l[i];
+			if (c == v) comps++;
+		}
+		return comps == 0;
+	}
+	return true;
+};
+
 
 void b_Model::LevelToTriangles (
 	b_Level::LevelData& ld,
@@ -141,10 +197,7 @@ void b_Model::LevelToTriangles (
 			continue;
 		else
 		{
-			// Form Floor
-			// TODO
-			// Form Ceiling
-			// TODO
+			std::vector<glm::vec2> sv; // Sector vertices
 			for (unsigned i = 0; i < sector.wall_num; i++)
 			{
 				// Indicate vertices of quads in counter clockwise order
@@ -153,6 +206,9 @@ void b_Model::LevelToTriangles (
 				b_Level::Wall& w = ld.walls[sector.wall_start + i];
 				glm::vec2& v1 = ld.verts[w.v1];
 				glm::vec2& v2 = ld.verts[w.v2];
+
+				if (isUniqueVec2InVector(v1, sv)) sv.push_back(v1);
+				if (isUniqueVec2InVector(v1, sv)) sv.push_back(v2);
 
 				// Get wall normal
 				glm::vec2 wall_vec2d = v2 - v1;
@@ -232,6 +288,83 @@ void b_Model::LevelToTriangles (
 					}
 
 				}
+			}
+			
+			// Form floor and ceiling
+			
+			// 3 Vertices
+			if (sv.size() == 3)
+			{
+				glm::vec3 cv1 {sv[0].x, sector.ceiling_height, sv[0].y};
+				glm::vec3 cv2 {sv[1].x, sector.ceiling_height, sv[1].y};
+				glm::vec3 cv3 {sv[2].x, sector.ceiling_height, sv[2].y};
+
+				glm::vec3 fv1 {sv[0].x, sector.floor_height, sv[0].y};
+				glm::vec3 fv2 {sv[1].x, sector.floor_height, sv[1].y};
+				glm::vec3 fv3 {sv[2].x, sector.floor_height, sv[2].y};
+
+				// Calculate texcoords
+				std::vector<glm::vec2> tc;
+				for (glm::vec2& v : sv)
+				{
+					tc.push_back((v - sv[0]));
+				}
+
+				Triangle f{
+					{
+						{fv3.x, fv3.y, fv3.z, tc[2].x, tc[2].y, 0, 1, 0},
+						{fv2.x, fv2.y, fv2.z, tc[1].x, tc[1].y, 0, 1, 0},
+						{fv1.x, fv1.y, fv1.z, tc[0].x, tc[0].y, 0, 1, 0},
+					}
+				};
+				Triangle c{
+					{
+						{cv1.x, cv1.y, cv1.z, tc[0].x, tc[0].y, 0,-1, 0},
+						{cv2.x, cv2.y, cv2.z, tc[1].x, tc[1].y, 0,-1, 0},
+						{cv3.x, cv3.y, cv3.z, tc[2].x, tc[2].y, 0,-1, 0},
+					}
+				};
+				tris.push_back(f);
+				tris.push_back(c);
+			}
+			// 4 Vertices
+			if (sv.size() == 4)
+			{
+				Triangle t_clt, t_crb; // Ceiling tris
+				Triangle t_flt, t_frb; // Floor tris
+
+				glm::vec3 cv1 {sv[0].x, sector.ceiling_height, sv[0].y};
+				glm::vec3 cv2 {sv[1].x, sector.ceiling_height, sv[1].y};
+				glm::vec3 cv3 {sv[2].x, sector.ceiling_height, sv[2].y};
+				glm::vec3 cv4 {sv[3].x, sector.ceiling_height, sv[3].y};
+
+
+				glm::vec3 fv1 {sv[0].x, sector.floor_height, sv[0].y};
+				glm::vec3 fv2 {sv[1].x, sector.floor_height, sv[1].y};
+				glm::vec3 fv3 {sv[2].x, sector.floor_height, sv[2].y};
+				glm::vec3 fv4 {sv[3].x, sector.floor_height, sv[3].y};
+
+				glm::vec3 fn {0, 1, 0};
+				glm::vec3 cn {0,-1, 0};
+
+				// Calculate texcoords
+				std::vector<glm::vec2> tc;
+				for (glm::vec2& v : sv)
+				{
+					tc.push_back((v - sv[0]));
+				}
+
+				TriangulateFloor(cv4, cv3, cv2, cv1, cn,
+					t_clt, t_crb,
+					tc[3], tc[2], tc[1], tc[0]);
+				TriangulateFloor(fv1, fv2, fv3, fv4, fn,
+					t_flt, t_frb,
+					tc[0], tc[1], tc[2], tc[3]);
+
+				tris.push_back(t_clt);
+				tris.push_back(t_crb);
+				tris.push_back(t_flt);
+				tris.push_back(t_frb);
 			}
 		}
 

@@ -61,7 +61,7 @@ void Camera::move(glm::vec3 delta)
 };
 void Camera::rotate(float p, float y)
 {
-	this->pitch += p;
+	this->pitch = glm::clamp(this->pitch + p, -89.9f, 89.9f);
 	this->yaw += y;
 };
 
