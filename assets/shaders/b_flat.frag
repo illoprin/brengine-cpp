@@ -5,7 +5,7 @@ in vec2 out_uv;
 // Entity
 uniform bool u_use_texturing;
 uniform sampler2D u_texture;
-uniform vec4 u_color;
+uniform vec4 u_color = vec4(1.0);
 
 out vec4 _fragColor;
 

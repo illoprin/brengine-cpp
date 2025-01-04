@@ -1,9 +1,9 @@
 #pragma once
 
 #include "../utils/deps.h"
-#include "base_mesh.h"
-#include "../program.h"
-#include "../texture.h"
+#include "../mesh/base_mesh.h"
+#include "../render/program.h"
+#include "../render/texture.h"
 #include "transform.h"
 
 namespace b_GameObject

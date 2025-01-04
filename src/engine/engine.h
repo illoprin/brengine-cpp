@@ -1,12 +1,14 @@
-#pragma once
+#ifndef _B_ENGINE_H_
+#define _B_ENGINE_H_
 
 #include "utils/deps.h"
-#include "scene.h"
 #include "log.h"
-#include "renderer.h"
 #include "clock.h"
-#include "program.h"
 #include "input.h"
+
+#include "render/renderer.h"
+#include "render/program.h"
+
 
 static void errorCallback(int error, const char* desc);
 static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -36,6 +38,7 @@ public:
 
 	// Delete copy operators
 	Engine(Engine&) = delete;
+	Engine(const Engine&) = delete;
 	Engine& operator=(Engine&) = delete;
 	Engine& operator=(const Engine&) = delete;
 
@@ -55,3 +58,4 @@ private:
 
 	bool is_game_mode = false;
 };
+#endif

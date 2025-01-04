@@ -45,10 +45,13 @@ void EditorController::handle_key_events()
 };
 void EditorController::handle_mouse_events()
 {
-	float factor = PLAYER_SENSITIVITY * engine->getClock()->getDeltaTime();
-	
+	float factor = PLAYER_SENSITIVITY * 
+		(float)this->engine->getClock()->getDeltaTime();
+	printf("Mouse X Delta: %.5f Factor Value: %.5f\n",
+		engine->getIO()->getMouse().m_delta_y, factor);
+
 	this->camera->rotate(
-		(float)-engine->getIO()->getMouse().m_delta_y * factor,
+		-(float)engine->getIO()->getMouse().m_delta_y * factor,
 		(float)engine->getIO()->getMouse().m_delta_x * factor
 	);
 };

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "utils/deps.h"
-#include "log.h"
+#include "../utils/deps.h"
+#include "../log.h"
 
 struct TextureImage2D {
 

@@ -3,7 +3,7 @@
 #include "../utils/deps.h"
 #include "../log.h"
 
-#include "mesh.h"
+#include "model.h"
 
 using namespace b_Model;
 

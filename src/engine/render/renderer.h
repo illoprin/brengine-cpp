@@ -1,11 +1,13 @@
 #pragma once
 
-#include "utils/deps.h"
-#include "scene.h"
-#include "camera.h"
+#include "../utils/deps.h"
+#include "../scene_3d.h"
+#include "../camera.h"
 #include "program.h"
 #include "texture.h"
 #include "framebuffer.h"
+#include "../ui/gui_scene.h"
+#include "../ui/gui_item.h"
 
 /*
 	Renderer Program Types:
@@ -31,6 +33,8 @@ public:
 	Renderer(Log* logger, GLFWwindow* win);
 	~Renderer();
 
+	friend class b_GUI::GUIScene;
+
 	// Delete copy operators
 	Renderer(Renderer&) = delete;
 	Renderer& operator=(Renderer&) = delete;
@@ -41,7 +45,9 @@ public:
 	// Clear all framebuffers
 	void ClearCanvas();
 	// Render scene
-	void RenderScene(Scene& scene);
+	void RenderScene(Scene3D& scene);
+	// Render GUI
+	void RenderUI(b_GUI::GUIScene& scene);
 	// Blit rendered pixels on screen
 	void Flush();
 
@@ -62,6 +68,7 @@ public:
 	Program* getProgramCanvas() const;
 private:
 	GLFWwindow* window;
+	glm::ivec2 vid_mode{WIN_WIDTH, WIN_HEIGHT};
 	Log* log;
 	
 	void ctxPrepare();
@@ -71,11 +78,10 @@ private:
 	void init_framebuffers();
 	void init_help_meshes();
 
-	void render_flat(Scene& scene);
-	void render_3d(Scene& scene);
+	void render_3d(Scene3D& scene);
 
-	void render_flat_entity(Entity*, Program*, int, int);
-	void render_3d_entity(Entity*, Program*, Camera*);
+	void render_gui_item(b_GUI::GUIItem*);
+	void render_3d_entity(b_GameObject::Entity*, Program*, Camera*);
 	
 	RenderMode r_mode;
 
@@ -84,8 +90,9 @@ private:
 	Program* p_standart;
 	Program* p_mixer;
 
-	// Screen quad
-	BaseMesh* m_squad;
+	// Quad VAO
+	BaseMesh* m_basic_quad;
+
 	// Framebuffers
 	Framebuffer* fb_scene;
 	Framebuffer* fb_ui;

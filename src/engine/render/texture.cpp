@@ -14,10 +14,10 @@ void TextureImage2D::bind()
 	glBindTexture(GL_TEXTURE_2D, this->id);
 };
 
-void TextureImage2D::FromFile(std::string assets_path)
+void TextureImage2D::FromFile(std::string filename)
 {
 	std::string file_path = 
-		fs::path(FS_ASSETS_PATH) / (assets_path + ".png");
+		fs::path(FS_ASSETS_PATH) / "textures" / (filename + ".png");
 
 	int _width, _height, _channels;
 

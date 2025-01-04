@@ -15,12 +15,11 @@
 #define MAX_FILENAME 64
 #define MAX_FILE_LINE 128
 
-enum SceneTypes
+enum GUIItemType
 {
-	SCENE_FLAT = 1,
-	SCENE_STANDART = 1 << 2,
-	SCENE_UI = 1 << 3,
-	SCENE_CANVAS = 1 << 4
+	GUI_SHAPE = 0,
+	GUI_IMAGE,
+	GUI_TEXT,
 };
 
 enum RenderMode
@@ -42,7 +41,7 @@ enum RenderMode
 #define CAM_FAR 100.f
 
 // Player
-#define PLAYER_SENSITIVITY 10.8f
+#define PLAYER_SENSITIVITY 10.35f
 #define PLAYER_SPEED 3.f
 #define PLAYER_SPEED_MODIFER 1.78f // Sprint ratio
 

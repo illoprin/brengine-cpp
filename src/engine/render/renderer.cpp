@@ -9,12 +9,16 @@ static float quad_data[] = {
 	1.f, 1.f, 1.f, 1.f,
 };
 
+using namespace b_GUI;
+using namespace b_GameObject;
+
 Renderer::Renderer(Log* log, GLFWwindow* win)
 {
 	this->window = win;
 	this->log	 = log;
 	glfwMakeContextCurrent(win); // Now OpenGL draws stuff in this window
 
+	// Enable VSync
 	glfwSwapInterval(1); /* Creates window motion slowdown on X11 */
 
 	if (glewInit() != GLEW_OK)
@@ -97,15 +101,15 @@ void Renderer::init_framebuffers()
 };
 void Renderer::init_help_meshes()
 {
-	this->m_squad = new BaseMesh{this->log, "screen_quad"};
+	this->m_basic_quad = new BaseMesh{this->log, "screen_quad"};
 
-	this->m_squad->addb(quad_data, 24 * sizeof(float));
-	GLuint lb = this->m_squad->getLastBuffer();
-	this->m_squad->addattr(
+	this->m_basic_quad->addb(quad_data, 24 * sizeof(float));
+	GLuint lb = this->m_basic_quad->getLastBuffer();
+	this->m_basic_quad->addattr(
 		lb, 2, 4 * sizeof(float), 0);
-	this->m_squad->addattr(
+	this->m_basic_quad->addattr(
 		lb, 2, 4 * sizeof(float), 2 * sizeof(float));
-	this->m_squad->setTotal(6); // 6 vertices
+	this->m_basic_quad->setTotal(6); // 6 vertices
 };
 
 void Renderer::ctxBind()
@@ -122,13 +126,21 @@ void Renderer::ctxClear()
 
 void Renderer::ClearCanvas()
 {
+	int width, height;
+	glfwGetWindowSize(this->window, &width, &height);
+	this->vid_mode.x = width;
+	this->vid_mode.y = height;
+
 	this->ctxClear();
 	this->fb_scene->clear(glm::vec4(0.f));
 	this->fb_ui->clear(glm::vec4(0.f));
 };
 
-void Renderer::RenderScene(Scene& scene)
+void Renderer::RenderScene(Scene3D& scene)
 {
+	// Update scene
+	scene.update(this->vid_mode);
+
 	// Render lines if render mode is RENDER_WIRE, else render solid
 	if (this->r_mode == RENDER_WIRE)
 	{
@@ -140,22 +152,67 @@ void Renderer::RenderScene(Scene& scene)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 	
-	switch(scene.getType())
+	this->ctxEnableDepthTest();
+
+	this->fb_scene->bind();
+	for (Entity* entity : scene.getEntities())
 	{
-		case SCENE_STANDART:
-			this->ctxEnableDepthTest();
+		if (entity->hasView())
+		{
+			Program* prog = entity->getProgram();
+			Camera* cam = scene.getCameraMain();
+			this->render_3d_entity(entity, prog, cam);
+		};
+	};
+};
 
-			this->fb_scene->bind();
-			this->render_3d(scene);
-		break;
-		case SCENE_FLAT:
-			this->ctxDisableFaceCulling();
-			this->ctxDisableDepthTest();
+void Renderer::RenderUI(GUIScene& s)
+{
+	// Update scene
+	s.update(this->vid_mode);
 
-			this->fb_ui->bind();
-			this->render_flat(scene);
-		break;
-	}
+	this->ctxDisableDepthTest();
+	this->ctxDisableFaceCulling();
+
+	this->fb_ui->bind();
+	for (GUIItem* i : s.getItems())
+	{
+		this->p_flat->use();
+		this->p_flat->set1i(0, "u_texture");
+
+		/* =============== Position ============ */
+		// Send projection matrix to shader
+		this->p_flat->setmat4(
+			s.getProjection(), "u_projection"
+		);
+		// Form model matrix based on item info
+		glm::mat4 model{1};
+		glm::vec3 pos {i->getPosition().x, i->getPosition().y, 0};
+		glm::vec3 scl {i->getScaling().x, i->getScaling().y, 0};
+		model = glm::translate(model, pos);	
+		model = glm::rotate(model, i->getRotation(), {0.f, 0.f, 1.f});
+		model = glm::scale(model, (scl * 0.25f)); // 0.25 is unit scale - 1/4 of screen
+		// Send model matrix to shader
+		this->p_flat->setmat4(model, "u_model");
+
+		/* =============== Color =============== */
+		this->p_flat->set4f(i->getColor(), "u_color");
+		switch (i->getType())
+		{
+			case GUI_SHAPE:
+				this->p_flat->set1i(0, "u_use_texturing");
+			break;
+			case GUI_IMAGE:
+				this->p_flat->set1i(1, "u_use_texturing");
+				i->getTexture()->bind();
+			break;
+			case GUI_TEXT:
+				this->p_flat->set1i(0, "u_use_texturing");
+			break;
+		};
+
+		this->m_basic_quad->draw();
+	};
 };
 
 void Renderer::Flush()
@@ -173,95 +230,18 @@ void Renderer::Flush()
 	b_Texture::bindToSlot(1, this->fb_ui->getColorAttachment());
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	this->m_squad->draw();
+	this->m_basic_quad->draw();
 	glActiveTexture(GL_TEXTURE0);
 	
 	glfwSwapBuffers(this->window);
 };
 
-void Renderer::render_flat(Scene& scene)
-{
-	int width, height;
-	glfwGetWindowSize(this->window, &width, &height);
-	for (Entity* entity : scene.getEntities())
-	{
-		if (entity->hasView())
-		{
-			Program* prog = entity->getProgram();
-			this->render_flat_entity(entity, prog, width, height);
-		}
-	};
-};
-
-void Renderer::render_3d(Scene& scene)
-{
-	for (Entity* entity : scene.getEntities())
-	{
-		if (entity->hasView())
-		{
-			Program* prog = entity->getProgram();
-			Camera* cam = scene.getCameraMain();
-			this->render_3d_entity(entity, prog, cam);
-		};
-	};
-};
-
-void Renderer::render_flat_entity(Entity* e, Program* p, int w, int h)
-{
-	p->use();
-	p->set1i(0, "u_texture");
-
-
-	// In position
-
-	/* 2D - Model view */
-	e->transform.UpdateModel();
-	p->setmat4(e->transform.getModel(), "u_model");
-
-	/* 2D - Ortho Projection */
-	float aspect = (float)w / (float)h;
-	glm::mat4 ortho_projection = glm::ortho(
-		-aspect, aspect, // X
-		-1.f, 1.f, // Y
-		0.f, 1.f // Near Far
-	);
-	p->setmat4(
-		ortho_projection, "u_projection"
-	);
-
-	/* =============== Color =============== */
-	// 2D Renderer - textured rendering
-	if (this->r_mode == RENDER_TEXTURED
-		|| this->r_mode == RENDER_DEPTH
-		|| this->r_mode == RENDER_NORMAL)
-	{
-		if (e->getTexture() != nullptr)
-		{
-			p->set1i(1, "u_use_texturing");
-			e->getTexture()->bind();
-		}
-		else
-		{
-			p->set1i(0, "u_use_texturing");
-		}
-		p->set4f(e->getColor(), "u_color");
-	}
-	// 2D Renderer - Wireframe rendering
-	else if (this->r_mode == RENDER_WIRE)
-	{
-		p->set1i(0, "u_use_texturing");
-		p->set4f(glm::vec4(1.f, 0.09f, 0.79f, 1.f), "u_color");
-		p->set1f(1.f, "u_alpha");
-	}
-
-	e->getMesh()->draw();
-};
 void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 {
 	p->use();
 	p->set1i(0, "u_texture");
 	
-	// In position
+	/* =============== Position ============ */
 	e->transform.UpdateModel();
 	p->setmat4(e->transform.getModel(), "u_model");
 	
@@ -353,7 +333,7 @@ Program* Renderer::getProgramCanvas() const
 
 Renderer::~Renderer()
 {
-	delete this->m_squad;
+	delete this->m_basic_quad;
 	delete this->fb_scene;
 	delete this->fb_ui;
 	delete this->p_flat;

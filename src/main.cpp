@@ -32,49 +32,41 @@ int main()
 
 	// Init engine label texture
 	TextureImage2D t_engine_label{engine.getLogger(), false};
-	t_engine_label.FromFile("textures/ui_label");
+	t_engine_label.FromFile("ui_label");
 
 	// Init null texture
 	TextureImage2D t_null{engine.getLogger(), false};
-	t_null.FromFile("textures/NULL");
+	t_null.FromFile("NULL");
 
 	// Init brick texture
 	TextureImage2D t_brick (engine.getLogger(), false);
-	t_brick.FromFile("textures/brick_1");
+	t_brick.FromFile("brick_1");
 	t_brick.setFiltering(GL_NEAREST);
 
 	// ---- Init UI
 
 	// Init label entity
-	// Entity constructor (std::string name, b_GameObject::Transform t)
-	b_GameObject::Entity label{ "UI_label" };
-	label.setMesh(&qm);
-	label.setProgram(rend->getProgramFlat());
-	label.transform.setPosition(glm::vec3(-.7f, .8f, 0.f));
-	label.transform.setScale(glm::vec3(.5f));
-	label.setTexture(&t_engine_label);
+	b_GUI::GUIImage ui_label{};
+	ui_label.setPosition(glm::vec2(-.7f, .7f));
+	ui_label.setTexture(&t_engine_label);
 
-	b_GameObject::Entity crosshair{ "UI_crosshair" };
-	crosshair.setMesh(&qm);
-	crosshair.setProgram(rend->getProgramFlat());
-	crosshair.transform.setScale(glm::vec3(.01f));
+	b_GUI::GUIItem ui_cross{};
+	ui_cross.setColor(glm::vec3(1.f, 0.09f, 0.79f));
+	ui_cross.setScaling(glm::vec2(.015f));
 	
-	b_GameObject::Entity test_quad{ "UI_test_quad" };
-	test_quad.setMesh(&qm);
-	test_quad.setProgram(rend->getProgramFlat());
-	test_quad.transform.setPosition(glm::vec3(-.7, -.7, 0));
-	test_quad.transform.setScale(glm::vec3(.33f));
-	test_quad.setTexture(&t_null);
+	b_GUI::GUIImage ui_quad{};
+	ui_quad.setPosition(glm::vec2(-.7, -.7));
+	ui_quad.setTexture(&t_null);
 
-	Scene s_ui;
-	s_ui.append(&label);
-	s_ui.append(&crosshair);
-	s_ui.append(&test_quad);
+	b_GUI::GUIScene s_ui{};
+	s_ui.append(&ui_label);
+	s_ui.append(&ui_cross);
+	s_ui.append(&ui_quad);
 
 	// ---- Init 3D Level
 	
 	EditorController player{&engine};
-	Scene3D s_level{&engine, player.getCamera()};
+	Scene3D s_level{player.getCamera()};
 
 	b_GameObject::Entity e_level("Level_d0");
 	e_level.setProgram(rend->getProgramStandart());
@@ -85,26 +77,23 @@ int main()
 	while (!glfwWindowShouldClose(engine.getWindow()))
 	{
 		engine.OpenGameLoop();
+		float time = (float) engine.getClock()->getTime();
+		float deltaTime = (float) engine.getClock()->getDeltaTime();
 		
 		// UI Scene update
-		float time = (float) engine.getClock()->getTime();
-		test_quad.transform.setScale(
-			glm::vec3( .2f + fabs( sinf(time) ) * .13f ));
-		test_quad.setAlpha(fabs( cosf(time) ));
+		ui_quad.setScaling( .5f + glm::vec2( fabs( sinf(time) ) * .3f ));
+		ui_quad.setAlpha( fabs( cosf(time) ));
 
 		// 3D Scene update
 
 		// Update player's position and rotation
 		player.update();
 
-		// Updates scenes
-		s_ui.update(); 
-		s_level.update();
 		
 		// Rendering
 		rend->ClearCanvas();
 		rend->RenderScene(s_level);
-		rend->RenderScene(s_ui);
+		rend->RenderUI(s_ui);
 		rend->Flush();
 
 		engine.CloseGameLoop();

@@ -53,6 +53,7 @@ void main()
 	diffuse_color.rgb *= lighting;
 
 	// Fog
+	// exp - e^x
     float fog_dist = gl_FragCoord.w;
 	float fog_factor = max(1.0 - exp(fog_dist - .2), 0.0);
 	diffuse_color.rgb = mix(diffuse_color.rgb, fog_color, fog_factor);

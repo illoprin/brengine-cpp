@@ -6,25 +6,39 @@
 
 #include "utils/deps.h"
 
-#include "game_object/mesh.h"
-#include "game_object/base_mesh.h"
-#include "game_object/simple_mesh.h"
+#include "engine.h"
 
+// Model
+#include "mesh/model.h"
+#include "mesh/base_mesh.h"
+#include "mesh/simple_mesh.h"
+
+// Level
 #include "level/level_data.h"
 
+// World
 #include "camera.h"
-#include "texture.h"
-#include "program.h"
+#include "render/texture.h"
+#include "render/program.h"
 #include "game_object/transform.h"
 #include "game_object/entity.h"
 
-#include "scene.h"
+// GUI
+#include "ui/gui_item.h"
+#include "ui/gui_image.h"
+#include "ui/gui_text.h"
+#include "ui/gui_scene.h"
+
+// Scene
 #include "scene_3d.h"
 
-#include "engine.h"
+// Engine
+#include "render/renderer.h"
 
+// Utils
 #include "utils/utils.h"
 
+// Game
 #include "editor_controller.h"
 #include "assets.h"
 

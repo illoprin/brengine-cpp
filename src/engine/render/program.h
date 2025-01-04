@@ -1,8 +1,8 @@
 #pragma once
 
-#include "utils/deps.h"
-#include "log.h"
-#include "utils/utils.h"
+#include "../utils/deps.h"
+#include "../log.h"
+#include "../utils/utils.h"
 
 class Program
 {

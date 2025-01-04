@@ -2,7 +2,7 @@
 #define B_ASSETS
 
 #include "utils/deps.h"
-#include "game_object/mesh.h"
+#include "mesh/model.h"
 
 namespace b_AssetManager
 {
