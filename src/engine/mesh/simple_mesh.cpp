@@ -10,23 +10,23 @@ void SimpleMesh::initFromModel(ModelTriangles* tris)
 
 	size_t bytes = this->total_count * sizeof(ModelVertex);
 	
-	GLuint last_buffer = this->addb(tris->data(), bytes);
+	GLuint last_buffer = this->AddBuffer(tris->data(), bytes);
 
-	this->addattr(
-			last_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, vx)
+	this->SetDataPointer(
+			last_buffer, GL_FLOAT, 3, sizeof(ModelVertex), offsetof(ModelVertex, vx)
 	);
-	this->addattr(
-			last_buffer, 2, sizeof(ModelVertex), offsetof(ModelVertex, tu)
+	this->SetDataPointer(
+			last_buffer, GL_FLOAT, 2, sizeof(ModelVertex), offsetof(ModelVertex, tu)
 	);
-	this->addattr(
-			last_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
+	this->SetDataPointer(
+			last_buffer, GL_FLOAT, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
 	);
 
 	this->log->logf("[INFO] Mesh.%s - Simple initialization happend, total count of vertices is %u, buffer size is %lu bytes\n",
 		this->name.c_str(), this->total_count, bytes);
 };
 
-void SimpleMesh::draw(GLint mode)
+void SimpleMesh::Draw(GLint mode)
 {
 	if (this->total_count > 2)
 	{

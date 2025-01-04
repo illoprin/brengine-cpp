@@ -19,9 +19,9 @@ namespace fs = std::filesystem;
 // Math and linal
 #include <math.h>
 // GLM
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/string_cast.hpp>
 
 // OpenGL includes

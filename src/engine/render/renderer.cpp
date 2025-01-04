@@ -103,12 +103,13 @@ void Renderer::init_help_meshes()
 {
 	this->m_basic_quad = new BaseMesh{this->log, "screen_quad"};
 
-	this->m_basic_quad->addb(quad_data, 24 * sizeof(float));
-	GLuint lb = this->m_basic_quad->getLastBuffer();
-	this->m_basic_quad->addattr(
-		lb, 2, 4 * sizeof(float), 0);
-	this->m_basic_quad->addattr(
-		lb, 2, 4 * sizeof(float), 2 * sizeof(float));
+	GLuint lb = this->m_basic_quad->AddBuffer(quad_data, 24 * sizeof(float));
+	// 1. Attribute: in_position
+	this->m_basic_quad->SetDataPointer(
+		lb, GL_FLOAT, 2, 4 * sizeof(float), 0);
+	// 2. Attribute: in_texcoord
+	this->m_basic_quad->SetDataPointer(
+		lb, GL_FLOAT, 2, 4 * sizeof(float), 2 * sizeof(float));
 	this->m_basic_quad->setTotal(6); // 6 vertices
 };
 
@@ -211,7 +212,7 @@ void Renderer::RenderUI(GUIScene& s)
 			break;
 		};
 
-		this->m_basic_quad->draw();
+		this->m_basic_quad->Draw();
 	};
 };
 
@@ -230,7 +231,7 @@ void Renderer::Flush()
 	b_Texture::bindToSlot(1, this->fb_ui->getColorAttachment());
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	this->m_basic_quad->draw();
+	this->m_basic_quad->Draw();
 	glActiveTexture(GL_TEXTURE0);
 	
 	glfwSwapBuffers(this->window);
@@ -299,7 +300,7 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 		this->ctxDisableFaceCulling();
 	
 
-	e->getMesh()->draw();
+	e->getMesh()->Draw();
 };
 
 void Renderer::setRenderMode(RenderMode mode)

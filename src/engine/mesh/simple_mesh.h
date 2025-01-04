@@ -12,7 +12,7 @@ public:
 
 	void initFromModel(ModelTriangles* tris);
 
-	void draw(GLint mode) override;
+	void Draw(GLint mode) override;
 
 	ModelTriangles* getTriangles() const override;
 protected:

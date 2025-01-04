@@ -5,29 +5,28 @@ BaseMesh::BaseMesh(Log* logger, const char* name)
 	this->name = std::string(name);
 	this->log = logger;
 	this->total_count = 0u;
-	this->attrs_list = 0u;
 
 	glGenVertexArrays(1, &this->vao);
 };
 
 inline void BaseMesh::enable_attributes()
 {
-	for (GLuint i = 0u; i < this->attrs_list; i++)
+	for (GLuint& i : this->attrs_list)
 		glEnableVertexAttribArray(i);
 };
 
 inline void BaseMesh::disable_attributes()
 {
-	for (GLuint i = 0u; i < this->attrs_list; ++i)
+	for (GLuint& i : this->attrs_list)
 		glDisableVertexAttribArray(i);
 };
 
 inline void BaseMesh::reset_attributes()
 {
-	this->attrs_list = 0;
+	this->attrs_list.clear();
 };
 
-GLuint BaseMesh::addb(void* data, size_t size_bytes)
+GLuint BaseMesh::AddBuffer(void* data, size_t size_bytes)
 {
 	GLuint vbo;
 	// Bind VAO object for setting up all attributes
@@ -48,30 +47,69 @@ GLuint BaseMesh::addb(void* data, size_t size_bytes)
 	return vbo;
 };
 
-void BaseMesh::addi(std::vector<int>& elements)
+void BaseMesh::AddElementBuffer(std::vector<int>& elements)
 {
 	// TODO: Add element array object
 };
 
-void BaseMesh::addattr(GLuint buffer, unsigned components, size_t stride, size_t offset)
+void BaseMesh::SetDataPointer(
+	GLuint    buffer,
+	GLenum    type,
+	unsigned  components,
+	size_t    stride,
+	size_t    offset
+)
 {
 
 	// Bind VAO object for setting up all attributes
 	this->bind();
 
+	GLuint next_attr = this->attrs_list.size();
+
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glEnableVertexAttribArray(this->attrs_list);
-	glVertexAttribPointer(this->attrs_list, components, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+	glEnableVertexAttribArray(next_attr);
+	glVertexAttribPointer(next_attr, components, type, GL_FALSE, stride, (void*)offset);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Unbind VAO object after setting up 
 	glBindVertexArray(0);
 
 	this->log->logf("[INFO] Mesh.%s - Added attribute pointer with index %u\n",
-		this->name.c_str(), this->attrs_list);
+		this->name.c_str(), next_attr);
 
-	// New attribute writed, index increased by one
-	++this->attrs_list;
+	// New attribute writed, push its index to list
+	this->attrs_list.push_back(next_attr);
+};
+
+void BaseMesh::SetDataPointerWithDivisior(
+	GLuint   buffer_id,
+	GLenum   type,
+	unsigned components,
+	size_t   stride,
+	size_t   offset,
+	GLuint   instances
+)
+{
+	// Bind VAO object for setting up
+	this->bind();
+
+	GLuint next_attr = this->attrs_list.size();
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer_id);
+	glEnableVertexAttribArray(next_attr);
+	glVertexAttribPointer(next_attr, components, type, GL_FALSE, stride, (void*)offset);
+	glVertexAttribDivisor(next_attr, instances);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Unbind VAO object after setting up
+	glBindVertexArray(0);
+
+	this->log->logf("[INFO] Mesh.%s - Added attribute pointer with divisor, index = %u, instance divisor = %u\n",
+		this->name.c_str(), next_attr, instances);
+
+	// New attribute writed, push its index to list
+	this->attrs_list.push_back(next_attr);
+
 };
 
 inline void BaseMesh::bind()
@@ -79,7 +117,7 @@ inline void BaseMesh::bind()
 	glBindVertexArray(this->vao);
 }
 
-inline void BaseMesh::draw(GLint mode)
+inline void BaseMesh::Draw(GLint m)
 {
 	if (this->total_count > 0)
 	{
@@ -87,7 +125,7 @@ inline void BaseMesh::draw(GLint mode)
 		
 		this->enable_attributes();
 		
-		glDrawArrays(mode, 0, this->total_count);
+		glDrawArrays(m, 0, this->total_count);
 		
 		this->disable_attributes();
 
@@ -95,12 +133,30 @@ inline void BaseMesh::draw(GLint mode)
 	}
 };
 
+
+inline void BaseMesh::DrawInstanced(GLuint i, GLint m)
+{
+	if (this->total_count > 0)
+	{
+		this->bind();
+		
+		this->enable_attributes();
+		
+		glDrawArraysInstanced(m, 0, this->total_count, i);
+
+		this->disable_attributes();
+
+		glBindVertexArray(0);
+	}
+};
+
+
 /* Methods to override */
 ModelTriangles* BaseMesh::getTriangles() const
 {
 	return nullptr;
 }
-void BaseMesh::update()
+void BaseMesh::UpdateBuffer()
 {
 	// ...
 };
@@ -110,10 +166,16 @@ unsigned BaseMesh::getTotal() const
 	return this->total_count;
 }
 
+const std::vector<GLuint>& BaseMesh::BufferList() const
+{
+	return this->vbos;
+};
+
 GLuint BaseMesh::getLastBuffer() const
 {
-	return this->vbos.back();
-}
+	return this->vbos[this->vbos.size() - 1];
+};
+
 std::string BaseMesh::getName() const
 {
 	return this->name;
