@@ -8,6 +8,7 @@
 
 #include "render/renderer.h"
 #include "render/program.h"
+#include "assets.h"
 
 
 static void errorCallback(int error, const char* desc);

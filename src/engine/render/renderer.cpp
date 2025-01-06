@@ -1,14 +1,5 @@
 #include "renderer.h"
 
-static float quad_data[] = {
-	1.f, -1.f, 1.f, 0.f,
-	-1.f, -1.f, 0.f, 0.f,
-	1.f, 1.f, 1.f, 1.f,
-	-1.f, -1.f, 0.f, 0.f,
-	-1.f, 1.f, 0.f, 1.f,
-	1.f, 1.f, 1.f, 1.f,
-};
-
 using namespace b_GUI;
 using namespace b_GameObject;
 
@@ -41,8 +32,7 @@ Renderer::Renderer(Log* log, GLFWwindow* win)
 
 	this->init_programs();
 	this->init_framebuffers();
-	this->init_help_meshes();
-	
+
 	this->setRenderMode(RENDER_TEXTURED);
 };
 
@@ -98,19 +88,6 @@ void Renderer::init_framebuffers()
 	this->fb_ui = new Framebuffer(this->log, "fb_ui");
 	this->fb_ui->initColorAttachment(WIN_WIDTH, WIN_HEIGHT);
 	this->fb_ui->check();
-};
-void Renderer::init_help_meshes()
-{
-	this->m_basic_quad = new BaseMesh{this->log, "basic_quad"};
-
-	GLuint lb = this->m_basic_quad->AddBuffer(quad_data, 24 * sizeof(float));
-	// 1. Attribute: in_position
-	this->m_basic_quad->SetDataPointer(
-		lb, GL_FLOAT, 2, 4 * sizeof(float), 0);
-	// 2. Attribute: in_texcoord
-	this->m_basic_quad->SetDataPointer(
-		lb, GL_FLOAT, 2, 4 * sizeof(float), 2 * sizeof(float));
-	this->m_basic_quad->setTotal(6); // 6 vertices
 };
 
 void Renderer::ctxBind()
@@ -212,7 +189,7 @@ void Renderer::RenderUI(GUIScene& s)
 			break;
 		};
 
-		this->m_basic_quad->Draw();
+		b_AssetManager::getMeshBasicQuad()->Draw();
 	};
 };
 
@@ -231,7 +208,7 @@ void Renderer::Flush()
 	b_Texture::bindToSlot(1, this->fb_ui->getColorAttachment());
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	this->m_basic_quad->Draw();
+	b_AssetManager::getMeshBasicQuad()->Draw();
 	glActiveTexture(GL_TEXTURE0);
 	
 	glfwSwapBuffers(this->window);
@@ -336,7 +313,6 @@ Renderer::~Renderer()
 {
 	delete this->fb_scene;
 	delete this->fb_ui;
-	delete this->m_basic_quad;
 	delete this->p_flat;
 	delete this->p_standart;
 	delete this->p_mixer;

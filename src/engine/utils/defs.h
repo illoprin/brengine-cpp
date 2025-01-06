@@ -22,6 +22,7 @@ enum GUIItemType
 	GUI_TEXT,
 };
 
+// Render
 enum RenderMode
 {
 	RENDER_TEXTURED = 0,
@@ -29,6 +30,10 @@ enum RenderMode
 	RENDER_WIRE,
 	RENDER_DEPTH,
 };
+// #ff17c9 - is fully alpha color
+#define COLOR_NULL_R 255
+#define COLOR_NULL_G 23
+#define COLOR_NULL_B 201
 
 // World
 #define DIR_UP glm::vec3(0, 1, 0)

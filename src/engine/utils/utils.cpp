@@ -6,6 +6,7 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 	if (!src)
 	{
 		fprintf(stderr, "Error: Could not open file with path %s\n", filepath);
+		fclose(src);
 		return;
 	}
 
@@ -76,13 +77,6 @@ void b_ImageIO::WriteBytes(
 		fprintf(stderr, "ImageIO - Could not write, file path field is empty\n");
 		return;
 	}
-
-	for (int i = 0; i < width * height; i++)
-	{
-		printf("Readed pixels: %u %u %u %u\n",
-			byteData[i * 4 + 0], byteData[i * 4 + 1],
-			byteData[i * 4 + 2], byteData[i * 4 + 3]);
-	}
 	
 	if (!stbi_write_png(path, width, height, components, &byteData[0], components * width))
 	{
@@ -117,10 +111,3 @@ void b_Files::InitFilesystem()
 		fs::create_directory(fs::path(FS_ASSETS_PATH));
 	};
 };
-
-std::vector<std::string> b_Files::AllFilesByPathWithExtension(const char* path, const char* ext)
-{
-	std::vector<std::string> files{"губами"};
-	return files;
-};
-

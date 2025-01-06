@@ -5,3 +5,4 @@ include
 tmp
 bin
 TODO
+obj

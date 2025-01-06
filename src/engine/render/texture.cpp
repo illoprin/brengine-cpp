@@ -14,10 +14,10 @@ void TextureImage2D::bind()
 	glBindTexture(GL_TEXTURE_2D, this->id);
 };
 
-void TextureImage2D::FromFile(std::string filename)
+void TextureImage2D::FromPNG(std::string fn)
 {
 	std::string file_path = 
-		fs::path(FS_ASSETS_PATH) / "textures" / (filename + ".png");
+		fs::path(FS_ASSETS_PATH) / "textures" / (fn + ".png");
 
 	int _width, _height, _channels;
 
@@ -29,6 +29,8 @@ void TextureImage2D::FromFile(std::string filename)
 		&_height,
 		&_channels, 0
 	);
+
+	stbi_set_flip_vertically_on_load(0);
 
 	if (bytes != NULL)
 	{
@@ -64,6 +66,57 @@ void TextureImage2D::FromFile(std::string filename)
 		);
 	}
 };
+
+void TextureImage2D::FromBMP(std::string fn)
+{
+	std::string file_path = 
+		fs::path(FS_ASSETS_PATH) / "textures" / (fn + ".bmp");
+
+	int _width, _height, _channels;
+
+	stbi_set_flip_vertically_on_load(1);
+
+	unsigned char* bytes = stbi_load(
+		file_path.c_str(), 
+		&_width,
+		&_height,
+		&_channels, 0
+	);
+
+	stbi_set_flip_vertically_on_load(0);
+
+	if (bytes != NULL)
+	{
+		this->width = _width;
+		this->height = _height;
+		this->components = _channels;
+
+		if (this->use_mipmaps)
+			this->setFilteringMipmap(GL_NEAREST, GL_LINEAR_MIPMAP_LINEAR);
+		else
+			this->setFiltering(GL_NEAREST);
+		
+		this->setWrapping(GL_REPEAT);
+
+		this->setImagePointer(
+			GL_RGB, GL_RGB, GL_UNSIGNED_BYTE, bytes
+		);
+
+		stbi_image_free(bytes);
+
+		this->inited_with_image = true;
+		this->log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
+			this->id, file_path.c_str()
+		);
+	}
+	else
+	{
+		this->log->logf("[WARNING] Texture: Could not open image with path %s\n",
+			file_path.c_str()
+		);
+	}
+};
+
 
 void TextureImage2D::FromBytes(
 	unsigned width, 
@@ -132,9 +185,9 @@ void TextureImage2D::setFilteringMipmap(GLint type_min, GLint type_mag)
 };
 
 void TextureImage2D::setImagePointer(
-	GLint internalFormat, 
-	GLint format, 
-	GLint dataType, 
+	GLint          internalFormat, 
+	GLint          format, 
+	GLint          dataType, 
 	unsigned char* bytes
 )
 {
@@ -154,21 +207,6 @@ void TextureImage2D::setImagePointer(
 GLuint TextureImage2D::getID()
 {
 	return this->id;
-};
-
-unsigned TextureImage2D::getWidth()
-{
-	return this->width;
-};
-
-unsigned TextureImage2D::getHeight()
-{
-	return this->height;
-};
-
-unsigned TextureImage2D::getComponents()
-{
-	return this->components;
 };
 
 TextureImage2D::~TextureImage2D()

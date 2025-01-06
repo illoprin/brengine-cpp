@@ -26,14 +26,19 @@ public:
 
 	/*
 	 *	PNG only
-	 * 	Path string: $app_dir/assets/$(assets_path).png
+	 * 	Path string: $app_dir/assets/textures/$filename.png
 	 */
-	void FromFile(std::string assets_path); // Init bytes from file
+	void FromPNG(std::string filename);
+	/*
+	 * BMP only
+	 * Path string: $app_dir/assets/textures/$filename.png 
+	 */
+	void FromBMP(std::string filename);
 	void FromBytes(
-		unsigned width, 
-		unsigned height, 
-		unsigned channels,
-		GLint components,
+		unsigned                    width, 
+		unsigned                    height,
+		unsigned                    channels,
+		GLint                       components,
 		std::vector<unsigned char>& bytes
 	);
 
@@ -41,19 +46,13 @@ public:
 	void setFiltering(GLint type);
 	void setFilteringMipmap(GLint type_min, GLint type_mag);
 	/*
-	 * 	Sends bytes to vidmemory
-	 *	UNSIGNED_BYTE only
-	 *	Usage examle:
-	 *		TextureImage2D::sendBytes(GL_RGBA, bytes);
+	 * 	Allocate vidmemory for texture
 	 */
 	void setImagePointer(GLint internalFormat, GLint format, GLint dataType, unsigned char* bytes);
 
 	void bind();
 
 	GLuint getID();
-	unsigned getWidth();
-	unsigned getHeight();
-	unsigned getComponents();
 };
 namespace b_Texture
 {

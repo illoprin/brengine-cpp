@@ -1,14 +1,16 @@
 #pragma once
 
 // Standart C includes
-#include <stdio.h>
-#include <stdarg.h>
-#include <time.h>
-#include <string.h>
+#include <cstdio>
+#include <cstdarg>
+#include <ctime>
+#include <cstring>
+#include <cstdint>
 
 // Standart CPP includes
-#include <random>
 #include <vector>
+#include <map>
+#include <random>
 #include <iostream>
 #include <string>
 #include <filesystem>

@@ -4,7 +4,7 @@ CFLAGS=-std=c++17 -Wall -g
 LDFLAGS=-lm -lGL -lglfw -lGLEW -lGLU
 
 SRC_DIR=src
-OBJ_DIR=tmp
+OBJ_DIR=obj
 BIN_DIR=bin
 
 TARGET=app
@@ -35,7 +35,10 @@ $(BIN_DIR):
 	@mkdir $@
 
 clean:
-	rm -rdf $(OBJ_DIR) $(BIN_DIR) screenshots
+	rm -rdf $(OBJ_DIR) $(BIN_DIR)
+
+clean_tmp:
+	rm -drf tmp screenshots
 
 run: $(BIN_DIR)/$(TARGET)
 	./$<

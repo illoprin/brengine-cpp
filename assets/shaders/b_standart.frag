@@ -38,7 +38,7 @@ void main()
 		diffuse_color = texture(u_texture, out_uv);
 		diffuse_color *= u_color;
 		// Render empty if texture alpha is less then .05 value
-		if (diffuse_color.a <= 0.05) discard;
+		if (diffuse_color.a <= .05) discard;
 	}
 
 	// Enter gamma to changing mode

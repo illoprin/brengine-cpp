@@ -7,7 +7,7 @@
 	Functions and structures related to creation of model triangles
 	b_Model::ModelTriangles is std::vector<b_Model::Triangle>
 
-**b_Assets**
+**b_AssetManager**
 
 	Gives access to prepared assets such as meshes, textures and etc
 
@@ -31,6 +31,15 @@
 **b_Level**
 
 	All structures and functions related to game level
+
+**b_Font**
+
+	All structures and functions related to font loading system.
+	Structure b_Font::Font provides you to load your own TrueType (.ttf) font
+
+**b_GUI**
+
+	This namespace provides access to all classes related to GUI rendering
 
 ### Engine entities
 

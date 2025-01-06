@@ -25,29 +25,18 @@ int main()
 	SimpleMesh levelm(engine.getLogger(), "d0_level");
 	levelm.initFromModel(&d0_tris);
 
-	// Init Cube mesh from file
-	std::string m_name; b_Model::ModelTriangles cube_tris; 
-	b_Model::loadFromOBJ("cube", m_name, cube_tris);
-	SimpleMesh m_cube{engine.getLogger(), m_name.c_str()};
-	m_cube.initFromModel(&cube_tris);
-
-
 	// Init engine label texture
 	TextureImage2D t_engine_label{engine.getLogger(), false};
-	t_engine_label.FromFile("ui_label");
-
-	// Init null texture
-	TextureImage2D t_null{engine.getLogger(), false};
-	t_null.FromFile("NULL");
+	t_engine_label.FromPNG("ui_label");
 
 	// Init brick texture
 	TextureImage2D t_brick (engine.getLogger(), false);
-	t_brick.FromFile("brick_1");
+	t_brick.FromPNG("brick_1");
 	t_brick.setFiltering(GL_NEAREST);
 
 	// Init rock texture
 	TextureImage2D t_rock{engine.getLogger(), false};
-	t_rock.FromFile("brown_rock");
+	t_rock.FromPNG("brown_rock");
 	t_rock.setFiltering(GL_NEAREST);
 
 
@@ -64,7 +53,7 @@ int main()
 	
 	b_GUI::GUIImage ui_quad{};
 	ui_quad.setPosition(glm::vec2(-.7, -.7));
-	ui_quad.setTexture(&t_null);
+	ui_quad.setTexture(b_AssetManager::getTextureNull());
 
 	b_GUI::GUIScene s_ui{};
 	s_ui.append(&ui_label);
@@ -80,18 +69,18 @@ int main()
 	b_GameObject::Entity e_level("Level_d0");
 	e_level.setProgram(rend->getProgramStandart());
 	e_level.setMesh(&levelm);
-	e_level.setTexture(&t_brick);
+	e_level.setTexture(b_AssetManager::getTextureNull());
 
 	// White cube entity
 	b_GameObject::Entity e_cube_white("Cube_white");
 	e_cube_white.setProgram(rend->getProgramStandart());
-	e_cube_white.setMesh(&m_cube);
+	e_cube_white.setMesh(b_AssetManager::getMeshCube());
 	e_cube_white.transform.setPosition(glm::vec3(4, 1, 5));
 	
 	// Rock cube entity
 	b_GameObject::Entity e_cube_rock("Cube_rock");
 	e_cube_rock.setProgram(rend->getProgramStandart());
-	e_cube_rock.setMesh(&m_cube);
+	e_cube_rock.setMesh(b_AssetManager::getMeshCube());
 	e_cube_rock.setTexture(&t_rock);
 	e_cube_rock.transform.setPosition(glm::vec3(4, 1, 8));
 

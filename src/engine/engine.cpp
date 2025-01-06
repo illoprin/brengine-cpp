@@ -75,6 +75,9 @@ Engine::Engine()
 	// Create poiner to Clock instance
 	this->clock = new Clock();
 
+	// Init initial assets
+	b_AssetManager::InitAssets(this->log);
+
 	this->init_io();
 };
 
@@ -228,6 +231,10 @@ Engine::~Engine()
 {
 	glfwDestroyWindow(this->window);
 	glfwTerminate();
+	
+	// Release initial assets
+	b_AssetManager::ReleaseAssets();
+	
 	delete this->renderer;
 	delete this->clock;
 	delete this->log;

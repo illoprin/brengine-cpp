@@ -8,6 +8,7 @@
 #include "framebuffer.h"
 #include "../ui/gui_scene.h"
 #include "../ui/gui_item.h"
+#include "../assets.h"
 
 /*
 	Renderer Program Types:
@@ -68,7 +69,7 @@ public:
 	Program* getProgramCanvas() const;
 private:
 	GLFWwindow* window;
-	glm::ivec2 vid_mode{WIN_WIDTH, WIN_HEIGHT};
+glm::ivec2 vid_mode{WIN_WIDTH, WIN_HEIGHT};
 	Log* log;
 	
 	void ctxPrepare();
@@ -76,7 +77,6 @@ private:
 
 	void init_programs();
 	void init_framebuffers();
-	void init_help_meshes();
 
 	void render_3d(Scene3D& scene);
 
@@ -89,9 +89,6 @@ private:
 	Program* p_flat;
 	Program* p_standart;
 	Program* p_mixer;
-
-	// Quad VAO
-	BaseMesh* m_basic_quad;
 
 	// Framebuffers
 	Framebuffer* fb_scene;
