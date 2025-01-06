@@ -6,6 +6,7 @@
 
 namespace b_AssetManager
 {
+	void InitAssets();
 	b_Model::ModelTriangles QuadTriangles(float size);
 	b_Model::ModelTriangles CubeTriangles(float size);
 };

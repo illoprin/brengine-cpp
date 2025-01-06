@@ -11,6 +11,7 @@ namespace b_GUI
 	public:
 		GUIImage();
 		GUIImage(TextureImage2D* t);
+		~GUIImage() = default;
 		
 		TextureImage2D* getTexture() override;
 		void setTexture(TextureImage2D*);

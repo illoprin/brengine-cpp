@@ -39,15 +39,15 @@
 	Stores information about texture (or color), mesh, collider of entire object
 	The entity is required to be stored within the Scene.
 
-**Scene**
+**GUIScene**
 
-	Collection of several entities.
+	Collection of several GUI Items.
 	Could be processed by Renderer and drawed on screen
 
 **Scene3D**
 
-	The same Scene.
-	Unlike the usual one, stores information about Camera from whose point of view render will be performed
+	Collection of several Entities
+	Stores information about Camera from whose point of view render will be performed
 
 ### Simple usage of engine `Jan 2025 Version`
 

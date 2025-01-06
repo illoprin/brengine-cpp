@@ -14,8 +14,17 @@ Full scale 3D game engine for personal proposes
 
 # Stack
 - OpenGL 4.3
-- GLEW
 - GLFW
 - GLM
 - C99 std lib
 - C++17 std lib
+
+# Dependencies
+- OpenGL (preinstalled on your platform)
+- GLFW
+- GLEW
+- GLM
+- GLU
+- stb_image_write
+- stb_image
+- stb_truetype

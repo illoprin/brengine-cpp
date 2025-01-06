@@ -33,6 +33,7 @@ void b_Level::FromBLF(std::string file, LevelData& ld)
 	std::string file_path{
 		fs::path(FS_ASSETS_PATH) / FS_LEVELS_PATH / (file + ".blf")
 	};
+	
 	FILE* ld_src = fopen(file_path.c_str(), "r");
 	if (!ld_src)
 	{
@@ -78,14 +79,14 @@ void b_Level::FromBLF(std::string file, LevelData& ld)
 			switch (type)
 			{
 				case SEEK_VERTS:
-					printf("Seeking Vertices on line %d\n", current_line);
+					printf("b_Level::FromBLF - Seeking Vertices on line %d\n", current_line);
 					v_x = atof(token);
 					token = strtok(NULL, " ");
 					v_y = atof(token);
 					ld.verts.push_back(glm::vec2(v_x, v_y));
 					break;
 				case SEEK_WALLS:
-					printf("Seeking Walls on line %d\n", current_line);
+					printf("b_Level::FromBLF - Seeking Walls on line %d\n", current_line);
 					// Skip wall index
 					token = strtok(NULL, " ");
 					v1 = atoi(token);
@@ -97,7 +98,7 @@ void b_Level::FromBLF(std::string file, LevelData& ld)
 					ld.walls.push_back(w);
 					break;
 				case SEEK_SECTORS:
-					printf("Seeking Sectors on line %d\n", current_line);
+					printf("b_Level::FromBLF - Seeking Sectors on line %d\n", current_line);
 					// Skip sector index
 					token = strtok(NULL, " ");
 					ws = atoi(token);
@@ -112,7 +113,7 @@ void b_Level::FromBLF(std::string file, LevelData& ld)
 					ld.sectors.push_back(s);
 					break;
 				default:
-					printf("Seeking Nothing on line %d\n", current_line);
+					printf("b_Level::FromBLF - Seeking Nothing on line %d\n", current_line);
 			};
 		}
 		else

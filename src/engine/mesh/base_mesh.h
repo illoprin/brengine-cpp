@@ -11,7 +11,7 @@ class BaseMesh
 {
 public:
 	BaseMesh(Log* logger, const char* name);
-	~BaseMesh();
+	virtual ~BaseMesh();
 
 	// Delete copy operators
 	BaseMesh(BaseMesh&) = delete;

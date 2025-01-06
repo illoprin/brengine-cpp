@@ -232,4 +232,5 @@ Engine::~Engine()
 	delete this->clock;
 	delete this->log;
 	delete this->input;
+	printf("Bye :)\n");
 };

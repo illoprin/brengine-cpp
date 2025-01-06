@@ -4,7 +4,7 @@ Program::Program(Log* logger)
 {
 	this->log = logger;
 	this->id = glCreateProgram();
-	this->log->logf("[INFO] Program id = %u created\n", this->id);
+	this->log->logf("[INFO] Program - id = %u created\n", this->id);
 };
 
 void Program::InitVertexAndFragment(std::string progname)
@@ -47,12 +47,12 @@ Program::~Program()
 	{
 		glDetachShader(this->id, s_id);
 		glDeleteShader(s_id);
-		this->log->logf("[INFO] Shader id = %u released\n", s_id);
+		this->log->logf("[INFO] Program - Shader id = %u released\n", s_id);
 	};
 
 	glDeleteProgram(this->id);
 
-	this->log->logf("[INFO] Program id = %u released\n", this->id);
+	this->log->logf("[INFO] Program - id = %u released\n", this->id);
 };
 
 GLuint Program::CompileShader(Log* log, const char* source, GLuint type)
@@ -86,7 +86,7 @@ void Program::LinkProgram(size_t count, ...)
 	{
 		GLuint s_id = va_arg(shaders, GLuint);
 		glAttachShader(this->id, s_id);
-		log->logf("[INFO] Program id = %u shader id = %u attached\n", this->id, s_id);
+		log->logf("[INFO] Program - id = %u shader id = %u attached\n", this->id, s_id);
 
 	};
 
@@ -108,7 +108,7 @@ GLuint Program::GetUniformID(Log* log, GLuint programID, const char* name)
 	GLuint id = glGetUniformLocation(programID, name);
 	if (id < 0)
 	{
-		log->logf("[WARNING] Program %u: Non-existent uniform with name %s\n", programID, name);
+		log->logf("[WARNING] Program %u - Non-existent uniform with name %s\n", programID, name);
 		return -1;
 	};
 	// printf("Program: Uniform named %s id is %u\n", name, id);

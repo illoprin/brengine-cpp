@@ -1,5 +1,10 @@
 #include "assets.h"
 
+void b_AssetManager::InitAssets()
+{
+	
+};
+
 b_Model::ModelTriangles b_AssetManager::QuadTriangles(float size)
 {
 	std::vector<b_Model::Triangle> tris{

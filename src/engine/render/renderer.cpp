@@ -101,7 +101,7 @@ void Renderer::init_framebuffers()
 };
 void Renderer::init_help_meshes()
 {
-	this->m_basic_quad = new BaseMesh{this->log, "screen_quad"};
+	this->m_basic_quad = new BaseMesh{this->log, "basic_quad"};
 
 	GLuint lb = this->m_basic_quad->AddBuffer(quad_data, 24 * sizeof(float));
 	// 1. Attribute: in_position
@@ -334,9 +334,9 @@ Program* Renderer::getProgramCanvas() const
 
 Renderer::~Renderer()
 {
-	delete this->m_basic_quad;
 	delete this->fb_scene;
 	delete this->fb_ui;
+	delete this->m_basic_quad;
 	delete this->p_flat;
 	delete this->p_standart;
 	delete this->p_mixer;

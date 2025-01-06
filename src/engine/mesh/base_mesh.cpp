@@ -150,8 +150,7 @@ inline void BaseMesh::DrawInstanced(GLuint i, GLint m)
 	}
 };
 
-
-/* Methods to override */
+/* Method to override */
 ModelTriangles* BaseMesh::getTriangles() const
 {
 	return nullptr;

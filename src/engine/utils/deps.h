@@ -32,6 +32,7 @@ namespace fs = std::filesystem;
 // STB image
 #include <stb_image_write.h>
 #include <stb_image.h>
+#include <stb_truetype.h>
 
 // Misc
 #include "defs.h"

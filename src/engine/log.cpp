@@ -42,5 +42,5 @@ int Log::logf(const char* format, ...)
 Log::~Log()
 {
 	fclose(this->file);
-	fprintf(stderr, "Logger: File writed!\n");
+	fprintf(stderr, "Logger - File writed!\n");
 }
