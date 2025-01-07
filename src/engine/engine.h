@@ -10,10 +10,6 @@
 #include "render/program.h"
 #include "assets.h"
 
-
-static void errorCallback(int error, const char* desc);
-static void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
 class Engine
 {
 public:

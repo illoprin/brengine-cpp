@@ -155,6 +155,8 @@ void Renderer::RenderUI(GUIScene& s)
 	this->fb_ui->bind();
 	for (GUIItem* i : s.getItems())
 	{
+		i->update(); // Update item before drawing
+
 		this->p_flat->use();
 		this->p_flat->set1i(0, "u_texture");
 
@@ -175,22 +177,40 @@ void Renderer::RenderUI(GUIScene& s)
 
 		/* =============== Color =============== */
 		this->p_flat->set4f(i->getColor(), "u_color");
+		this->p_flat->set1i(0, "u_is_text");
+		this->p_flat->set1i(0, "u_use_texturing");
 		switch (i->getType())
 		{
 			case GUI_SHAPE:
-				this->p_flat->set1i(0, "u_use_texturing");
+				b_AssetManager::getMeshBasicQuad()->Draw();
 			break;
+
 			case GUI_IMAGE:
-				this->p_flat->set1i(1, "u_use_texturing");
-				i->getTexture()->bind();
+				if (this->r_mode != RENDER_WIRE)
+				{
+					i->getTexture()->bind();
+					this->p_flat->set1i(1, "u_use_texturing");
+				}
+				b_AssetManager::getMeshBasicQuad()->Draw();
 			break;
+			
 			case GUI_TEXT:
-				this->p_flat->set1i(0, "u_use_texturing");
+				if (i->need_redraw)
+				{
+					b_GUI::StringToMesh((GUIText *)i);
+					i->need_redraw = false;
+				}
+				if (this->r_mode != RENDER_WIRE)
+				{
+					this->p_flat->set1i(1, "u_is_text");
+					this->p_flat->set1i(1, "u_use_texturing");
+					i->getFont()->t_atlas->bind();
+				}
+				i->getMesh()->Draw();
 			break;
 		};
+	}
 
-		b_AssetManager::getMeshBasicQuad()->Draw();
-	};
 };
 
 void Renderer::Flush()

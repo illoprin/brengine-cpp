@@ -14,12 +14,12 @@ b_GuiFont::Font* FontMono;
 b_GuiFont::Font* FontGame;
 
 static float quad_data[] = {
-	1.f, -1.f, 1.f, 0.f,
-	-1.f, -1.f, 0.f, 0.f,
-	1.f, 1.f, 1.f, 1.f,
-	-1.f, -1.f, 0.f, 0.f,
-	-1.f, 1.f, 0.f, 1.f,
-	1.f, 1.f, 1.f, 1.f,
+	1.f, -1.f, 1.f, 0.f,    // Left bottom
+	-1.f, -1.f, 0.f, 0.f,   // Right bottom
+	1.f, 1.f, 1.f, 1.f, 	// Left top
+	-1.f, -1.f, 0.f, 0.f, 	// Right bottom
+	-1.f, 1.f, 0.f, 1.f, 	// Right top
+	1.f, 1.f, 1.f, 1.f, 	// Left top
 };
 
 static b_Model::ModelTriangles quad_model = QuadTriangles(1.f);
@@ -52,13 +52,13 @@ void b_AssetManager::InitAssets(Log* l)
 	MeshCube->initFromModel(&cube_model);
 
 	// --- Fonts
-	FontMono = new b_GuiFont::Font{"AssetFont_Mono"};
+	FontMono = new b_GuiFont::Font{l, "AssetFont_Mono"};
 	FontMono->FromTTF("mono", 64, 512, 512);
 	
-	FontSans = new b_GuiFont::Font{"AssetFont_Sans"};
+	FontSans = new b_GuiFont::Font{l, "AssetFont_Sans"};
 	FontSans->FromTTF("sans", 32, 512, 512);
 
-	FontGame = new b_GuiFont::Font{"AssetFont_Game"};
+	FontGame = new b_GuiFont::Font{l, "AssetFont_Game"};
 	FontGame->FromTTF("game", 32, 512, 512);
 };
 
@@ -98,15 +98,15 @@ SimpleMesh* b_AssetManager::getMeshCube()
 	return MeshCube;
 };
 
-b_GuiFont::Font* getDefaultMonoFont()
+b_GuiFont::Font* b_AssetManager::getDefaultMonoFont()
 {
 	return FontMono;
 };
-b_GuiFont::Font* getDefaultGameFont()
+b_GuiFont::Font* b_AssetManager::getDefaultGameFont()
 {
 	return FontGame;
 };
-b_GuiFont::Font* getDefaultSansFont()
+b_GuiFont::Font* b_AssetManager::getDefaultSansFont()
 {
 	return FontSans;
 };

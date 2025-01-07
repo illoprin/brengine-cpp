@@ -6,7 +6,7 @@
 #include "render/texture.h"
 #include "mesh/base_mesh.h"
 #include "mesh/simple_mesh.h"
-#include "ui/font.h"
+#include "ui/gui_font.h"
 
 namespace b_AssetManager
 {

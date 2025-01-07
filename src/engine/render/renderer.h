@@ -8,6 +8,7 @@
 #include "framebuffer.h"
 #include "../ui/gui_scene.h"
 #include "../ui/gui_item.h"
+#include "../ui/gui_text_meshgen.h"
 #include "../assets.h"
 
 /*

@@ -12,11 +12,23 @@ GUIItem::~GUIItem()
 
 };
 
-TextureImage2D* GUIItem::getTexture()
+// -- Override
+void GUIItem::update()
+{
+	// ...
+};
+TextureImage2D* GUIItem::getTexture() const
 {
 	return nullptr;
 };
-
+BaseMesh* GUIItem::getMesh() const
+{
+	return nullptr;
+};
+b_Font::Font* GUIItem::getFont() const
+{
+	return nullptr;
+};
 
 // -- Getters
 const glm::vec2& GUIItem::getPosition()

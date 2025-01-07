@@ -1,6 +1,9 @@
 #pragma once
 
 #include "../utils/deps.h"
+#include "../render/texture.h"
+#include "../log.h"
+#include "../utils/utils.h"
 
 
 /*
@@ -78,20 +81,31 @@ namespace b_GUI
 			unsigned char* atlas = nullptr;
 			unsigned atlas_w = 0, atlas_h = 0;
 
-			Font(std::string n) : name(n) {};
+			TextureImage2D* t_atlas;
+
+			Font(Log* logger, std::string name);
 			~Font();
+
+			/*
+				Creates texture atlas based on ttf info.
+				Saves info about characters to map.
+
+				Or loads font info from cached file tmp/$fontname.bfc
+			*/
 			void FromTTF(
 				std::string filename,
 				int         lineheight,
 				unsigned    width,
 				unsigned    height
 			);
+			
 			void printCharacterMap();
 		private:
 			void cleanUp();
 			std::string getCacheFileName();
 			
-			void buildAtlas(unsigned, unsigned);
+			bool buildAtlas(unsigned, unsigned);
+			void configureTexture();
 
 			void cacheData(const char*);
 			bool loadFromCache(const char*);

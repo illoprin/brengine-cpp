@@ -38,12 +38,7 @@ void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 		GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
 		this->depth_attachment->getID(), 0
 	);
-	/*
-		glTexImage2D(
-			GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 800, 600, 0, 
-			GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
-		);
-	*/
+
 	this->log->logf("[INFO] Framebuffer.%s id = %u - depth attachment created\n",
 		this->name.c_str(), this->id);
 	this->unbind();

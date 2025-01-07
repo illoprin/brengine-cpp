@@ -13,7 +13,7 @@ namespace b_GUI
 		GUIImage(TextureImage2D* t);
 		~GUIImage() = default;
 		
-		TextureImage2D* getTexture() override;
+		TextureImage2D* getTexture() const override;
 		void setTexture(TextureImage2D*);
 	private:
 		TextureImage2D* texture;

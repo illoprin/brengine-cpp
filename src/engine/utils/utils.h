@@ -19,6 +19,14 @@ namespace b_ImageIO
 		int components, 
 		const char* path
 	);
+
+	// Flips image pixels by Y axis
+	void FlipY(
+		unsigned char* bytes,
+		unsigned       components,
+		unsigned       width,
+		unsigned       height
+	);
 };
 
 // Utils namespace for service engine's filesystem (directories and etc)

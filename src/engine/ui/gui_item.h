@@ -3,6 +3,7 @@
 #include "../utils/deps.h"
 #include "../mesh/base_mesh.h"
 #include "../render/texture.h"
+#include "gui_font.h"
 
 namespace b_GUI
 {
@@ -19,14 +20,19 @@ namespace b_GUI
 		GUIItem(GUIItem&) = delete;
 
 		// For override
-		virtual TextureImage2D* getTexture();
+		virtual TextureImage2D* getTexture() const;
+		virtual BaseMesh* getMesh() const;
+		virtual b_Font::Font* getFont() const;
+		virtual void update();
 
 		float getRotation();
 		const glm::vec2& getPosition();
 		const glm::vec2& getScaling();
 		const glm::vec4& getColor();
 		GUIItemType getType();
-		
+
+		bool need_redraw = true;
+
 		void setPosition(glm::vec2);
 		void setScaling(glm::vec2);
 		void setRotation(float);

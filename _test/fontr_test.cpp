@@ -583,6 +583,7 @@ int main()
 	setlocale(LC_ALL, "");
 	b_Font::Font* f = new b_Font::Font{"MonoFont"}; // test mono font
 	f->FromTTF("mono", 32, 1024, 1024);
+	f->printMap();
 	f->processString("UwU your ad here && :)(( ::))", 1024, 200);
 	delete f;
 

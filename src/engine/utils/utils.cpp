@@ -66,7 +66,7 @@ void b_ImageIO::WriteBytes(
 	const char* path
 )
 {
-	if (byteData.size() < components)
+	if (byteData.size() < (unsigned)components)
 	{
 		fprintf(stderr, "ImageIO - Could not write, byte data size is less then %d\n", components);
 		return;
@@ -85,6 +85,24 @@ void b_ImageIO::WriteBytes(
 	}
 	printf("ImageIO - png file with path %s writed!\n", path);
 };
+
+void b_ImageIO::FlipY(unsigned char* b, unsigned c, unsigned w, unsigned h)
+{
+	unsigned char* tmp = new unsigned char[w * h * c];
+	for (unsigned y = 0; y < h; ++y)
+    {
+        for (unsigned x = 0; x < w; ++x)
+        {
+            for (unsigned ch = 0; ch < c; ++ch)
+            {
+                tmp[(h - 1 - y) * w * c + x * c + ch] = b[y * w * c + x * c + ch];
+            }
+        }
+    }
+	memcpy(b, tmp, w * h * c);
+	delete tmp;
+};
+
 
 void b_Files::InitFilesystem()
 {

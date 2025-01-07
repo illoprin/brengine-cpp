@@ -23,6 +23,11 @@ public:
 		void*   data,
 		size_t  size_bytes
 	);
+	GLuint AddDynamicBuffer(
+		void* 	data,
+		size_t	size,
+		size_t	reserve
+	);
 	void AddElementBuffer(std::vector<int>& elements);
 
 	/*
@@ -58,7 +63,12 @@ public:
 	void clear();
 
 	// Update (for dynamic VBO objects)
-	virtual void UpdateBuffer();
+	void UpdateBuffer(
+		GLuint  b_id,
+		size_t  offset,
+		size_t  size,
+		void*   data
+	);
 
 	// Render single mesh
 	virtual void Draw(
@@ -85,7 +95,7 @@ protected:
 	std::string name;
 	std::vector<GLuint> vbos;
 	std::vector<GLuint> attrs_list;
-	unsigned total_count;
+	unsigned total_count = 0;
 	Log* log;
 
 	void enable_attributes();

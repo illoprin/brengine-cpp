@@ -15,12 +15,14 @@
 #define MAX_FILENAME 64
 #define MAX_FILE_LINE 128
 
+// GUI
 enum GUIItemType
 {
 	GUI_SHAPE = 0,
 	GUI_IMAGE,
 	GUI_TEXT,
 };
+#define GUI_MAX_STRING_LEN 256
 
 // Render
 enum RenderMode
@@ -46,7 +48,6 @@ enum RenderMode
 #define CAM_FAR 100.f
 
 // Player
-#define PLAYER_SENSITIVITY 10.35f
 #define PLAYER_SPEED 3.f
 #define PLAYER_SPEED_MODIFER 1.78f // Sprint ratio
 

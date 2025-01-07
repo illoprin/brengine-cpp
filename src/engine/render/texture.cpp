@@ -4,7 +4,7 @@ TextureImage2D::TextureImage2D(Log* logger, bool mp = false)
 {
 	this->log = logger;
 	glGenTextures(1, &this->id);
-
+	log->logf("[INFO] Texture id = %u - Generated new texture object\n", id);
 	this->inited_with_image = false;
 	this->use_mipmaps = mp;
 };
@@ -185,10 +185,10 @@ void TextureImage2D::setFilteringMipmap(GLint type_min, GLint type_mag)
 };
 
 void TextureImage2D::setImagePointer(
-	GLint          internalFormat, 
-	GLint          format, 
-	GLint          dataType, 
-	unsigned char* bytes
+	GLint  internalFormat, 
+	GLint  format, 
+	GLint  dataType, 
+	void*  data
 )
 {
 	this->bind();
@@ -197,9 +197,10 @@ void TextureImage2D::setImagePointer(
 		// Allocate vidmemory for texture
 		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat,
 			this->width, this->height, 0,
-			format, dataType, bytes
+			format, dataType, data
 		);
 		if (this->use_mipmaps)	glGenerateMipmap(GL_TEXTURE_2D);
+		this->log->logf("[INFO] Texture id = %u data pointer created\n", this->id);
 	}
 };
 

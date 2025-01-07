@@ -48,7 +48,7 @@ public:
 	/*
 	 * 	Allocate vidmemory for texture
 	 */
-	void setImagePointer(GLint internalFormat, GLint format, GLint dataType, unsigned char* bytes);
+	void setImagePointer(GLint internalFormat, GLint format, GLint dataType, void* data);
 
 	void bind();
 

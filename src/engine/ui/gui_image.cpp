@@ -13,7 +13,7 @@ GUIImage::GUIImage (TextureImage2D* t)
 	this->type = GUI_IMAGE;
 };
 
-TextureImage2D* GUIImage::getTexture()
+TextureImage2D* GUIImage::getTexture() const
 {
 	return this->texture;
 };

@@ -29,7 +29,8 @@ inline void BaseMesh::reset_attributes()
 GLuint BaseMesh::AddBuffer(void* data, size_t size_bytes)
 {
 	GLuint vbo;
-	// Bind VAO object for setting up all attributes
+
+	// Bind VAO object for setting up its buffer
 	this->bind();
 
 	glGenBuffers(1, &vbo);
@@ -37,15 +38,43 @@ GLuint BaseMesh::AddBuffer(void* data, size_t size_bytes)
 	glBufferData(GL_ARRAY_BUFFER, size_bytes, data, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
-	// Unbind VAO object after setting up 
+	// Unbind VAO object after setting up its buffer 
 	glBindVertexArray(0);
 	
 	this->vbos.push_back(vbo);
 	
-	this->log->logf("[INFO] Mesh.%s - Generated new buffer object with index %u\n",
-		this->name.c_str(), vbo);
+	this->log->logf("[INFO] Mesh.%s - Generated new buffer object index = %u with size %lu bytes\n",
+		this->name.c_str(), vbo, size_bytes);
 	return vbo;
 };
+
+GLuint BaseMesh::AddDynamicBuffer(
+	void* 	data,
+	size_t	size,
+	size_t	reserve
+)
+{
+	GLuint vbo;
+
+	// Bind VAO object for setting up its buffer
+	this->bind();
+	
+	glGenBuffers(1, &vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, (size + reserve), data, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	this->vbos.push_back(vbo);
+	
+	this->log->logf("[INFO] Mesh.%s - Generated new dynamic buffer object index = %u with size %lu bytes\n",
+		this->name.c_str(), vbo, (size + reserve));
+
+	// Unbind VAO object after setting up its buffer 
+	glBindVertexArray(0);
+	return vbo;
+};
+
 
 void BaseMesh::AddElementBuffer(std::vector<int>& elements)
 {
@@ -155,9 +184,20 @@ ModelTriangles* BaseMesh::getTriangles() const
 {
 	return nullptr;
 }
-void BaseMesh::UpdateBuffer()
+void BaseMesh::UpdateBuffer(
+	GLuint  b_id,
+	size_t  offset,
+	size_t  size,
+	void*   data
+)
 {
-	// ...
+	this->bind();
+
+	glBindBuffer(GL_ARRAY_BUFFER, b_id);
+	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 };
 
 unsigned BaseMesh::getTotal() const

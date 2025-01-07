@@ -150,8 +150,8 @@ void Engine::takeScreenshot()
     glfwGetFramebufferSize(this->window, &width, &height);
 
 	// !!! Creates "Segmentation fault" error when vidmode != (1920, 1020) or (WIN_WIDTH, WIN_HEIGHT)
-	if ((width == WIN_WIDTH || width == 1920)
-		&& height == WIN_HEIGHT || height == 1020)
+	if (   (width  == WIN_WIDTH  || width  == 1920)
+		&& (height == WIN_HEIGHT || height == 1020))
 	{
 		unsigned char* pixels = new unsigned char[width * height * 3];
 

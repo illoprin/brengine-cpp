@@ -5,13 +5,21 @@
 
 namespace b_Model
 {
-	struct ModelVertex {
+	struct ModelVertex
+	{
 		float vx, vy, vz, tu, tv, nx, ny, nz;
 	};
 
-	struct Triangle {
+	struct Triangle
+	{
 		struct ModelVertex vertex[3];
 	};
+
+	struct SimpleVertex2D
+	{
+		glm::vec2 position;
+		glm::vec2 texcoord;
+	}; 
 
 	typedef std::vector<Triangle> ModelTriangles;
 

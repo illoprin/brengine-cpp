@@ -16,7 +16,6 @@ int main()
 	// Set user key callback function
 	engine.getIO()->setKeyCallback(key_callback);
 
-
 	// Init level d0
 	b_Level::LevelData d0_lvl;
 	b_Model::ModelTriangles d0_tris;
@@ -39,7 +38,6 @@ int main()
 	t_rock.FromPNG("brown_rock");
 	t_rock.setFiltering(GL_NEAREST);
 
-
 	// ---- Init UI
 
 	// Init label entity
@@ -55,10 +53,19 @@ int main()
 	ui_quad.setPosition(glm::vec2(-.7, -.7));
 	ui_quad.setTexture(b_AssetManager::getTextureNull());
 
+	b_GUI::GUIText ui_text{
+		engine.getLogger(),
+		b_AssetManager::getDefaultMonoFont(),
+		"FPS:"
+	};
+	ui_text.setScaling(glm::vec2(2.7, 2.7));
+	ui_text.setPosition(glm::vec2(1.2, .9));
+
 	b_GUI::GUIScene s_ui{};
 	s_ui.append(&ui_label);
 	s_ui.append(&ui_cross);
 	s_ui.append(&ui_quad);
+	s_ui.append(&ui_text);
 
 	// ---- Init 3D Level
 	
@@ -88,6 +95,7 @@ int main()
 	s_level.append(&e_cube_rock);
 	s_level.append(&e_level);
 
+	std::string fps_str;
 	while (!glfwWindowShouldClose(engine.getWindow()))
 	{
 		engine.OpenGameLoop();
@@ -97,6 +105,9 @@ int main()
 		// UI Scene update
 		ui_quad.setScaling( .5f + glm::vec2( fabs( sinf(time) ) * .3f ));
 		ui_quad.setAlpha( fabs( cosf(time) ));
+		
+		fps_str = "FPS: " + std::to_string((int)(1.f / deltaTime));
+		ui_text.text = fps_str;
 
 		// 3D Scene update
 		e_cube_white.transform.rotate(glm::vec3( deltaTime * 100.f ));

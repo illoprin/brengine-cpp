@@ -1,4 +1,4 @@
-#include "font.h"
+#include "gui_font.h"
 
 using namespace b_GUI;
 
@@ -38,11 +38,40 @@ void b_Font::BufferFromTTF(
 
 /* ============ FONT ============ */
 
+b_Font::Font::Font(Log* l, std::string n)
+{
+	this->name = n;
+
+	// Create texture object for atlas
+	this->t_atlas = new TextureImage2D{l, false};
+};
+
+void b_Font::Font::configureTexture()
+{
+	// Configuring texture object
+	this->t_atlas->components = 1;
+	this->t_atlas->height = this->atlas_h;
+	this->t_atlas->width = this->atlas_w;
+
+	this->t_atlas->setFiltering(GL_NEAREST);
+	this->t_atlas->setWrapping(GL_CLAMP_TO_EDGE);
+
+	b_ImageIO::FlipY(this->atlas, 1, this->atlas_w, this->atlas_h);
+
+	// Add atlas texture to OpenGL
+	this->t_atlas->setImagePointer(
+		// Red 8 bits: GL_R8
+		// One red component: GL_RED
+		// Data format is unsigned char: GL_UNSIGNED_BYTE
+		GL_R8, GL_RED, GL_UNSIGNED_BYTE, this->atlas
+	);
+};
+
 void b_Font::Font::FromTTF(
-	std::string filename,
-	int         lineheight,
-	unsigned    width,
-	unsigned    height
+	std::string  filename,
+	int          lineheight,
+	unsigned     width,
+	unsigned     height
 )
 {
 	this->line_height = lineheight;
@@ -54,9 +83,19 @@ void b_Font::Font::FromTTF(
 	// if file exists and not outdated
 	if (fs::exists(cache_filename))
 		if (this->loadFromCache(cache_filename.c_str()))
+		{
+			this->configureTexture();
 			return;
+		}
 	
 	this->info = (stbtt_fontinfo*)calloc(sizeof(stbtt_fontinfo), 1);
+
+	if (this->info == nullptr)
+	{
+		fprintf(stderr, "Font %s - Could not allocate memory for stbtt_fontinfostruct\n",
+			this->name.c_str());
+		return;		
+	}
 
 	std::string filepath{
 		"assets/fonts/" + filename + ".ttf"
@@ -80,9 +119,12 @@ void b_Font::Font::FromTTF(
 
 	printf("Font %s - Inited\n", name.c_str());
 
-	this->buildAtlas(width, height);
-	this->cleanUp();
-	this->cacheData(cache_filename.c_str());
+	if (this->buildAtlas(width, height))
+	{
+		this->cleanUp();
+		this->cacheData(cache_filename.c_str());
+		this->configureTexture();
+	}
 };
 
 void b_Font::Font::cleanUp()
@@ -91,7 +133,7 @@ void b_Font::Font::cleanUp()
 	if (this->info) free(this->info);
 }
 
-void b_Font::Font::buildAtlas(unsigned w, unsigned h)
+bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 {
 	this->atlas = (unsigned char*)calloc(
 		this->atlas_w * this->atlas_h,
@@ -101,7 +143,7 @@ void b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	{
 		fprintf(stderr, "Font %s - Could not allocate memory for atlas\n",
 			this->name.c_str());
-		return;
+		return false;
 	}
 
 	int x = 0, y = 0, current_line = 1;
@@ -167,6 +209,7 @@ void b_Font::Font::buildAtlas(unsigned w, unsigned h)
 		(int)round((double)ave_lsb / (double)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX));
 
 	printf("Font %s - Atlas builded\n", name.c_str());
+	return true;
 };
 
 std::string b_Font::Font::getCacheFileName()
@@ -348,9 +391,10 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	
 	fread(new_atlas, sizeof(unsigned char), pixels_total, file);
 	
-	if (this->atlas != NULL)
+	if (this->atlas != nullptr)
 		free(this->atlas);
 	this->atlas = new_atlas;
+	
 	printf("Font %s - Loaded from cache\n", this->name.c_str());
 
 	return true;
@@ -358,6 +402,9 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 b_Font::Font::~Font()
 {
-	if (atlas) free(atlas);
+	// Release atlas byte data
+	if (this->atlas) free(this->atlas);
+	// Release OpenGL texture object
+	delete this->t_atlas;
 	printf("Font %s - Released\n", this->name.c_str());
 };
