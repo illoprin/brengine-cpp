@@ -38,12 +38,12 @@ void b_Font::BufferFromTTF(
 
 /* ============ FONT ============ */
 
-b_Font::Font::Font(Log* l, std::string n)
+b_Font::Font::Font(std::string n)
 {
 	this->name = n;
 
 	// Create texture object for atlas
-	this->t_atlas = new TextureImage2D{l, false};
+	this->t_atlas = new TextureImage2D{false};
 };
 
 void b_Font::Font::configureTexture()
@@ -53,7 +53,7 @@ void b_Font::Font::configureTexture()
 	this->t_atlas->height = this->atlas_h;
 	this->t_atlas->width = this->atlas_w;
 
-	this->t_atlas->setFiltering(GL_NEAREST);
+	this->t_atlas->setFiltering(GL_LINEAR);
 	this->t_atlas->setWrapping(GL_CLAMP_TO_EDGE);
 
 	b_ImageIO::FlipY(this->atlas, 1, this->atlas_w, this->atlas_h);
@@ -92,7 +92,7 @@ void b_Font::Font::FromTTF(
 
 	if (this->info == nullptr)
 	{
-		fprintf(stderr, "Font %s - Could not allocate memory for stbtt_fontinfostruct\n",
+		log->logf("[WARNING] Font %s - Could not allocate memory for stbtt_fontinfo struct\n",
 			this->name.c_str());
 		return;		
 	}
@@ -106,7 +106,7 @@ void b_Font::Font::FromTTF(
 	if (!stbtt_InitFont(this->info, ttf_buffer, 0))
 	{
 		this->cleanUp();
-		printf("Font %s - Could not init from file %s\n",
+		log->logf("[WARNING] Font %s - Could not init from file %s\n",
 			this->name.c_str(), filename.c_str());
 		return;
 	}
@@ -117,7 +117,7 @@ void b_Font::Font::FromTTF(
 	this->ascent = (int)roundf(this->ascent * scale_em);
 	this->descent = (int)roundf(this->descent * scale_em);
 
-	printf("Font %s - Inited\n", name.c_str());
+	log->logf("[INFO] Font %s - Inited\n", name.c_str());
 
 	if (this->buildAtlas(width, height))
 	{
@@ -141,7 +141,7 @@ bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	);
 	if (this->atlas == nullptr)
 	{
-		fprintf(stderr, "Font %s - Could not allocate memory for atlas\n",
+		log->logf("[WARNING] Font %s - Could not allocate memory for atlas\n",
 			this->name.c_str());
 		return false;
 	}
@@ -208,7 +208,7 @@ bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	this->ave_lsb =
 		(int)round((double)ave_lsb / (double)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX));
 
-	printf("Font %s - Atlas builded\n", name.c_str());
+	log->logf("[INFO] Font %s - Atlas with width %u height %u builded\n", name.c_str(), this->atlas_w, this->atlas_h);
 	return true;
 };
 
@@ -224,7 +224,7 @@ void b_Font::Font::cacheData(const char* filename)
 	FILE* file = fopen(filename, "wb");
 	if (!file)
 	{
-		fprintf(stderr, "Font %s - Could not create cache file\n",
+		log->logf("[WARNING] Font %s - Could not create cache file\n",
 			this->name.c_str());
 		return;
 	}
@@ -280,7 +280,7 @@ void b_Font::Font::cacheData(const char* filename)
 	size_t pixels_total = this->atlas_w * this->atlas_h;
 	fwrite(this->atlas, sizeof(unsigned char), pixels_total, file);
 
-	printf("Font %s - Cached to file %s\n",
+	log->logf("[INFO] Font %s - Cached to file %s\n",
 		this->name.c_str(), filename);
 
 	// Close file
@@ -293,7 +293,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	FILE* file = fopen(filename, "rb");
 	if (!file)
 	{
-		fprintf(stderr, "Font %s - Could not open cache file\n",
+		log->logf("[WARNING] Font %s - Could not open cache file\n",
 			this->name.c_str());
 		return false;
 	}
@@ -320,7 +320,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	fread(&num_char, sizeof(uint16_t), 1, file);
 	if (num_char != (uint16_t)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX))
 	{
-		printf("Font %s - Could not process cache file with path %s\n",
+		log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
 			this->name.c_str(), filename);
 		fclose(file);
 		return false;
@@ -377,7 +377,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	if (this->atlas_w != (unsigned)a_w || this->atlas_h != (unsigned)a_h)
 	{
-		printf("Font %s - Could not process cache file with path %s\n",
+		log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
 			this->name.c_str(), filename);
 		this->char_map.clear();
 		fclose(file);
@@ -386,7 +386,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	size_t pixels_total = a_w * a_h;
 	unsigned char* new_atlas = (unsigned char*)malloc(pixels_total);
-	printf("Font %s - Atlas width is %u height is %u\n",
+	log->logf("[INFO] Font %s - Atlas width is %u height is %u\n",
 			this->name.c_str(), a_w, a_h);
 	
 	fread(new_atlas, sizeof(unsigned char), pixels_total, file);
@@ -395,7 +395,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 		free(this->atlas);
 	this->atlas = new_atlas;
 	
-	printf("Font %s - Loaded from cache\n", this->name.c_str());
+	log->logf("[INFO] Font %s - Loaded from cache\n", this->name.c_str());
 
 	return true;
 };
@@ -406,5 +406,5 @@ b_Font::Font::~Font()
 	if (this->atlas) free(this->atlas);
 	// Release OpenGL texture object
 	delete this->t_atlas;
-	printf("Font %s - Released\n", this->name.c_str());
+	log->logf("[INFO] Font %s - Released\n", this->name.c_str());
 };

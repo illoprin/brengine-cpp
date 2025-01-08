@@ -13,13 +13,13 @@ void SimpleMesh::initFromModel(ModelTriangles* tris)
 	GLuint last_buffer = this->AddBuffer(tris->data(), bytes);
 
 	this->SetDataPointer(
-			last_buffer, GL_FLOAT, 3, sizeof(ModelVertex), offsetof(ModelVertex, vx)
+			last_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, vx)
 	);
 	this->SetDataPointer(
-			last_buffer, GL_FLOAT, 2, sizeof(ModelVertex), offsetof(ModelVertex, tu)
+			last_buffer, 2, sizeof(ModelVertex), offsetof(ModelVertex, tu)
 	);
 	this->SetDataPointer(
-			last_buffer, GL_FLOAT, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
+			last_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
 	);
 
 	this->log->logf("[INFO] Mesh.%s - Simple initialization happend, total count of vertices is %u, buffer size is %lu bytes\n",

@@ -1,8 +1,7 @@
 #include "texture.h"
 
-TextureImage2D::TextureImage2D(Log* logger, bool mp = false)
+TextureImage2D::TextureImage2D(bool mp = false)
 {
-	this->log = logger;
 	glGenTextures(1, &this->id);
 	log->logf("[INFO] Texture id = %u - Generated new texture object\n", id);
 	this->inited_with_image = false;

@@ -1,9 +1,8 @@
 #include "editor_controller.h"
 
-EditorController::EditorController(Engine* e)
+EditorController::EditorController()
 {
-	this->engine = e;
-	this->camera = new Camera();
+	this->camera = new Camera;
 };
 
 EditorController::~EditorController()
@@ -14,7 +13,7 @@ EditorController::~EditorController()
 void EditorController::update()
 {
 	this->update_states();
-	if (engine->isGameMode())
+	if (b_Engine::isGameMode())
 	{
 		this->handle_key_events();
 		this->handle_mouse_events();
@@ -22,15 +21,16 @@ void EditorController::update()
 };
 void EditorController::update_states()
 {
-	this->states[PL_M_FORWARD] = glfwGetKey(engine->getWindow(), GLFW_KEY_W);
-	this->states[PL_M_BACKWARD] = glfwGetKey(engine->getWindow(), GLFW_KEY_S);
-	this->states[PL_M_LEFT] = glfwGetKey(engine->getWindow(), GLFW_KEY_A);
-	this->states[PL_M_RIGHT] = glfwGetKey(engine->getWindow(), GLFW_KEY_D);
-	this->states[PL_M_MODIFY] = glfwGetKey(engine->getWindow(), GLFW_KEY_LEFT_SHIFT);
+	GLFWwindow* wnd = b_Engine::getWindow();
+	this->states[PL_M_FORWARD] = glfwGetKey(wnd, GLFW_KEY_W);
+	this->states[PL_M_BACKWARD] = glfwGetKey(wnd, GLFW_KEY_S);
+	this->states[PL_M_LEFT] = glfwGetKey(wnd, GLFW_KEY_A);
+	this->states[PL_M_RIGHT] = glfwGetKey(wnd, GLFW_KEY_D);
+	this->states[PL_M_MODIFY] = glfwGetKey(wnd, GLFW_KEY_LEFT_SHIFT);
 };
 void EditorController::handle_key_events()
 {
-	float vel = engine->getClock()->getDeltaTime() * PLAYER_SPEED;
+	float vel = b_Engine::getClock()->getDeltaTime() * PLAYER_SPEED;
 
 	if (this->states[PL_M_MODIFY] == GLFW_PRESS)
 		vel *= PLAYER_SPEED_MODIFER;
@@ -45,10 +45,11 @@ void EditorController::handle_key_events()
 };
 void EditorController::handle_mouse_events()
 {
+	Input* io = b_Engine::getIO();
 	float factor = 0.05f;
 	this->camera->rotate(
-		-(float)engine->getIO()->getMouse().m_delta_y * factor,
-		(float)engine->getIO()->getMouse().m_delta_x * factor
+		-(float)io->getMouse().m_delta_y * factor,
+		(float)io->getMouse().m_delta_x * factor
 	);
 };
 

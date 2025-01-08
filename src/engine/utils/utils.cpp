@@ -6,7 +6,6 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 	if (!src)
 	{
 		fprintf(stderr, "Error: Could not open file with path %s\n", filepath);
-		fclose(src);
 		return;
 	}
 
@@ -23,7 +22,7 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 
 	if (buffer.length() < 2)
 	{
-		printf("Warning: File with path %s, string length is less than 2\n", filepath);
+		printf("Warning - File with path %s, string length is less than 2\n", filepath);
 	}
 };
 
@@ -118,7 +117,7 @@ void b_Files::InitFilesystem()
 		printf("b_Files::InitFilesystem - %s directory created\n", FS_SCREENSHOTS_PATH);
 	};
 
-	fs::path log_dir = fs::path(FS_TEMP_PATH) / fs::path(FS_LOG_PATH);
+	fs::path log_dir{ fs::path(FS_TEMP_PATH) / fs::path(FS_LOG_PATH) };
 	if (!fs::is_directory(log_dir))
 	{
 		fs::create_directory(log_dir);

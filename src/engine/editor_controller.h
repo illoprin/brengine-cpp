@@ -7,7 +7,7 @@
 class EditorController
 {
 public:
-	EditorController(Engine* e);
+	EditorController();
 	~EditorController();
 
 	void update();
@@ -15,7 +15,6 @@ public:
 	Camera* getCamera() const;
 private:
 	Camera* camera;
-	Engine* engine;
 	int states[5];
 
 	void update_states();

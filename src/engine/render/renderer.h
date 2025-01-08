@@ -10,6 +10,7 @@
 #include "../ui/gui_item.h"
 #include "../ui/gui_text_meshgen.h"
 #include "../assets.h"
+#include "../engine.h"
 
 /*
 	Renderer Program Types:
@@ -18,7 +19,7 @@
 			UIShader - draw UI
 
 		3D Rendering:
-			StandertShader - draw 3D textured models
+			StandartShader - draw 3D textured models
 			SpriteShader - draw textured sprites in 3D space
 			DefferedShader - shader for combine several views of scene
 
@@ -32,7 +33,7 @@
 class Renderer
 {
 public:
-	Renderer(Log* logger, GLFWwindow* win);
+	Renderer();
 	~Renderer();
 
 	friend class b_GUI::GUIScene;
@@ -53,6 +54,8 @@ public:
 	// Blit rendered pixels on screen
 	void Flush();
 
+	void FramebufferSizeChange();
+
 	void setRenderMode(RenderMode mode);
 	void switchRenderMode();
 
@@ -69,9 +72,8 @@ public:
 	// Use this to render screenquad
 	Program* getProgramCanvas() const;
 private:
-	GLFWwindow* window;
-glm::ivec2 vid_mode{WIN_WIDTH, WIN_HEIGHT};
-	Log* log;
+	GLFWwindow* window = b_Engine::getWindow();
+	Log* log = b_Engine::getLogger();
 	
 	void ctxPrepare();
 	void ctxBind();

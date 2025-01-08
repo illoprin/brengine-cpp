@@ -1,14 +1,20 @@
 #ifndef B_DEFS
 #define B_DEFS
 
+typedef void (*b_UserKeyCallback)(int key, int action, int mods);
+typedef void (*b_UserMouseButtonCallback)(int button, int action);
+typedef void (*b_UserMouseMotionCallback)(double x, double y);
+typedef void (*b_UserCharacterCallback)(int scancode);
+typedef void (*b_UserUpdateFunc)(float time, float deltaTime);
+
 #define FS_TEMP_PATH "tmp"
 #define FS_SCREENSHOTS_PATH "screenshots"
 #define FS_LEVELS_PATH "levels"
 #define FS_ASSETS_PATH "assets"
 #define FS_LOG_PATH "log"
 
-#define WIN_WIDTH 1600
-#define WIN_HEIGHT 900
+#define WIN_WIDTH 1280
+#define WIN_HEIGHT 720
 #define WIN_TITLE "Brengine 3D Alpha"
 
 #define MAX_PATH 256
@@ -33,9 +39,7 @@ enum RenderMode
 	RENDER_DEPTH,
 };
 // #ff17c9 - is fully alpha color
-#define COLOR_NULL_R 255
-#define COLOR_NULL_G 23
-#define COLOR_NULL_B 201
+#define COLOR_NULL glm::vec3(1.0f, 0.09f, 0.79f)
 
 // World
 #define DIR_UP glm::vec3(0, 1, 0)
@@ -66,6 +70,5 @@ enum PlayerActionList {
 
 // Level
 #define LVL_SCALING 1.f
-
 
 #endif

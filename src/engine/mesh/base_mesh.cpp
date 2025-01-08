@@ -1,9 +1,8 @@
 #include "base_mesh.h"
 
-BaseMesh::BaseMesh(Log* logger, const char* name)
+BaseMesh::BaseMesh(const char* name)
 {
 	this->name = std::string(name);
-	this->log = logger;
 	this->total_count = 0u;
 
 	glGenVertexArrays(1, &this->vao);
@@ -83,7 +82,6 @@ void BaseMesh::AddElementBuffer(std::vector<int>& elements)
 
 void BaseMesh::SetDataPointer(
 	GLuint    buffer,
-	GLenum    type,
 	unsigned  components,
 	size_t    stride,
 	size_t    offset
@@ -97,13 +95,41 @@ void BaseMesh::SetDataPointer(
 
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glEnableVertexAttribArray(next_attr);
-	glVertexAttribPointer(next_attr, components, type, GL_FALSE, stride, (void*)offset);
+	glVertexAttribPointer(next_attr, components, GL_FLOAT, GL_FALSE, stride, (void*)offset);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Unbind VAO object after setting up 
 	glBindVertexArray(0);
 
 	this->log->logf("[INFO] Mesh.%s - Added attribute pointer with index %u\n",
+		this->name.c_str(), next_attr);
+
+	// New attribute writed, push its index to list
+	this->attrs_list.push_back(next_attr);
+};
+
+void BaseMesh::SetDataIntegerPointer(
+	GLuint    buffer,
+	unsigned  components,
+	size_t    stride,
+	size_t    offset
+)
+{
+
+	// Bind VAO object for setting up all attributes
+	this->bind();
+
+	GLuint next_attr = this->attrs_list.size();
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glEnableVertexAttribArray(next_attr);
+	glVertexAttribIPointer(next_attr, components, GL_INT, stride, (void*)offset);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// Unbind VAO object after setting up 
+	glBindVertexArray(0);
+
+	this->log->logf("[INFO] Mesh.%s - Added attribute integer pointer with index %u\n",
 		this->name.c_str(), next_attr);
 
 	// New attribute writed, push its index to list

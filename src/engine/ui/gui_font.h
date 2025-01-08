@@ -2,8 +2,8 @@
 
 #include "../utils/deps.h"
 #include "../render/texture.h"
-#include "../log.h"
 #include "../utils/utils.h"
+#include "../engine.h"
 
 
 /*
@@ -83,7 +83,7 @@ namespace b_GUI
 
 			TextureImage2D* t_atlas;
 
-			Font(Log* logger, std::string name);
+			Font(std::string name);
 			~Font();
 
 			/*
@@ -101,6 +101,7 @@ namespace b_GUI
 			
 			void printCharacterMap();
 		private:
+			Log* log = b_Engine::getLogger();
 			void cleanUp();
 			std::string getCacheFileName();
 			

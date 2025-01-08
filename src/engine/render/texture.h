@@ -2,22 +2,28 @@
 
 #include "../utils/deps.h"
 #include "../log.h"
+#include "../engine.h"
 
 struct TextureImage2D {
 
 private:
-	Log* log;
+	Log* log = b_Engine::getLogger();
 	bool inited_with_image;
 	bool use_mipmaps;
 	GLuint id;
 public:
 	// Gen OpenGL texture object, mp - use MipMapping
-	TextureImage2D(Log* logger, bool mp);
+	TextureImage2D(bool mp);
 	~TextureImage2D();
 	
 	unsigned width;
 	unsigned height;
 	unsigned components;
+	/*
+		You can use this color (1.0, 0.09, 0.79) #ff17c9 to indicate transperent areas in your image
+		0 - texture not use transperency color, 1 - texture use transperency color
+	*/
+	unsigned short use_transperency_mask = 0;
 
 	// Delete copy constructor
 	TextureImage2D& operator=(TextureImage2D&) = delete;

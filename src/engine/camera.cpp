@@ -1,15 +1,8 @@
 #include "camera.h"
 
-Camera::Camera()
-{
-	this->position = glm::vec3(0.f);
-	this->pitch = 0.f; this->yaw = 90.f;
-};
-
 Camera::Camera(glm::vec3 pos)
 {
 	this->setPosition(pos);
-	this->pitch = 0.f; this->yaw = 90.f;
 };
 
 void Camera::update_vectors()

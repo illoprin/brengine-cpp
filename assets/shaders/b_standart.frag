@@ -5,8 +5,11 @@ in vec3 out_normal;
 in vec3 out_fragcoord;
 
 // Entity
+// Texture options
 uniform bool u_use_texturing;
 uniform sampler2D u_texture;
+uniform bool u_use_transperency_mask = false;
+
 uniform vec4 u_color;
 
 // Camera
@@ -23,6 +26,16 @@ vec3 fog_color = vec3(0.14, 0.16, 0.17);
 uniform bool u_depth = false;
 uniform bool u_rnormal = false;
 
+uniform vec3 u_transperent_pixel;
+
+vec4 DeleteTransperentAreas(vec4 src, vec3 mask)
+{
+	vec3 delta = abs(src.rgb - mask);
+	float factor = length(delta);
+	if (factor < 0.023) src.a = 0.0;
+	return src;
+}
+
 out vec4 _fragColor;
 
 void main()
@@ -37,6 +50,12 @@ void main()
 	{
 		diffuse_color = texture(u_texture, out_uv);
 		diffuse_color *= u_color;
+		
+		// Delete mask color if texture use transperency mask
+		if (u_use_transperency_mask)
+			diffuse_color =
+				DeleteTransperentAreas(diffuse_color, u_transperent_pixel);
+		
 		// Render empty if texture alpha is less then .05 value
 		if (diffuse_color.a <= .05) discard;
 	}

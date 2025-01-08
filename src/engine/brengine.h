@@ -7,6 +7,9 @@
 
 #include "utils/deps.h"
 
+// Renderer
+#include "render/renderer.h"
+// Engine interface
 #include "engine.h"
 
 // Model
@@ -29,6 +32,7 @@
 #include "ui/gui_image.h"
 #include "ui/gui_text.h"
 #include "ui/gui_scene.h"
+#include "ui/gui_font.h"
 
 // Scene
 #include "scene_3d.h"

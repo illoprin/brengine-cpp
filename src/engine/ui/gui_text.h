@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../log.h"
+#include "../engine.h"
 #include "gui_font.h"
 #include "gui_item.h"
 #include "../mesh/base_mesh.h"
@@ -11,7 +11,7 @@ namespace b_GUI
 	class GUIText : public GUIItem
 	{
 	public:
-		GUIText(Log*, b_Font::Font*, std::string);
+		GUIText(b_Font::Font*, std::string);
 		~GUIText();
 
 		// Compute 'need_redraw' statement
@@ -24,6 +24,7 @@ namespace b_GUI
 		b_Font::Font* getFont() const override;
 	private:
 		std::string last_text;
+		Log* log = b_Engine::getLogger();
 
 		BaseMesh* mesh;
 		b_Font::Font* font;

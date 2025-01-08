@@ -22,43 +22,44 @@ static float quad_data[] = {
 	1.f, 1.f, 1.f, 1.f, 	// Left top
 };
 
-static b_Model::ModelTriangles quad_model = QuadTriangles(1.f);
-static b_Model::ModelTriangles cube_model = CubeTriangles(1.f);
+static b_Model::ModelTriangles quad_model{QuadTriangles(1.f)};
+static b_Model::ModelTriangles cube_model{CubeTriangles(1.f)};
 
 void b_AssetManager::InitAssets(Log* l)
 {
 	// --- Textures
-	TextureNull = new TextureImage2D{l, false};
+	TextureNull = new TextureImage2D{false};
 	TextureNull->FromBMP("NULL");
-	TextureNullAlpha = new TextureImage2D{l, false};
-	TextureNullAlpha->FromPNG("NULL_ALPHA");
+	TextureNullAlpha = new TextureImage2D{false};
+	TextureNullAlpha->FromBMP("NULL_ALPHA");
+	TextureNullAlpha->use_transperency_mask = 1;
 
 	// --- Meshes
 	GLuint lb;
-	MeshBasicQuad = new BaseMesh{l, "AssetMesh_BasicQuad"};
+	MeshBasicQuad = new BaseMesh{"AssetMesh_BasicQuad"};
 	lb = MeshBasicQuad->AddBuffer(quad_data, 24 * sizeof(float));
 	// 1. Attribute: in_position
 	MeshBasicQuad->SetDataPointer(
-		lb, GL_FLOAT, 2, 4 * sizeof(float), 0);
+		lb, 2, 4 * sizeof(float), 0);
 	// 2. Attribute: in_texcoord
 	MeshBasicQuad->SetDataPointer(
-		lb, GL_FLOAT, 2, 4 * sizeof(float), 2 * sizeof(float));
+		lb, 2, 4 * sizeof(float), 2 * sizeof(float));
 	MeshBasicQuad->setTotal(6); // 6 vertices
 
-	MeshQuad = new SimpleMesh{l, "AssetMesh_Quad"};
+	MeshQuad = new SimpleMesh{"AssetMesh_Quad"};
 	MeshQuad->initFromModel(&quad_model);
 
-	MeshCube = new SimpleMesh{l, "AssetMesh_Cube"};
+	MeshCube = new SimpleMesh{"AssetMesh_Cube"};
 	MeshCube->initFromModel(&cube_model);
 
 	// --- Fonts
-	FontMono = new b_GuiFont::Font{l, "AssetFont_Mono"};
+	FontMono = new b_GuiFont::Font{"AssetFont_Mono"};
 	FontMono->FromTTF("mono", 64, 512, 512);
 	
-	FontSans = new b_GuiFont::Font{l, "AssetFont_Sans"};
-	FontSans->FromTTF("sans", 32, 512, 512);
+	FontSans = new b_GuiFont::Font{"AssetFont_Sans"};
+	FontSans->FromTTF("sans", 64, 1024, 1024);
 
-	FontGame = new b_GuiFont::Font{l, "AssetFont_Game"};
+	FontGame = new b_GuiFont::Font{"AssetFont_Game"};
 	FontGame->FromTTF("game", 32, 512, 512);
 };
 

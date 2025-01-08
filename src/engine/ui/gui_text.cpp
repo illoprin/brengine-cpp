@@ -6,22 +6,22 @@ namespace b_GuiFont = b_GUI::b_Font;
 
 static unsigned gui_text_total = 0;
 
-GUIText::GUIText (Log* l, b_GuiFont::Font* f, std::string t)
+GUIText::GUIText (b_GuiFont::Font* f, std::string t)
 {
 	std::string mesh_name
 		{"GUIText_" + std::to_string(gui_text_total)};
 	
 	// Allocate vidmemory to string vertices
-	this->mesh = new BaseMesh{l, mesh_name.c_str()};
+	this->mesh = new BaseMesh{mesh_name.c_str()};
 	// Reserved vidmemory: 16 * 6 * 256 = 24.57kb
 	GLuint lb = mesh->AddDynamicBuffer(NULL, 0, sizeof(SimpleVertex2D) * 6 * GUI_MAX_STRING_LEN);
 	// Link mesh attributes
 	// 0. in_position
 	mesh->SetDataPointer(
-		lb, GL_FLOAT, 2, sizeof(SimpleVertex2D), 0);
+		lb, 2, sizeof(SimpleVertex2D), 0);
 	// 1. in_texcoord
 	mesh->SetDataPointer(
-		lb, GL_FLOAT, 2, sizeof(SimpleVertex2D), offsetof(SimpleVertex2D, texcoord.x));
+		lb, 2, sizeof(SimpleVertex2D), offsetof(SimpleVertex2D, texcoord.x));
 	
 	this->text = t;
 	this->font = f;

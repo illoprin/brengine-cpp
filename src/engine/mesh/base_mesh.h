@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../utils/deps.h"
-#include "../log.h"
+#include "../engine.h"
 
 #include "model.h"
 
@@ -10,7 +10,7 @@ using namespace b_Model;
 class BaseMesh
 {
 public:
-	BaseMesh(Log* logger, const char* name);
+	BaseMesh(const char* name);
 	virtual ~BaseMesh();
 
 	// Delete copy operators
@@ -36,11 +36,22 @@ public:
 	*/
 	void SetDataPointer(
 		GLuint   buffer_id,
-		GLenum   type,
 		unsigned components,
 		size_t   stride,
 		size_t   offset
 	);
+	
+	/*
+		Add vertex array attribute poiner
+		AttributePoiner - is description of buffer data that you sent to shader on draw call
+	*/
+	void SetDataIntegerPointer(
+		GLuint   buffer_id,
+		unsigned components,
+		size_t   stride,
+		size_t   offset
+	);
+
 
 	/*
 		Add vertex array with divisior.
@@ -96,7 +107,7 @@ protected:
 	std::vector<GLuint> vbos;
 	std::vector<GLuint> attrs_list;
 	unsigned total_count = 0;
-	Log* log;
+	Log* log = b_Engine::getLogger();
 
 	void enable_attributes();
 	void disable_attributes();

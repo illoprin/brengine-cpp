@@ -7,20 +7,20 @@ Transform::Transform()
 	this->init_zero();
 };
 
-void Transform::init_zero()
-{
-	this->position = glm::vec3(0.f);
-	this->rotation = glm::vec3(0.f);
-	this->scale = glm::vec3(1.f);
-	this->model = glm::mat4(1.f);
-};
-
 Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scl)
 {
 	this->position = pos;
 	this->rotation = rot;
 	this->scale = scl;
 	this->UpdateModel();
+};
+
+void Transform::init_zero()
+{
+	this->position = glm::vec3(0.f);
+	this->rotation = glm::vec3(0.f);
+	this->scale = glm::vec3(1.f);
+	this->model = glm::mat4(1.f);
 };
 
 void Transform::UpdateModel()

@@ -1,17 +1,37 @@
 #include "framebuffer.h"
 
-Framebuffer::Framebuffer(Log* logger, const char* name)
+Framebuffer::Framebuffer(const char* name)
 {
-	this->log  = logger;
 	this->name = {name};
 
 	glGenFramebuffers(1, &this->id);
 };
 
+void Framebuffer::changeSize(unsigned w, unsigned h)
+{
+	if (this->color_attachment != nullptr)
+	{
+		this->color_attachment->width = w;
+		this->color_attachment->height = h;
+		this->color_attachment->setImagePointer(
+			GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, NULL
+		);
+	};
+
+	if (this->depth_attachment != nullptr)
+	{
+		this->depth_attachment->width = w;
+		this->depth_attachment->height = h;
+		this->depth_attachment->setImagePointer(
+			GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
+		);
+	};
+};
+
 void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 {
 	this->bind();
-	this->color_attachment = new TextureImage2D{this->log, false};
+	this->color_attachment = new TextureImage2D{false};
 	this->color_attachment->width = w;
 	this->color_attachment->height = h;
 	this->color_attachment->components = 4;
@@ -27,7 +47,7 @@ void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 {
 	this->bind();
-	this->depth_attachment = new TextureImage2D(this->log, false);
+	this->depth_attachment = new TextureImage2D(false);
 	this->depth_attachment->width = w;
 	this->depth_attachment->height = h;
 	this->depth_attachment->components = 1;

@@ -11,11 +11,6 @@ struct Mouse
 	double m_delta_x, m_delta_y;
 };
 
-typedef void (*b_UserKeyCallback)(int key, int action, int mods);
-typedef void (*b_UserMouseButtonCallback)(int button, int action);
-typedef void (*b_UserMouseMotionCallback)(double x, double y);
-typedef void (*b_UserCharacterCallback)(int scancode);
-
 class Input
 {
 public:

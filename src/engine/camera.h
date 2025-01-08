@@ -5,7 +5,7 @@
 class Camera
 {
 public:
-	Camera();
+	Camera() {};
 	Camera(glm::vec3 pos);
 	~Camera();
 
@@ -29,9 +29,9 @@ private:
 	void update_vectors();
 	void update_matrices();
 
-	float pitch;
-	float yaw;
-	glm::vec3 position;
+	float pitch = 0.f;
+	float yaw = 90.f;
+	glm::vec3 position{0.f};
 
 	glm::mat4 view;
 	glm::mat4 projection;
@@ -39,6 +39,8 @@ private:
 	glm::vec3 forward;
 	glm::vec3 right;
 	glm::vec3 up;
-
+	
+	// NEEDS REFACTORING!!!
+	// We can get vidmode from core engine instance
 	unsigned vid_mode[2];
 };

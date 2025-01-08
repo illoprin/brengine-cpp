@@ -6,53 +6,39 @@
 #include "clock.h"
 #include "input.h"
 
+#include "ui/gui_scene.h"
+#include "scene_3d.h"
+
 #include "render/renderer.h"
-#include "render/program.h"
 #include "assets.h"
 
-class Engine
+// Fuck classes, I use namespaces
+
+namespace b_Engine
 {
-public:
-	Engine();
-	~Engine();
+	void Init();
+	void Release();
+	void SetScene(Scene3D*);
+	void SetUI(b_GUI::GUIScene*);
+	void Run();
 
-	void OpenGameLoop();
-	void CloseGameLoop();
+	void ToggleGameMode();
+	void TakeScreenshot();
 
-	void setVidMode(unsigned w, unsigned h);
-	// Toggle cursor
-	void toggleGameMode();
-	// Save main framebuffer pixel data to image
-	void takeScreenshot();
+	void SetUserUpdateFunction(b_UserUpdateFunc);
 
-	GLFWwindow* getWindow() const;
-	Renderer* getRenderer() const;
-	Log* getLogger() const;
-	Clock* getClock() const;
-	Input* getIO() const;
-	bool isGameMode() const;
+	void SetEngineUserPointer(void*);
+	void* GetEngineUserPointer();
+
+	GLFWwindow* getWindow();
+	Renderer* getRenderer();
+	Log* getLogger();
+	Clock* getClock();
+	Input* getIO();
+	bool isGameMode();
+
 	glm::ivec2 getVidMode();
-
-	// Delete copy operators
-	Engine(Engine&) = delete;
-	Engine(const Engine&) = delete;
-	Engine& operator=(Engine&) = delete;
-	Engine& operator=(const Engine&) = delete;
-
-private:
-	GLFWwindow* window;
-	glm::ivec2 vid_mode;
-
-	Renderer* renderer;
-	Clock* clock;
-	Log* log;
-	Input* input;
-
-	void init_window();
-	void init_io();
-
-	/* TODO: Scene/Framebuffer and other stuff */
-
-	bool is_game_mode = false;
+	float getAspect();
 };
+
 #endif

@@ -3,11 +3,9 @@
 using namespace b_GUI;
 using namespace b_GameObject;
 
-Renderer::Renderer(Log* log, GLFWwindow* win)
+Renderer::Renderer()
 {
-	this->window = win;
-	this->log	 = log;
-	glfwMakeContextCurrent(win); // Now OpenGL draws stuff in this window
+	glfwMakeContextCurrent(this->window); // Now OpenGL draws stuff in this window
 
 	// Enable VSync
 	glfwSwapInterval(1); /* Creates window motion slowdown on X11 */
@@ -20,13 +18,9 @@ Renderer::Renderer(Log* log, GLFWwindow* win)
 
 	glewExperimental = true;
 
-	int width, height;
-	glfwGetWindowSize(win, &width, &height);
-	glViewport(0, 0, width, height);
-
 	this->log->logf(
 		"[INFO] Renderer - OpenGL initialized, render mode is %d %d\n",
-		width, height);
+		b_Engine::getVidMode().x, b_Engine::getVidMode().y);
 
 	this->ctxPrepare();
 
@@ -34,6 +28,14 @@ Renderer::Renderer(Log* log, GLFWwindow* win)
 	this->init_framebuffers();
 
 	this->setRenderMode(RENDER_TEXTURED);
+};
+
+void Renderer::FramebufferSizeChange()
+{
+	glm::ivec2 vid_mode = b_Engine::getVidMode();
+	this->fb_scene->changeSize(vid_mode.x, vid_mode.y);
+	this->fb_ui->changeSize(vid_mode.x, vid_mode.y);
+	glViewport(0, 0, vid_mode.x, vid_mode.y);
 };
 
 void Renderer::ctxPrepare()
@@ -80,12 +82,12 @@ void Renderer::init_programs()
 };
 void Renderer::init_framebuffers()
 {
-	this->fb_scene = new Framebuffer(this->log, "fb_scene");
+	this->fb_scene = new Framebuffer("fb_scene");
 	this->fb_scene->initColorAttachment(WIN_WIDTH, WIN_HEIGHT);
 	this->fb_scene->initDepthAttachment(WIN_WIDTH, WIN_HEIGHT);
 	this->fb_scene->check();
 
-	this->fb_ui = new Framebuffer(this->log, "fb_ui");
+	this->fb_ui = new Framebuffer("fb_ui");
 	this->fb_ui->initColorAttachment(WIN_WIDTH, WIN_HEIGHT);
 	this->fb_ui->check();
 };
@@ -104,11 +106,6 @@ void Renderer::ctxClear()
 
 void Renderer::ClearCanvas()
 {
-	int width, height;
-	glfwGetWindowSize(this->window, &width, &height);
-	this->vid_mode.x = width;
-	this->vid_mode.y = height;
-
 	this->ctxClear();
 	this->fb_scene->clear(glm::vec4(0.f));
 	this->fb_ui->clear(glm::vec4(0.f));
@@ -116,9 +113,6 @@ void Renderer::ClearCanvas()
 
 void Renderer::RenderScene(Scene3D& scene)
 {
-	// Update scene
-	scene.update(this->vid_mode);
-
 	// Render lines if render mode is RENDER_WIRE, else render solid
 	if (this->r_mode == RENDER_WIRE)
 	{
@@ -146,9 +140,6 @@ void Renderer::RenderScene(Scene3D& scene)
 
 void Renderer::RenderUI(GUIScene& s)
 {
-	// Update scene
-	s.update(this->vid_mode);
-
 	this->ctxDisableDepthTest();
 	this->ctxDisableFaceCulling();
 
@@ -165,9 +156,11 @@ void Renderer::RenderUI(GUIScene& s)
 		this->p_flat->setmat4(
 			s.getProjection(), "u_projection"
 		);
+
 		// Form model matrix based on item info
+		// TODO: Compute item position based on window size
 		glm::mat4 model{1};
-		glm::vec3 pos {i->getPosition().x, i->getPosition().y, 0};
+		glm::vec3 pos {i->getPosition().x * b_Engine::getAspect(), i->getPosition().y, 0};
 		glm::vec3 scl {i->getScaling().x, i->getScaling().y, 0};
 		model = glm::translate(model, pos);	
 		model = glm::rotate(model, i->getRotation(), {0.f, 0.f, 1.f});
@@ -179,6 +172,7 @@ void Renderer::RenderUI(GUIScene& s)
 		this->p_flat->set4f(i->getColor(), "u_color");
 		this->p_flat->set1i(0, "u_is_text");
 		this->p_flat->set1i(0, "u_use_texturing");
+		this->p_flat->set3f(COLOR_NULL, "u_transperent_pixel");
 		switch (i->getType())
 		{
 			case GUI_SHAPE:
@@ -189,6 +183,10 @@ void Renderer::RenderUI(GUIScene& s)
 				if (this->r_mode != RENDER_WIRE)
 				{
 					i->getTexture()->bind();
+					this->p_flat->set1i(
+						(int)i->getTexture()->use_transperency_mask,
+						"u_use_transperency_mask"
+					);
 					this->p_flat->set1i(1, "u_use_texturing");
 				}
 				b_AssetManager::getMeshBasicQuad()->Draw();
@@ -256,6 +254,7 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 	/* =============== Color =============== */
 	p->set1i(0, "u_depth");
 	p->set1i(0, "u_rnormal");
+	p->set3f(COLOR_NULL, "u_transperent_pixel");
 	switch (this->r_mode)
 	{
 		// Textured rendering
@@ -264,6 +263,10 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 			{
 				p->set1i(1, "u_use_texturing");
 				p->set1f(e->getUVScaling(), "u_uv_scaling");
+				p->set1i(
+					(int)e->getTexture()->use_transperency_mask,
+					"u_use_transperency_mask"
+				);
 				e->getTexture()->bind();
 			}
 			else
