@@ -14,7 +14,7 @@ struct Mouse
 class Input
 {
 public:
-	Input(Log* logger);
+	Input();
 	~Input();
 
 	// Delete copy operators
@@ -33,11 +33,9 @@ public:
 	b_UserCharacterCallback getCharacterCallback() const;
 
 	const Mouse& getMouse();
-	void updateMouse(GLFWwindow*);
+	void updateMouse();
 	void resetMouse();
 private:
-	Log* log;
-
 	// u - User functions
 	b_UserKeyCallback u_kc = nullptr;
 	b_UserMouseButtonCallback u_mbc = nullptr;

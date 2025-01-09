@@ -1,12 +1,17 @@
 #include "engine/brengine.h"
 
-b_GUI::GUIImage ui_quad;
-b_GUI::GUIText ui_fps{
-	b_AssetManager::getDefaultMonoFont(),
-	"FPS:"
+/*
+	ui_ - gui object
+	e_ - entitiy instance
+	s_ - scene instance
+*/
+
+struct Game {
+	b_GameObject::Entity* e_white_cube;
+	b_GUI::GUIImage* ui_quad;
+	EditorController* g_player;
 };
-std::string fps_str;
-b_GameObject::Entity e_cube_white("Cube_white");
+
 bool is_cube_white_rotating = false;
 
 void key_callback(int key, int action, int mods)
@@ -20,15 +25,16 @@ void key_callback(int key, int action, int mods)
 
 void update(float time, float deltaTime)
 {
+	Game* game = (Game*)b_Engine::GetEngineUserPointer();
 	// UI Scene update
-	ui_quad.setScaling( .5f + glm::vec2( fabs( sinf(time) ) * .3f ));
-	ui_quad.setAlpha( fabs( cosf(time) ));
+	game->ui_quad->setScaling( .5f + glm::vec2( fabs( sinf(time) ) * .3f ));
+	game->ui_quad->setAlpha( fabs( cosf(time) ));
 	
-	fps_str = "FPS: " + std::to_string((int)(1.f / deltaTime));
-	ui_fps.text = fps_str;
-
 	// 3D Scene update
-	e_cube_white.transform.rotate(glm::vec3( deltaTime * 100.f ));
+	if (is_cube_white_rotating)
+		game->e_white_cube->transform.rotate(glm::vec3( deltaTime * 100.f ));
+
+	game->g_player->update();
 };
 
 int main()
@@ -62,24 +68,13 @@ int main()
 	ui_cross.setColor(glm::vec3(1.f, 0.09f, 0.79f));
 	ui_cross.setScaling(glm::vec2(.015f));
 	
+	b_GUI::GUIImage ui_quad;
 	ui_quad.setPosition(glm::vec2(-.7, -.7));
 	ui_quad.setTexture(b_AssetManager::getTextureNull());
-
-	ui_fps.setPosition(glm::vec2(.6, .9));
-	ui_fps.setScaling(glm::vec2(2.7, 2.7));
-
-	b_GUI::GUIText ui_info{
-		b_AssetManager::getDefaultSansFont(),
-		"Brengne3D Alpha"
-	};
-	ui_info.setPosition(glm::vec2(-.9, .9));
-	ui_info.setScaling(glm::vec2(6.7, 6.7));
 
 	b_GUI::GUIScene s_ui{};
 	s_ui.append(&ui_cross);
 	s_ui.append(&ui_quad);
-	s_ui.append(&ui_fps);
-	s_ui.append(&ui_info);
 
 	// Get poiner to engine renderer instance
 	// It is not necessary in this case
@@ -97,6 +92,7 @@ int main()
 	e_level.setTexture(&t_brick);
 
 	// White cube entity
+	b_GameObject::Entity e_cube_white("Cube_white");
 	e_cube_white.setProgram(rend->getProgramStandart());
 	e_cube_white.setMesh(b_AssetManager::getMeshCube());
 	e_cube_white.transform.setPosition(glm::vec3(4, 1, 5));
@@ -115,6 +111,13 @@ int main()
 	b_Engine::SetScene(&s_level);
 	b_Engine::SetUI(&s_ui);
 	b_Engine::SetUserUpdateFunction(update);
+
+	Game game;
+	game.e_white_cube = &e_cube_white;
+	game.ui_quad = &ui_quad;
+	game.g_player = &player;
+
+	b_Engine::SetEngineUserPointer(&game);
 
 	b_Engine::Run();
 

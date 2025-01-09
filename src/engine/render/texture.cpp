@@ -1,9 +1,11 @@
 #include "texture.h"
 
+#include "../engine.h"
+
 TextureImage2D::TextureImage2D(bool mp = false)
 {
 	glGenTextures(1, &this->id);
-	log->logf("[INFO] Texture id = %u - Generated new texture object\n", id);
+	b_log->logf("[INFO] Texture id = %u - Generated new texture object\n", id);
 	this->inited_with_image = false;
 	this->use_mipmaps = mp;
 };
@@ -54,13 +56,13 @@ void TextureImage2D::FromPNG(std::string fn)
 		stbi_image_free(bytes);
 
 		this->inited_with_image = true;
-		this->log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
+		b_log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
 			this->id, file_path.c_str()
 		);
 	}
 	else
 	{
-		this->log->logf("[ERROR] Texture: Could not open image with path %s\n",
+		b_log->logf("[ERROR] Texture: Could not open image with path %s\n",
 			file_path.c_str()
 		);
 	}
@@ -104,13 +106,13 @@ void TextureImage2D::FromBMP(std::string fn)
 		stbi_image_free(bytes);
 
 		this->inited_with_image = true;
-		this->log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
+		b_log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
 			this->id, file_path.c_str()
 		);
 	}
 	else
 	{
-		this->log->logf("[WARNING] Texture: Could not open image with path %s\n",
+		b_log->logf("[WARNING] Texture: Could not open image with path %s\n",
 			file_path.c_str()
 		);
 	}
@@ -127,14 +129,14 @@ void TextureImage2D::FromBytes(
 {
 	if (width < 1 || height < 1 || channels < 1)
 	{
-		this->log->logf("[ERROR] Texture - could not init, components value is less than 1\n");
+		b_log->logf("[ERROR] Texture - could not init, components value is less than 1\n");
 		return;
 	};
 
 	size_t size_required = (size_t)(channels * width * height);
 	if (bytes.size() < size_required)
 	{
-		this->log->logf("[ERROR] Texture - could not init, byte size is less then %lu\n", size_required);
+		b_log->logf("[ERROR] Texture - could not init, byte size is less then %lu\n", size_required);
 		return;
 	};
 	
@@ -153,7 +155,7 @@ void TextureImage2D::FromBytes(
 	
 	this->setImagePointer(components, components, GL_UNSIGNED_BYTE, &bytes[0]);
 	
-	this->log->logf(
+	b_log->logf(
 		"[INFO] Texture id = %u inited from bytes, size is %lu bytes\n",
 		this->id, bytes.size()
 	);
@@ -199,7 +201,7 @@ void TextureImage2D::setImagePointer(
 			format, dataType, data
 		);
 		if (this->use_mipmaps)	glGenerateMipmap(GL_TEXTURE_2D);
-		this->log->logf("[INFO] Texture id = %u data pointer created\n", this->id);
+		b_log->logf("[INFO] Texture id = %u data pointer created\n", this->id);
 	}
 };
 
@@ -211,7 +213,7 @@ GLuint TextureImage2D::getID()
 
 TextureImage2D::~TextureImage2D()
 {
-	this->log->logf("[INFO] Texture id = %u released\n", this->id);
+	b_log->logf("[INFO] Texture id = %u released\n", this->id);
 	glDeleteTextures(1, &this->id);
 };
 

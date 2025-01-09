@@ -3,7 +3,6 @@
 #include "../utils/deps.h"
 #include "../render/texture.h"
 #include "../utils/utils.h"
-#include "../engine.h"
 
 
 /*
@@ -101,7 +100,6 @@ namespace b_GUI
 			
 			void printCharacterMap();
 		private:
-			Log* log = b_Engine::getLogger();
 			void cleanUp();
 			std::string getCacheFileName();
 			

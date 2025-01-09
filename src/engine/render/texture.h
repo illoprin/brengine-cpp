@@ -2,12 +2,10 @@
 
 #include "../utils/deps.h"
 #include "../log.h"
-#include "../engine.h"
 
 struct TextureImage2D {
 
 private:
-	Log* log = b_Engine::getLogger();
 	bool inited_with_image;
 	bool use_mipmaps;
 	GLuint id;

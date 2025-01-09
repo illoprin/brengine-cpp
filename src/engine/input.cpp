@@ -1,8 +1,9 @@
 #include "input.h"
 
-Input::Input(Log* logger)
+#include "engine.h"
+
+Input::Input()
 {
-	this->log = logger;
 	this->mouse.m_last_x = 0.0;	this->mouse.m_last_y = 0.0;
 };
 
@@ -17,10 +18,10 @@ void Input::resetMouse()
 	this->mouse.m_delta_y = 0;
 }
 
-void Input::updateMouse(GLFWwindow* window)
+void Input::updateMouse()
 {
 	double mx, my;
-	glfwGetCursorPos(window, &mx, &my);
+	glfwGetCursorPos(b_Engine::getWindow(), &mx, &my);
 	this->mouse.m_x = mx; this->mouse.m_y = my;
 	this->mouse.m_delta_x = this->mouse.m_x - this->mouse.m_last_x;
 	this->mouse.m_delta_y = this->mouse.m_y - this->mouse.m_last_y;
@@ -30,22 +31,22 @@ void Input::updateMouse(GLFWwindow* window)
 void Input::setKeyCallback(b_UserKeyCallback func)
 {
 	this->u_kc = func;
-	this->log->logf("[INFO] IO: User key callback function 0x%X attached\n", func);
+	b_log->logf("[INFO] IO - User key callback function 0x%X attached\n", func);
 };
 void Input::setMouseButtonCallback(b_UserMouseButtonCallback func)
 {
 	this->u_mbc = func;
-	this->log->logf("[INFO] IO: User mouse callback function 0x%X attached\n", func);
+	b_log->logf("[INFO] IO - User mouse callback function 0x%X attached\n", func);
 };
 void Input::setMouseMotionCallback(b_UserMouseMotionCallback func)
 {
 	this->u_mmc = func;
-	this->log->logf("[INFO] IO: User cursor motion callback function 0x%X attached\n", func);
+	b_log->logf("[INFO] IO - User cursor motion callback function 0x%X attached\n", func);
 };
 void Input::setCharacterCallback(b_UserCharacterCallback func)
 {
 	this->u_cc = func;
-	this->log->logf("[INFO] IO: User keyboard input callback function 0x%X attached\n", func);
+	b_log->logf("[INFO] IO - User keyboard input callback function 0x%X attached\n", func);
 };
 
 b_UserKeyCallback Input::getKeyCallback() const

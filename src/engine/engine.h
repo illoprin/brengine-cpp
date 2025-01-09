@@ -7,6 +7,7 @@
 #include "input.h"
 
 #include "ui/gui_scene.h"
+#include "ui/debug_gui.h"
 #include "scene_3d.h"
 
 #include "render/renderer.h"
@@ -14,6 +15,7 @@
 
 // Fuck classes, I use namespaces
 
+extern Log* b_log;
 namespace b_Engine
 {
 	void Init();
@@ -32,7 +34,6 @@ namespace b_Engine
 
 	GLFWwindow* getWindow();
 	Renderer* getRenderer();
-	Log* getLogger();
 	Clock* getClock();
 	Input* getIO();
 	bool isGameMode();

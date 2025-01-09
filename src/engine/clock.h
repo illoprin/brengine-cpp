@@ -19,8 +19,8 @@ public:
 	// Equasion coppy opertaor delete
 	Clock& operator=(Clock&) = delete;
 private:
-	double delta_time;
-	double time;
-	double last_time;
-	double fps;
+	double delta_time = 0;
+	double time = 0;
+	double last_time = 0;
+	double fps = 0;
 };

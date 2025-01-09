@@ -13,7 +13,7 @@ class Scene3D
 public:
 	Scene3D(Camera* cam);
 
-	void update(glm::ivec2& vid_mode);
+	void update();
 	void append(b_GameObject::Entity* entity);
 
 	const std::vector<b_GameObject::Entity *>& getEntities() const;

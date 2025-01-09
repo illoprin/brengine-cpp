@@ -14,6 +14,7 @@ Log::Log()
 		fprintf(stderr, "Logger: Could not open new log file with path: %s!\n", file_path.c_str());
 		exit(EXIT_FAILURE);
 	}
+	logf("[INFO] Logger - Inited!\n");
 }
 
 int Log::logf(const char* format, ...)
@@ -41,6 +42,7 @@ int Log::logf(const char* format, ...)
 
 Log::~Log()
 {
+	logf("[INFO] Logger - Bye ;)\n");
 	fclose(this->file);
 	fprintf(stderr, "Logger - File writed!\n");
 }

@@ -19,18 +19,25 @@ static void framebufferSizeCallback (
 	GLFWwindow*, int, int
 );
 
-// --- Game Loop functions declaration
+// --- Some internal functions declarations
 static void game_loop_open();
 static void game_loop_update();
 static void game_loop_render();
 static void game_loop_close();
+static void init_window();
+static void init_io();
+
+// Create unique pointers to single classes (bu_ = brengine unique)
+static std::unique_ptr<Log> bu_log = std::make_unique<Log>();
+static std::unique_ptr<Clock> bu_clock;
+static std::unique_ptr<Renderer> bu_renderer;
 
 // Base
-static Log* log;
-static Clock* e_clock;
-static Renderer* renderer;
-static Input* input;
-static GLFWwindow* wnd;
+Log* b_log = bu_log.get(); // Global Log ptr
+static Clock* b_clock;
+static Renderer* b_renderer;
+static Input* b_input;
+static GLFWwindow* b_window;
 
 // User
 static void* usr_ptr = nullptr;
@@ -38,42 +45,55 @@ static b_UserUpdateFunc usr_update_func = nullptr;
 static Scene3D* usr_scene = nullptr;
 static GUIScene* usr_gui = nullptr;
 
+// Engine static
+static DebugGUI* s_debug;
+
 // Window size
-static glm::ivec2 vid_mode{WIN_WIDTH, WIN_HEIGHT};
-float aspect = (float) WIN_HEIGHT / (float) WIN_WIDTH;
+static glm::ivec2 w_vid_mode {WIN_WIDTH, WIN_HEIGHT};
+float w_aspect = 1.f;
 
 // Game
 bool is_game_mode = false;
 
 /* ================ Engine - Public Interface ================ */
+
 void b_Engine::Init()
 {
 	b_Files::InitFilesystem();
 
-	initWindow();
+	init_window();
 
-	// Create pointer to Logger instance 
-	log = new Log();
-	// Create pointer to Renderer instance
-	renderer = new Renderer();
-	// Create poiner to Clock instance
-	e_clock = new Clock();
+	// Init renderer after window init
+	bu_clock = std::make_unique<Clock>();
+	b_clock = bu_clock.get();
+	bu_renderer = std::make_unique<Renderer>();
+	b_renderer = bu_renderer.get();
+	b_AssetManager::InitAssets();
+	init_io();
 
-	initIO();
+	s_debug = new DebugGUI;
 };
+
 void b_Engine::Release()
 {
-	glfwDestroyWindow(wnd);
+	b_log->logf("[INFO] Engine - Closing...\n");
+	glfwDestroyWindow(b_window);
 	glfwTerminate();
 	
 	// Release initial assets
 	b_AssetManager::ReleaseAssets();
 	
-	delete renderer;
-	delete e_clock;
-	delete log;
-	delete input;
-	printf("Bye :)\n");
+	delete b_input;
+};
+
+void b_Engine::SetScene(Scene3D* s)
+{
+	usr_scene = s;
+};
+
+void b_Engine::SetUI(b_GUI::GUIScene* s)
+{
+	usr_gui = s;
 };
 
 void b_Engine::ToggleGameMode()
@@ -82,27 +102,28 @@ void b_Engine::ToggleGameMode()
 	if (is_game_mode)
 		/* Hide and lock cursor */
 		glfwSetInputMode(
-			wnd, GLFW_CURSOR, GLFW_CURSOR_DISABLED
+			b_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED
 		);
 	else
 		/* Set cursor visible */
 		glfwSetInputMode(
-			wnd, GLFW_CURSOR, GLFW_CURSOR_NORMAL
+			b_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL
 		);
 };
+
 void b_Engine::TakeScreenshot()
 {
 	// !!! Creates "Segmentation fault" error when vidmode != (1920, 1020) or (WIN_WIDTH, WIN_HEIGHT)
-	if (   (vid_mode.x  == WIN_WIDTH  || vid_mode.x == 1920)
-		&& (vid_mode.y == WIN_HEIGHT || vid_mode.y == 1020))
+	if (   (w_vid_mode.x  == WIN_WIDTH  || w_vid_mode.x == 1920)
+		&& (w_vid_mode.y == WIN_HEIGHT || w_vid_mode.y == 1020))
 	{
-		unsigned char* pixels = (unsigned char*)calloc(vid_mode.x * vid_mode.y * 3, 1);
+		unsigned char* pixels = (unsigned char*)calloc(w_vid_mode.x * w_vid_mode.y * 3, 1);
 
 		// Bind main framebuffer
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
 		// Read pixels from main framebuffer
-		glReadPixels(0, 0, vid_mode.x, vid_mode.y, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+		glReadPixels(0, 0, w_vid_mode.x, w_vid_mode.y, GL_RGB, GL_UNSIGNED_BYTE, pixels);
 
 		// Get filename
 		std::string file_name{
@@ -112,11 +133,11 @@ void b_Engine::TakeScreenshot()
 		// Write pixels to image
 		stbi_flip_vertically_on_write(1);
 		int write_status = stbi_write_png(
-			file_name.c_str(), vid_mode.x, vid_mode.y,
-			3, pixels, vid_mode.x * 3
+			file_name.c_str(), w_vid_mode.x, w_vid_mode.y,
+			3, pixels, w_vid_mode.x * 3
 		);
 		if (!write_status)
-			log->logf("[WARNING] Engine - Could not take screenshot\n");
+			b_log->logf("[WARNING] Engine - Could not take screenshot\n");
 		stbi_flip_vertically_on_write(0);
 
 		free(pixels);
@@ -130,7 +151,7 @@ void b_Engine::TakeScreenshot()
 
 void b_Engine::Run()
 {
-	while(glfwWindowShouldClose(wnd))
+	while(!glfwWindowShouldClose(b_window))
 	{
 		game_loop_open();
 		game_loop_update();
@@ -142,43 +163,43 @@ void b_Engine::Run()
 // --- Getters
 glm::ivec2 b_Engine::getVidMode()
 {
-	return vid_mode;
+	return w_vid_mode;
 };
 GLFWwindow* b_Engine::getWindow()
 {
-	return wnd;
-};
-Log* b_Engine::getLogger()
-{
-	return log;
+	return b_window;
 };
 Clock* b_Engine::getClock()
 {
-	return e_clock;
+	return b_clock;
 };
 Renderer* b_Engine::getRenderer()
 {
-	return renderer;
+	return b_renderer;
 };
 Input* b_Engine::getIO()
 {
-	return input;
+	return b_input;
 };
 bool b_Engine::isGameMode()
 {
 	return is_game_mode;
 };
+float b_Engine::getAspect()
+{
+	return w_aspect;
+}
 
 // --- Setters
-inline void b_Engine::SetUserUpdateFunction(b_UserUpdateFunc func)
+void b_Engine::SetUserUpdateFunction(b_UserUpdateFunc func)
 {
 	usr_update_func = func;
 };
-inline void b_Engine::SetEngineUserPointer(void* ptr)
+void b_Engine::SetEngineUserPointer(void* ptr)
 {
 	usr_ptr = ptr;
 };
-inline void* b_Engine::GetEngineUserPointer()
+void* b_Engine::GetEngineUserPointer()
 {
 	return usr_ptr;
 };
@@ -186,9 +207,9 @@ inline void* b_Engine::GetEngineUserPointer()
 /* =========================================================== */
 
 
-static void initWindow()
+static void init_window()
 {
-	if (!glfwInit())
+	if (glfwInit() != GLFW_TRUE)
 	{
 		printf("Could not init GLFW\n");
 		glfwTerminate();
@@ -199,31 +220,42 @@ static void initWindow()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	// Set window resizeable option
-	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-	// Set MSAA parametres
-	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	wnd = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, WIN_TITLE, NULL, NULL);
+	b_window = glfwCreateWindow(WIN_WIDTH, WIN_HEIGHT, WIN_TITLE, NULL, NULL);
 
-	if (!wnd)
+	if (!b_window)
 	{
 		printf("Could not create GLFW window\n");
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	};
-	glfwFocusWindow(wnd);
+
+	// Init window-size-depend variables
+	int w_w, w_h;
+	glfwGetFramebufferSize(b_window, &w_w, &w_h);
+	w_vid_mode.x = w_w;
+	w_vid_mode.y = w_h;
+	w_aspect = (float)w_w / (float)w_h;
+
+	// Set window position in center of screen
+	const GLFWvidmode* glfw_vidmode =
+		glfwGetVideoMode(glfwGetPrimaryMonitor());
+	int wx = glfw_vidmode->width / 2 - w_w / 2;
+	int wy = glfw_vidmode->height / 2 - w_h / 2;
+	glfwSetWindowPos(b_window, wx, wy);
+
+	glfwFocusWindow(b_window);
 };
 
-static void initIO()
+static void init_io()
 {
-	input = new Input(log);
-	glfwSetErrorCallback(errorCallback);
+	b_input = new Input;
 
-	glfwSetKeyCallback(wnd, keyCallback);
-	glfwSetMouseButtonCallback(wnd, mouseButtonCallback);
-	glfwSetCursorPosCallback(wnd, mouseMotionCallback);
-	glfwSetFramebufferSizeCallback(wnd, framebufferSizeCallback);
+	glfwSetErrorCallback(errorCallback);
+	glfwSetKeyCallback(b_window, keyCallback);
+	glfwSetMouseButtonCallback(b_window, mouseButtonCallback);
+	glfwSetCursorPosCallback(b_window, mouseMotionCallback);
+	glfwSetFramebufferSizeCallback(b_window, framebufferSizeCallback);
 };
 
 /* ================== Update Methods ================== */
@@ -231,33 +263,47 @@ static void initIO()
 static void game_loop_update()
 {
 	if (usr_update_func != nullptr)
+	{
 		usr_update_func(
-			(float) e_clock->getTime(),
-			(float) e_clock->getDeltaTime()
-		);
-	if (usr_scene != nullptr) usr_scene->update(vid_mode);
-	if (usr_gui != nullptr) usr_gui->update(vid_mode);
+			(float) b_clock->getTime(),
+			(float) b_clock->getDeltaTime()
+		);		
+	}
+
+	s_debug->updateFPSText();
+	if (usr_scene != nullptr)
+	{
+		s_debug->updatePlayerPosText(usr_scene->getCameraMain());
+		usr_scene->update();
+	}
+	if (usr_gui != nullptr) 
+	{
+		// GUI scene update
+	};
+
+	b_renderer->Update();
 };
 static void game_loop_render()
 {
-	renderer->ClearCanvas();
+	b_renderer->ClearCanvas();
 	if (usr_scene != nullptr)
-		renderer->RenderScene(*usr_scene);
+		b_renderer->RenderScene(*usr_scene);
+	b_renderer->RenderUI(s_debug->s_ui_debug);
 	if (usr_gui != nullptr)
-		renderer->RenderUI(*usr_gui);
-	renderer->Flush();
+		b_renderer->RenderUI(*usr_gui);
+	b_renderer->Flush();
 };
 static void game_loop_open()
 {
-	e_clock->start();
+	b_clock->start();
 
 	glfwPollEvents();
-	input->resetMouse();
-	input->updateMouse(wnd);
+	b_input->resetMouse();
+	b_input->updateMouse();
 };
 static void game_loop_close()
 {
-	e_clock->end();
+	b_clock->end();
 };
 /* ==================================================== */
 
@@ -273,42 +319,39 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 	if (action == GLFW_PRESS)
 	{
 		if (key == GLFW_KEY_ESCAPE)
-		{
-			printf("Closing...\n");
 			glfwSetWindowShouldClose(window, GLFW_TRUE);
-		}
 		
 		if (key == GLFW_KEY_TAB) b_Engine::ToggleGameMode();
 
-		if (key == GLFW_KEY_F5) renderer->switchRenderMode();
+		if (key == GLFW_KEY_F5) b_renderer->switchRenderMode();
 		if (key == GLFW_KEY_F2) b_Engine::TakeScreenshot();
 	}
 	// Execute user function
-	b_UserKeyCallback user_func = input->getKeyCallback();
+	b_UserKeyCallback user_func = b_input->getKeyCallback();
 	if (user_func != nullptr) user_func(key, action, mods);
 };
 
 static void mouseMotionCallback(GLFWwindow* window, double x, double y)
 {
 	// Execute user function
-	b_UserMouseMotionCallback user_func = input->getMouseMotionCallback();
+	b_UserMouseMotionCallback user_func = b_input->getMouseMotionCallback();
 	if (user_func != nullptr) user_func(x, y);
 };
 
 static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
 	// Execute user function
-	b_UserMouseButtonCallback user_func = input->getMouseButtonCallback();
+	b_UserMouseButtonCallback user_func = b_input->getMouseButtonCallback();
 	if (user_func != nullptr) user_func(button, action);
 };
 
 static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
-	vid_mode.x = width; vid_mode.y = height;
-	aspect = (float) vid_mode.x / (float) vid_mode.y;
+	w_vid_mode.x = width; w_vid_mode.y = height;
+	w_aspect = (float) w_vid_mode.x / (float) w_vid_mode.y;
 
-	log->logf("[INFO] Engine - window resized %d %d\n", width, height);
-	renderer->FramebufferSizeChange();
+	b_log->logf("[INFO] Engine - window resized %d %d\n", width, height);
+	b_renderer->FramebufferSizeChange();
     glViewport(0, 0, width, height);
 	game_loop_render();
 }

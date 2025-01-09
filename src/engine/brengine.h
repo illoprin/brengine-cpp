@@ -9,8 +9,6 @@
 
 // Renderer
 #include "render/renderer.h"
-// Engine interface
-#include "engine.h"
 
 // Model
 #include "mesh/model.h"
@@ -46,5 +44,8 @@
 // Game
 #include "editor_controller.h"
 #include "assets.h"
+
+// Engine interface
+#include "engine.h"
 
 #endif

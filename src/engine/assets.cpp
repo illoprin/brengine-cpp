@@ -1,5 +1,7 @@
 #include "assets.h"
 
+#include "engine.h"
+
 using namespace b_AssetManager;
 namespace b_GuiFont = b_GUI::b_Font;
 
@@ -25,7 +27,7 @@ static float quad_data[] = {
 static b_Model::ModelTriangles quad_model{QuadTriangles(1.f)};
 static b_Model::ModelTriangles cube_model{CubeTriangles(1.f)};
 
-void b_AssetManager::InitAssets(Log* l)
+void b_AssetManager::InitAssets()
 {
 	// --- Textures
 	TextureNull = new TextureImage2D{false};

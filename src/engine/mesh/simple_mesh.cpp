@@ -1,5 +1,7 @@
 #include "simple_mesh.h"
 
+#include "../engine.h"
+
 void SimpleMesh::initFromModel(ModelTriangles* tris)
 {
 	if (tris->size() == 0)
@@ -22,7 +24,7 @@ void SimpleMesh::initFromModel(ModelTriangles* tris)
 			last_buffer, 3, sizeof(ModelVertex), offsetof(ModelVertex, nx)
 	);
 
-	this->log->logf("[INFO] Mesh.%s - Simple initialization happend, total count of vertices is %u, buffer size is %lu bytes\n",
+	b_log->logf("[INFO] Mesh.%s - Simple initialization happend, total count of vertices is %u, buffer size is %lu bytes\n",
 		this->name.c_str(), this->total_count, bytes);
 };
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../utils/deps.h"
-#include "../engine.h"
 
 #include "model.h"
 
@@ -107,7 +106,6 @@ protected:
 	std::vector<GLuint> vbos;
 	std::vector<GLuint> attrs_list;
 	unsigned total_count = 0;
-	Log* log = b_Engine::getLogger();
 
 	void enable_attributes();
 	void disable_attributes();

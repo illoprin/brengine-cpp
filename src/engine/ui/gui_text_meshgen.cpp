@@ -38,6 +38,15 @@ void b_GUI::StringToMesh(GUIText* t)
 				x += f->ave_aw;
 				continue;
 			}
+			// 0. If it is escape sequence
+			if (c == '\n')
+			{
+				// Shift caret to lineheight
+				// 5 is magic number to create some margin between lines
+				y -= f->ascent + 5;
+				x = 0;
+				continue;
+			};
 			// 1. Get glyph characteristics
 			b_Font::Character& ch_obj = f->char_map.at(c);
 			c_width = ch_obj.getWidth();
@@ -84,7 +93,6 @@ void b_GUI::StringToMesh(GUIText* t)
 			t->verts[(index * 6) + 4] = lt;
 			t->verts[(index * 6) + 5] = rt;
 
-			
 			// Shift caret at advance width
 			x += aw;
 			++index;

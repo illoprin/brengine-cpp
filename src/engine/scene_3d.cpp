@@ -22,9 +22,9 @@ const std::vector<Entity *>& Scene3D::getEntities() const
 	return this->objects;
 };
 
-void Scene3D::update(glm::ivec2& vid_mode)
+void Scene3D::update()
 {
-	this->c_main->update(vid_mode);
+	this->c_main->update();
 	for (Entity* entity : this->objects)
 		entity->update();
 };

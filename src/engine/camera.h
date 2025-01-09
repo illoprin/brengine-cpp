@@ -9,7 +9,7 @@ public:
 	Camera(glm::vec3 pos);
 	~Camera();
 
-	void update(glm::ivec2 win_size);
+	void update();
 
 	void setPosition(glm::vec3 pos);
 	void move(glm::vec3 delta);
@@ -39,8 +39,4 @@ private:
 	glm::vec3 forward;
 	glm::vec3 right;
 	glm::vec3 up;
-	
-	// NEEDS REFACTORING!!!
-	// We can get vidmode from core engine instance
-	unsigned vid_mode[2];
 };

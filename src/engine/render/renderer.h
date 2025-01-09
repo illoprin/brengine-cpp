@@ -10,7 +10,6 @@
 #include "../ui/gui_item.h"
 #include "../ui/gui_text_meshgen.h"
 #include "../assets.h"
-#include "../engine.h"
 
 /*
 	Renderer Program Types:
@@ -45,6 +44,8 @@ public:
 	
 	// Clear main framebuffer
 	void ctxClear();
+	// Update matrices
+	void Update();
 	// Clear all framebuffers
 	void ClearCanvas();
 	// Render scene
@@ -72,9 +73,6 @@ public:
 	// Use this to render screenquad
 	Program* getProgramCanvas() const;
 private:
-	GLFWwindow* window = b_Engine::getWindow();
-	Log* log = b_Engine::getLogger();
-	
 	void ctxPrepare();
 	void ctxBind();
 
@@ -87,6 +85,10 @@ private:
 	void render_3d_entity(b_GameObject::Entity*, Program*, Camera*);
 	
 	RenderMode r_mode;
+
+	// General matrices for projection
+	glm::mat4 m_ortho{1.f};
+	glm::mat4 m_perspective{1.f};
 
 	// Shader Programs
 	Program* p_flat;

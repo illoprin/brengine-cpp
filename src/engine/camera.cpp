@@ -1,5 +1,7 @@
 #include "camera.h"
 
+#include "engine.h"
+
 Camera::Camera(glm::vec3 pos)
 {
 	this->setPosition(pos);
@@ -25,9 +27,10 @@ void Camera::update_vectors()
 
 void Camera::update_matrices()
 {
+	float aspect = b_Engine::getAspect();
 	this->projection = glm::perspective(
 		glm::radians(CAM_FOV),
-		(float) this->vid_mode[0] / (float) this->vid_mode[1],
+		aspect,
 		CAM_NEAR, CAM_FAR
 	);
 	this->view = glm::lookAt(
@@ -35,11 +38,8 @@ void Camera::update_matrices()
 	);
 };
 
-void Camera::update(glm::ivec2 win_size)
-{
-	this->vid_mode[0] = win_size.x;
-	this->vid_mode[1] = win_size.y;
-	
+void Camera::update()
+{	
 	this->update_vectors();
 	this->update_matrices();	
 };

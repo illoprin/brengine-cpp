@@ -3,7 +3,7 @@
 #include "../utils/deps.h"
 #include "texture.h"
 #include "../log.h"
-#include "../engine.h"
+
 
 struct Framebuffer
 {
@@ -28,6 +28,4 @@ private:
 
 	TextureImage2D* color_attachment = nullptr;
 	TextureImage2D* depth_attachment = nullptr;
-	
-	Log* log = b_Engine::getLogger();
 };

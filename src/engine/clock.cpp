@@ -1,12 +1,7 @@
 #include "clock.h"
 
 Clock::Clock()
-{
-	this->time = 0;
-	this->delta_time = 0;
-	this->fps = 0;
-	this->last_time = 0;
-};
+{};
 
 double Clock::getDeltaTime()
 {

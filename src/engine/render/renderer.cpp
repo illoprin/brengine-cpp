@@ -1,11 +1,13 @@
 #include "renderer.h"
 
+#include "../engine.h"
+
 using namespace b_GUI;
 using namespace b_GameObject;
 
 Renderer::Renderer()
 {
-	glfwMakeContextCurrent(this->window); // Now OpenGL draws stuff in this window
+	glfwMakeContextCurrent(b_Engine::getWindow()); // Now OpenGL draws stuff in this window
 
 	// Enable VSync
 	glfwSwapInterval(1); /* Creates window motion slowdown on X11 */
@@ -18,7 +20,7 @@ Renderer::Renderer()
 
 	glewExperimental = true;
 
-	this->log->logf(
+	b_log->logf(
 		"[INFO] Renderer - OpenGL initialized, render mode is %d %d\n",
 		b_Engine::getVidMode().x, b_Engine::getVidMode().y);
 
@@ -40,7 +42,7 @@ void Renderer::FramebufferSizeChange()
 
 void Renderer::ctxPrepare()
 {
-	glEnable(GL_MULTISAMPLE); // Enable MSAA
+	// glEnable(GL_MULTISAMPLE); // MSAA is not working, because app use multiple framebuffers
 	glEnable(GL_BLEND); // Enable alpha blending
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Set alpha blending model
 };
@@ -49,7 +51,7 @@ void Renderer::ctxEnableFaceCulling()
 {
 	glEnable(GL_CULL_FACE); // Enable backface culling
 	glCullFace(GL_BACK); // Set backface culling model - vertices order is counter clockwise
-	glFrontFace(GL_CCW); // Face culling - front face is in clockwise
+	glFrontFace(GL_CCW); // Face culling - front face is in clockwise order
 };
 
 void Renderer::ctxDisableFaceCulling()
@@ -69,15 +71,15 @@ void Renderer::ctxDisableDepthTest()
 void Renderer::init_programs()
 {
 	// Use this to render 2D textured/colored stuff
-	this->p_flat = new Program{this->log};
+	this->p_flat = new Program{};
 	this->p_flat->InitVertexAndFragment("b_flat");
 	
 	// Use this to render 3D textured/colored stuff
-	this->p_standart = new Program{this->log};
+	this->p_standart = new Program{};
 	this->p_standart->InitVertexAndFragment("b_standart");
 
 	// Use this to render screenquad
-	this->p_mixer = new Program{this->log};
+	this->p_mixer = new Program{};
 	this->p_mixer->InitVertexAndFragment("b_godmixer");
 };
 void Renderer::init_framebuffers()
@@ -111,6 +113,16 @@ void Renderer::ClearCanvas()
 	this->fb_ui->clear(glm::vec4(0.f));
 };
 
+void Renderer::Update()
+{
+	float aspect = b_Engine::getAspect();
+	this->m_ortho = glm::ortho(
+		-aspect, aspect, // X
+		-1.f, 1.f,       // Y
+		0.f, 1.f         // Near Far
+	);
+};
+
 void Renderer::RenderScene(Scene3D& scene)
 {
 	// Render lines if render mode is RENDER_WIRE, else render solid
@@ -142,25 +154,25 @@ void Renderer::RenderUI(GUIScene& s)
 {
 	this->ctxDisableDepthTest();
 	this->ctxDisableFaceCulling();
-
+	float aspect = b_Engine::getAspect();
 	this->fb_ui->bind();
+
+	this->p_flat->use();
+	// Send projection matrix to flat ui shader
+	this->p_flat->setmat4(
+		this->m_ortho, "u_projection"
+	);
 	for (GUIItem* i : s.getItems())
 	{
 		i->update(); // Update item before drawing
 
-		this->p_flat->use();
-		this->p_flat->set1i(0, "u_texture");
+		this->p_flat->set1i(0, "u_texture"); // Texture index
 
 		/* =============== Position ============ */
-		// Send projection matrix to shader
-		this->p_flat->setmat4(
-			s.getProjection(), "u_projection"
-		);
-
 		// Form model matrix based on item info
 		// TODO: Compute item position based on window size
 		glm::mat4 model{1};
-		glm::vec3 pos {i->getPosition().x * b_Engine::getAspect(), i->getPosition().y, 0};
+		glm::vec3 pos {i->getPosition().x * aspect, i->getPosition().y, 0};
 		glm::vec3 scl {i->getScaling().x, i->getScaling().y, 0};
 		model = glm::translate(model, pos);	
 		model = glm::rotate(model, i->getRotation(), {0.f, 0.f, 1.f});
@@ -229,7 +241,7 @@ void Renderer::Flush()
 	b_AssetManager::getMeshBasicQuad()->Draw();
 	glActiveTexture(GL_TEXTURE0);
 	
-	glfwSwapBuffers(this->window);
+	glfwSwapBuffers(b_Engine::getWindow());
 };
 
 void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
@@ -313,7 +325,7 @@ void Renderer::switchRenderMode()
 	int current_mode = (int)this->r_mode;
 	current_mode = (current_mode + 1) % 4;
 	this->r_mode = (RenderMode)current_mode;
-	log->logf(
+	b_log->logf(
 		"[INFO] Renderer - render mode switched to %d\n", 
 		(int)this->r_mode);
 };

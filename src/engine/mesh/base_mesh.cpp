@@ -1,5 +1,7 @@
 #include "base_mesh.h"
 
+#include "../engine.h"
+
 BaseMesh::BaseMesh(const char* name)
 {
 	this->name = std::string(name);
@@ -42,7 +44,7 @@ GLuint BaseMesh::AddBuffer(void* data, size_t size_bytes)
 	
 	this->vbos.push_back(vbo);
 	
-	this->log->logf("[INFO] Mesh.%s - Generated new buffer object index = %u with size %lu bytes\n",
+	b_log->logf("[INFO] Mesh.%s - Generated new buffer object index = %u with size %lu bytes\n",
 		this->name.c_str(), vbo, size_bytes);
 	return vbo;
 };
@@ -66,7 +68,7 @@ GLuint BaseMesh::AddDynamicBuffer(
 
 	this->vbos.push_back(vbo);
 	
-	this->log->logf("[INFO] Mesh.%s - Generated new dynamic buffer object index = %u with size %lu bytes\n",
+	b_log->logf("[INFO] Mesh.%s - Generated new dynamic buffer object index = %u with size %lu bytes\n",
 		this->name.c_str(), vbo, (size + reserve));
 
 	// Unbind VAO object after setting up its buffer 
@@ -101,7 +103,7 @@ void BaseMesh::SetDataPointer(
 	// Unbind VAO object after setting up 
 	glBindVertexArray(0);
 
-	this->log->logf("[INFO] Mesh.%s - Added attribute pointer with index %u\n",
+	b_log->logf("[INFO] Mesh.%s - Added attribute pointer with index %u\n",
 		this->name.c_str(), next_attr);
 
 	// New attribute writed, push its index to list
@@ -129,7 +131,7 @@ void BaseMesh::SetDataIntegerPointer(
 	// Unbind VAO object after setting up 
 	glBindVertexArray(0);
 
-	this->log->logf("[INFO] Mesh.%s - Added attribute integer pointer with index %u\n",
+	b_log->logf("[INFO] Mesh.%s - Added attribute integer pointer with index %u\n",
 		this->name.c_str(), next_attr);
 
 	// New attribute writed, push its index to list
@@ -159,7 +161,7 @@ void BaseMesh::SetDataPointerWithDivisior(
 	// Unbind VAO object after setting up
 	glBindVertexArray(0);
 
-	this->log->logf("[INFO] Mesh.%s - Added attribute pointer with divisor, index = %u, instance divisor = %u\n",
+	b_log->logf("[INFO] Mesh.%s - Added attribute pointer with divisor, index = %u, instance divisor = %u\n",
 		this->name.c_str(), next_attr, instances);
 
 	// New attribute writed, push its index to list
@@ -257,7 +259,7 @@ void BaseMesh::clear()
 		glDeleteBuffers(1, &vbo);
 	
 	glDeleteVertexArrays(1, &this->vao);
-	this->log->logf("[INFO] Mesh.%s - VAO & VBO cleared\n", this->name.c_str());
+	b_log->logf("[INFO] Mesh.%s - VAO & VBO cleared\n", this->name.c_str());
 }
 
 BaseMesh::~BaseMesh()

@@ -10,7 +10,7 @@
 
 namespace b_AssetManager
 {
-	void InitAssets(Log*);
+	void InitAssets();
 	TextureImage2D* getTextureNull();
 	TextureImage2D* getTextureNullAlpha();
 	BaseMesh* getMeshBasicQuad();

@@ -1,5 +1,7 @@
 #include "gui_font.h"
 
+#include "../engine.h"
+
 using namespace b_GUI;
 
 // ASCII English symbols index range
@@ -92,7 +94,7 @@ void b_Font::Font::FromTTF(
 
 	if (this->info == nullptr)
 	{
-		log->logf("[WARNING] Font %s - Could not allocate memory for stbtt_fontinfo struct\n",
+		b_log->logf("[WARNING] Font %s - Could not allocate memory for stbtt_fontinfo struct\n",
 			this->name.c_str());
 		return;		
 	}
@@ -106,7 +108,7 @@ void b_Font::Font::FromTTF(
 	if (!stbtt_InitFont(this->info, ttf_buffer, 0))
 	{
 		this->cleanUp();
-		log->logf("[WARNING] Font %s - Could not init from file %s\n",
+		b_log->logf("[WARNING] Font %s - Could not init from file %s\n",
 			this->name.c_str(), filename.c_str());
 		return;
 	}
@@ -117,7 +119,7 @@ void b_Font::Font::FromTTF(
 	this->ascent = (int)roundf(this->ascent * scale_em);
 	this->descent = (int)roundf(this->descent * scale_em);
 
-	log->logf("[INFO] Font %s - Inited\n", name.c_str());
+	b_log->logf("[INFO] Font %s - Inited\n", name.c_str());
 
 	if (this->buildAtlas(width, height))
 	{
@@ -141,7 +143,7 @@ bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	);
 	if (this->atlas == nullptr)
 	{
-		log->logf("[WARNING] Font %s - Could not allocate memory for atlas\n",
+		b_log->logf("[WARNING] Font %s - Could not allocate memory for atlas\n",
 			this->name.c_str());
 		return false;
 	}
@@ -208,7 +210,7 @@ bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	this->ave_lsb =
 		(int)round((double)ave_lsb / (double)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX));
 
-	log->logf("[INFO] Font %s - Atlas with width %u height %u builded\n", name.c_str(), this->atlas_w, this->atlas_h);
+	b_log->logf("[INFO] Font %s - Atlas with width %u height %u builded\n", name.c_str(), this->atlas_w, this->atlas_h);
 	return true;
 };
 
@@ -224,7 +226,7 @@ void b_Font::Font::cacheData(const char* filename)
 	FILE* file = fopen(filename, "wb");
 	if (!file)
 	{
-		log->logf("[WARNING] Font %s - Could not create cache file\n",
+		b_log->logf("[WARNING] Font %s - Could not create cache file\n",
 			this->name.c_str());
 		return;
 	}
@@ -280,7 +282,7 @@ void b_Font::Font::cacheData(const char* filename)
 	size_t pixels_total = this->atlas_w * this->atlas_h;
 	fwrite(this->atlas, sizeof(unsigned char), pixels_total, file);
 
-	log->logf("[INFO] Font %s - Cached to file %s\n",
+	b_log->logf("[INFO] Font %s - Cached to file %s\n",
 		this->name.c_str(), filename);
 
 	// Close file
@@ -293,7 +295,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	FILE* file = fopen(filename, "rb");
 	if (!file)
 	{
-		log->logf("[WARNING] Font %s - Could not open cache file\n",
+		b_log->logf("[WARNING] Font %s - Could not open cache file\n",
 			this->name.c_str());
 		return false;
 	}
@@ -320,7 +322,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	fread(&num_char, sizeof(uint16_t), 1, file);
 	if (num_char != (uint16_t)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX))
 	{
-		log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
+		b_log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
 			this->name.c_str(), filename);
 		fclose(file);
 		return false;
@@ -377,7 +379,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	if (this->atlas_w != (unsigned)a_w || this->atlas_h != (unsigned)a_h)
 	{
-		log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
+		b_log->logf("[INFO] Font %s - Could not process cache file with path %s\n",
 			this->name.c_str(), filename);
 		this->char_map.clear();
 		fclose(file);
@@ -386,7 +388,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	size_t pixels_total = a_w * a_h;
 	unsigned char* new_atlas = (unsigned char*)malloc(pixels_total);
-	log->logf("[INFO] Font %s - Atlas width is %u height is %u\n",
+	b_log->logf("[INFO] Font %s - Atlas width is %u height is %u\n",
 			this->name.c_str(), a_w, a_h);
 	
 	fread(new_atlas, sizeof(unsigned char), pixels_total, file);
@@ -395,7 +397,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 		free(this->atlas);
 	this->atlas = new_atlas;
 	
-	log->logf("[INFO] Font %s - Loaded from cache\n", this->name.c_str());
+	b_log->logf("[INFO] Font %s - Loaded from cache\n", this->name.c_str());
 
 	return true;
 };
@@ -406,5 +408,5 @@ b_Font::Font::~Font()
 	if (this->atlas) free(this->atlas);
 	// Release OpenGL texture object
 	delete this->t_atlas;
-	log->logf("[INFO] Font %s - Released\n", this->name.c_str());
+	b_log->logf("[INFO] Font %s - Released\n", this->name.c_str());
 };
