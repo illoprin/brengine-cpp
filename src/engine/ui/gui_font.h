@@ -80,7 +80,7 @@ namespace b_GUI
 			unsigned char* atlas = nullptr;
 			unsigned atlas_w = 0, atlas_h = 0;
 
-			TextureImage2D* t_atlas;
+			b_Texture::TextureImage2D* t_atlas;
 
 			Font(std::string name);
 			~Font();

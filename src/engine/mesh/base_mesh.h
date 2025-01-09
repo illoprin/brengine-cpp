@@ -113,3 +113,8 @@ protected:
 	void bind();
 	void unbind();
 };
+
+namespace b_Engine
+{
+	uint16_t getDrawCalls();
+};

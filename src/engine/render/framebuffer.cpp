@@ -2,6 +2,8 @@
 
 #include "../engine.h"
 
+using namespace b_Texture;
+
 Framebuffer::Framebuffer(const char* name)
 {
 	this->name = {name};

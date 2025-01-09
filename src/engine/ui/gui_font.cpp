@@ -45,7 +45,7 @@ b_Font::Font::Font(std::string n)
 	this->name = n;
 
 	// Create texture object for atlas
-	this->t_atlas = new TextureImage2D{false};
+	this->t_atlas = new b_Texture::TextureImage2D{false};
 };
 
 void b_Font::Font::configureTexture()

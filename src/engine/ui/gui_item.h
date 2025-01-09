@@ -20,7 +20,7 @@ namespace b_GUI
 		GUIItem(GUIItem&) = delete;
 
 		// For override
-		virtual TextureImage2D* getTexture() const;
+		virtual b_Texture::TextureImage2D* getTexture() const;
 		virtual BaseMesh* getMesh() const;
 		virtual b_Font::Font* getFont() const;
 		virtual void update();

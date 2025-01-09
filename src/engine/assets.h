@@ -11,8 +11,8 @@
 namespace b_AssetManager
 {
 	void InitAssets();
-	TextureImage2D* getTextureNull();
-	TextureImage2D* getTextureNullAlpha();
+	b_Texture::TextureImage2D* getTextureNull();
+	b_Texture::TextureImage2D* getTextureNullAlpha();
 	BaseMesh* getMeshBasicQuad();
 	SimpleMesh* getMeshQuad();
 	SimpleMesh* getMeshCube();

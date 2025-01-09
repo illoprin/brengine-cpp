@@ -10,13 +10,13 @@ namespace b_GUI
 	{
 	public:
 		GUIImage();
-		GUIImage(TextureImage2D* t);
+		GUIImage(b_Texture::TextureImage2D* t);
 		~GUIImage() = default;
 		
-		TextureImage2D* getTexture() const override;
-		void setTexture(TextureImage2D*);
+		b_Texture::TextureImage2D* getTexture() const override;
+		void setTexture(b_Texture::TextureImage2D*);
 	private:
-		TextureImage2D* texture;
+		b_Texture::TextureImage2D* texture;
 	};
 };
 

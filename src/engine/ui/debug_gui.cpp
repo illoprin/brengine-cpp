@@ -1,6 +1,7 @@
 #include "debug_gui.h"
 
 #include "../engine.h"
+#include "../mesh/base_mesh.h" // Stores information about total number of draw calls
 
 using namespace b_GUI;
 
@@ -18,7 +19,7 @@ DebugGUI::DebugGUI()
 	s_ui_debug.append(&ui_player_text);
 };
 
-void DebugGUI::updatePlayerPosText(
+void DebugGUI::updateInfo(
 	Camera* cam
 )
 {
@@ -36,6 +37,8 @@ void DebugGUI::updatePlayerPosText(
 		+ " Z: " + std::to_string(player_dir.z)
 		+ "\nPitch: " + std::to_string((int)p_pitch)
 		+ "\nYaw: " + std::to_string((int)p_yaw)
+		+ "\n\nDraw calls: " + std::to_string(b_draw_calls)
+		+ "\nVertices: " + std::to_string(b_total_vertices)
 	};
 };
 

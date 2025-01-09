@@ -12,8 +12,6 @@ public:
 
 	void initFromModel(ModelTriangles* tris);
 
-	void Draw(GLint mode) override;
-
 	ModelTriangles* getTriangles() const override;
 protected:
 	ModelTriangles* triangles;

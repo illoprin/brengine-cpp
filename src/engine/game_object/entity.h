@@ -21,7 +21,7 @@ namespace b_GameObject
 		bool hasView();
 		
 		// -- Getters
-		TextureImage2D* getTexture() const;
+		b_Texture::TextureImage2D* getTexture() const;
 		glm::vec4 getColor() const;
 		virtual BaseMesh* getMesh() const;
 		virtual Program* getProgram() const;
@@ -34,7 +34,7 @@ namespace b_GameObject
 		void setAlpha(float);
 		void setMesh(BaseMesh*);
 		void setProgram(Program*);
-		void setTexture(TextureImage2D*);
+		void setTexture(b_Texture::TextureImage2D*);
 		void setUVScaling(float);
 		void setFaceCullingUsing(bool);
 
@@ -44,7 +44,7 @@ namespace b_GameObject
 		std::string name{"default"};
 
 		// Rendering
-		TextureImage2D* texture;
+		b_Texture::TextureImage2D* texture;
 		float uv_scaling = 1.f;
 		bool cull_faces = true;
 		glm::vec4 color;

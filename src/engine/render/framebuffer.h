@@ -18,14 +18,14 @@ public:
 	void changeSize(unsigned w, unsigned h);
 	// -- Getters
 	GLuint getID();
-	TextureImage2D* getColorAttachment();
-	TextureImage2D* getDepthAttachment();
+	b_Texture::TextureImage2D* getColorAttachment();
+	b_Texture::TextureImage2D* getDepthAttachment();
 	std::string getName();
 private:
 	GLuint id;
 	std::string name{"fb_custom"};
 	void unbind();
 
-	TextureImage2D* color_attachment = nullptr;
-	TextureImage2D* depth_attachment = nullptr;
+	b_Texture::TextureImage2D* color_attachment = nullptr;
+	b_Texture::TextureImage2D* depth_attachment = nullptr;
 };

@@ -28,22 +28,6 @@ void SimpleMesh::initFromModel(ModelTriangles* tris)
 		this->name.c_str(), this->total_count, bytes);
 };
 
-void SimpleMesh::Draw(GLint mode)
-{
-	if (this->total_count > 2)
-	{
-		this->bind();
-
-		this->enable_attributes();
-
-		glDrawArrays(mode, 0, this->total_count);
-		
-		this->disable_attributes();
-
-		glBindVertexArray(0);
-	}
-}
-
 ModelTriangles* SimpleMesh::getTriangles() const
 {
 	return this->triangles;

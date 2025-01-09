@@ -1,6 +1,7 @@
 #include "entity.h"
 
 using namespace b_GameObject;
+using namespace b_Texture;
 
 Entity::Entity(std::string n)
 {

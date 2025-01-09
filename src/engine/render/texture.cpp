@@ -2,6 +2,8 @@
 
 #include "../engine.h"
 
+using namespace b_Texture;
+
 TextureImage2D::TextureImage2D(bool mp = false)
 {
 	glGenTextures(1, &this->id);

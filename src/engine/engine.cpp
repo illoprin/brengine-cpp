@@ -1,5 +1,7 @@
 #include "engine.h"
 
+#include "mesh/base_mesh.h" // Stores information about draw calls number
+
 using namespace b_GUI;
 
 // --- Callbacks declaration
@@ -54,6 +56,7 @@ float w_aspect = 1.f;
 
 // Game
 bool is_game_mode = false;
+bool is_info_visible = true;
 
 /* ================ Engine - Public Interface ================ */
 
@@ -273,7 +276,7 @@ static void game_loop_update()
 	s_debug->updateFPSText();
 	if (usr_scene != nullptr)
 	{
-		s_debug->updatePlayerPosText(usr_scene->getCameraMain());
+		s_debug->updateInfo(usr_scene->getCameraMain());
 		usr_scene->update();
 	}
 	if (usr_gui != nullptr) 
@@ -286,9 +289,12 @@ static void game_loop_update()
 static void game_loop_render()
 {
 	b_renderer->ClearCanvas();
+	b_draw_calls = 0;
+	b_total_vertices = 0;
 	if (usr_scene != nullptr)
 		b_renderer->RenderScene(*usr_scene);
-	b_renderer->RenderUI(s_debug->s_ui_debug);
+	if (is_info_visible)
+		b_renderer->RenderUI(s_debug->s_ui_debug);
 	if (usr_gui != nullptr)
 		b_renderer->RenderUI(*usr_gui);
 	b_renderer->Flush();
@@ -325,6 +331,7 @@ static void keyCallback(GLFWwindow* window, int key, int scancode, int action, i
 
 		if (key == GLFW_KEY_F5) b_renderer->switchRenderMode();
 		if (key == GLFW_KEY_F2) b_Engine::TakeScreenshot();
+		if (key == GLFW_KEY_F1) is_info_visible = !is_info_visible;
 	}
 	// Execute user function
 	b_UserKeyCallback user_func = b_input->getKeyCallback();

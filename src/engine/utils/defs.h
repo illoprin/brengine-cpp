@@ -40,6 +40,12 @@ enum RenderMode
 };
 // #ff17c9 - is fully alpha color
 #define COLOR_NULL glm::vec3(1.0f, 0.09f, 0.79f)
+// Handled by 'BaseMesh'
+extern uint16_t b_draw_calls;
+// Handled by 'BaseMesh'
+extern uint16_t b_total_vertices;
+// Handled by 'Renderer'
+extern RenderMode b_render_mode;
 
 // World
 #define DIR_UP glm::vec3(0, 1, 0)

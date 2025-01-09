@@ -1,6 +1,7 @@
 #include "gui_image.h"
 
 using namespace b_GUI;
+using namespace b_Texture;
 
 GUIImage::GUIImage()
 {

@@ -5,6 +5,8 @@
 using namespace b_GUI;
 using namespace b_GameObject;
 
+RenderMode b_render_mode = RENDER_TEXTURED;
+
 Renderer::Renderer()
 {
 	glfwMakeContextCurrent(b_Engine::getWindow()); // Now OpenGL draws stuff in this window
@@ -28,8 +30,6 @@ Renderer::Renderer()
 
 	this->init_programs();
 	this->init_framebuffers();
-
-	this->setRenderMode(RENDER_TEXTURED);
 };
 
 void Renderer::FramebufferSizeChange()
@@ -126,7 +126,7 @@ void Renderer::Update()
 void Renderer::RenderScene(Scene3D& scene)
 {
 	// Render lines if render mode is RENDER_WIRE, else render solid
-	if (this->r_mode == RENDER_WIRE)
+	if (b_render_mode == RENDER_WIRE)
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		this->ctxDisableFaceCulling();
@@ -192,7 +192,7 @@ void Renderer::RenderUI(GUIScene& s)
 			break;
 
 			case GUI_IMAGE:
-				if (this->r_mode != RENDER_WIRE)
+				if (b_render_mode != RENDER_WIRE)
 				{
 					i->getTexture()->bind();
 					this->p_flat->set1i(
@@ -210,7 +210,7 @@ void Renderer::RenderUI(GUIScene& s)
 					b_GUI::StringToMesh((GUIText *)i);
 					i->need_redraw = false;
 				}
-				if (this->r_mode != RENDER_WIRE)
+				if (b_render_mode != RENDER_WIRE)
 				{
 					this->p_flat->set1i(1, "u_is_text");
 					this->p_flat->set1i(1, "u_use_texturing");
@@ -267,7 +267,7 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 	p->set1i(0, "u_depth");
 	p->set1i(0, "u_rnormal");
 	p->set3f(COLOR_NULL, "u_transperent_pixel");
-	switch (this->r_mode)
+	switch (b_render_mode)
 	{
 		// Textured rendering
 		case RENDER_TEXTURED:
@@ -306,7 +306,7 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 	};
 	
 	// OpenGL statements preparations
-	if (e->getFaceCulling() && this->r_mode != RENDER_WIRE)
+	if (e->getFaceCulling() && b_render_mode != RENDER_WIRE)
 		this->ctxEnableFaceCulling();
 	else
 		this->ctxDisableFaceCulling();
@@ -315,19 +315,14 @@ void Renderer::render_3d_entity(Entity* e, Program* p, Camera* c)
 	e->getMesh()->Draw();
 };
 
-void Renderer::setRenderMode(RenderMode mode)
-{
-	this->r_mode = mode;
-};
-
 void Renderer::switchRenderMode()
 {
-	int current_mode = (int)this->r_mode;
+	int current_mode = (int)b_render_mode;
 	current_mode = (current_mode + 1) % 4;
-	this->r_mode = (RenderMode)current_mode;
+	b_render_mode = (RenderMode)current_mode;
 	b_log->logf(
 		"[INFO] Renderer - render mode switched to %d\n", 
-		(int)this->r_mode);
+		(int)b_render_mode);
 };
 
 Program* Renderer::getProgramFlat() const

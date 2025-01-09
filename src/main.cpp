@@ -34,7 +34,7 @@ void update(float time, float deltaTime)
 	if (is_cube_white_rotating)
 		game->e_white_cube->transform.rotate(glm::vec3( deltaTime * 100.f ));
 
-	game->g_player->update();
+	game->g_player->update(); // Player update
 };
 
 int main()
@@ -53,12 +53,12 @@ int main()
 	levelm.initFromModel(&d0_tris);
 
 	// Init brick texture
-	TextureImage2D t_brick (false);
+	b_Texture::TextureImage2D t_brick (false);
 	t_brick.FromPNG("brick_1");
 	t_brick.setFiltering(GL_NEAREST);
 
 	// Init rock texture
-	TextureImage2D t_rock{false};
+	b_Texture::TextureImage2D t_rock{false};
 	t_rock.FromPNG("brown_rock");
 	t_rock.setFiltering(GL_NEAREST);
 

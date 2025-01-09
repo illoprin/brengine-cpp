@@ -1,6 +1,7 @@
 #include "gui_item.h"
 
 using namespace b_GUI;
+using namespace b_Texture;
 
 GUIItem::GUIItem()
 {

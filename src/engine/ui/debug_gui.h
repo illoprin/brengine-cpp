@@ -29,6 +29,6 @@ namespace b_GUI
 
 		DebugGUI();
 		void updateFPSText();
-		void updatePlayerPosText(Camera*);
+		void updateInfo(Camera*);
 	};
 }

@@ -2,6 +2,9 @@
 
 #include "../engine.h"
 
+uint16_t b_draw_calls = 0;
+uint16_t b_total_vertices = 0;
+
 BaseMesh::BaseMesh(const char* name)
 {
 	this->name = std::string(name);
@@ -183,7 +186,9 @@ inline void BaseMesh::Draw(GLint m)
 		this->enable_attributes();
 		
 		glDrawArrays(m, 0, this->total_count);
-		
+		++b_draw_calls;
+		b_total_vertices += this->total_count;
+
 		this->disable_attributes();
 
 		glBindVertexArray(0);
@@ -200,6 +205,8 @@ inline void BaseMesh::DrawInstanced(GLuint i, GLint m)
 		this->enable_attributes();
 		
 		glDrawArraysInstanced(m, 0, this->total_count, i);
+		++b_draw_calls;
+		b_total_vertices += this->total_count * i;
 
 		this->disable_attributes();
 

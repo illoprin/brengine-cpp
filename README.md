@@ -2,15 +2,19 @@
 
 Full scale 3D game engine for personal proposes
 
-![image2](https://github.com/user-attachments/assets/829f4a96-baf3-4c10-a6c9-9665aa70ba37)
+![image3](https://github.com/user-attachments/assets/f06d1640-34c3-4778-810c-869e9c398bda)
 
 # Controls
 
 **W/A/S/D** - movement
 
+**LShift** - accelerate
+
 **F5** - change render mode
 
 **F2** - take screenshot
+
+**F1** - show service info
 
 # Stack
 - OpenGL 4.3

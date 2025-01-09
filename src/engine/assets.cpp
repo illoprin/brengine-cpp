@@ -5,8 +5,8 @@
 using namespace b_AssetManager;
 namespace b_GuiFont = b_GUI::b_Font;
 
-TextureImage2D* TextureNull;
-TextureImage2D* TextureNullAlpha;
+b_Texture::TextureImage2D* TextureNull;
+b_Texture::TextureImage2D* TextureNullAlpha;
 BaseMesh* MeshBasicQuad;
 SimpleMesh* MeshQuad;
 SimpleMesh* MeshCube;
@@ -30,9 +30,9 @@ static b_Model::ModelTriangles cube_model{CubeTriangles(1.f)};
 void b_AssetManager::InitAssets()
 {
 	// --- Textures
-	TextureNull = new TextureImage2D{false};
+	TextureNull = new b_Texture::TextureImage2D{false};
 	TextureNull->FromBMP("NULL");
-	TextureNullAlpha = new TextureImage2D{false};
+	TextureNullAlpha = new b_Texture::TextureImage2D{false};
 	TextureNullAlpha->FromBMP("NULL_ALPHA");
 	TextureNullAlpha->use_transperency_mask = 1;
 
@@ -79,11 +79,11 @@ void b_AssetManager::ReleaseAssets()
 	delete FontSans;
 };
 
-TextureImage2D* b_AssetManager::getTextureNull()
+b_Texture::TextureImage2D* b_AssetManager::getTextureNull()
 {
 	return TextureNull;
 };
-TextureImage2D* b_AssetManager::getTextureNullAlpha()
+b_Texture::TextureImage2D* b_AssetManager::getTextureNullAlpha()
 {
 	return TextureNullAlpha;
 };

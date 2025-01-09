@@ -57,7 +57,6 @@ public:
 
 	void FramebufferSizeChange();
 
-	void setRenderMode(RenderMode mode);
 	void switchRenderMode();
 
 	void ctxEnableFaceCulling();
@@ -83,8 +82,6 @@ private:
 
 	void render_gui_item(b_GUI::GUIItem*);
 	void render_3d_entity(b_GameObject::Entity*, Program*, Camera*);
-	
-	RenderMode r_mode;
 
 	// General matrices for projection
 	glm::mat4 m_ortho{1.f};
