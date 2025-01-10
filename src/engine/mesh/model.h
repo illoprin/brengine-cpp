@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../utils/deps.h"
-#include "../level/level_data.h"
+#include "../game_resources/level_data.h"
 
 namespace b_Model
 {

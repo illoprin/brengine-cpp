@@ -77,4 +77,8 @@ enum PlayerActionList {
 // Level
 #define LVL_SCALING 1.f
 
+// Game data
+#define BGD_FIELD_EOF "NULL"
+#define BGD_PALETTE_TILE_SIZE (10)
+
 #endif

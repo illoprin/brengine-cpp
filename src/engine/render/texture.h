@@ -17,9 +17,9 @@ namespace b_Texture
 		TextureImage2D(bool mp);
 		~TextureImage2D();
 		
-		unsigned width;
-		unsigned height;
-		unsigned components;
+		uint16_t width;
+		uint16_t height;
+		u_char components;
 		/*
 			You can use this color (1.0, 0.09, 0.79) #ff17c9 to indicate transperent areas in your image
 			0 - texture not use transperency color, 1 - texture use transperency color

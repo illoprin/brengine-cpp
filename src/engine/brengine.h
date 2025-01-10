@@ -16,7 +16,7 @@
 #include "mesh/simple_mesh.h"
 
 // Level
-#include "level/level_data.h"
+#include "game_resources/level_data.h"
 
 // World
 #include "camera.h"

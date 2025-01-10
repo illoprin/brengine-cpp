@@ -37,7 +37,17 @@ std::string b_Utils::current_time_s()
 	);
 	std::string time_s{c_time_str};
 	return time_s;
-}
+};
+
+void b_Utils::file_name_and_ext_from_str(
+	std::string  src,
+	std::string& filename,
+	std::string& ext
+)
+{
+	filename = {src.substr(0, src.find('.'))};
+	ext = {src.substr(src.find('.') + 1)};
+};
 
 void b_ImageIO::GenBytes(std::vector<unsigned char>& bytes, unsigned width, unsigned height)
 {

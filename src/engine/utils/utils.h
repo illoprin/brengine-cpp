@@ -6,6 +6,9 @@ namespace b_Utils
 {
 	void read_file_lines(const char* filepath, std::string& buffer);
 	std::string current_time_s();
+	void file_name_and_ext_from_str(
+		std::string src, std::string&, std::string&
+	);
 };
 
 namespace b_ImageIO
