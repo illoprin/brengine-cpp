@@ -67,8 +67,8 @@ void main()
 	float factor = dot(
 		normalize(u_camera_position - out_fragcoord), 
 		out_normal
-	) * .3;
-	vec3 lighting = u_ambient_light * (.7 + factor);
+	) * .5;
+	vec3 lighting = u_ambient_light * (.5 + factor);
 	diffuse_color.rgb *= lighting;
 
 	// Fog

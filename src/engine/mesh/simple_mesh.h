@@ -1,6 +1,6 @@
 #pragma once
 
-#include "model.h"
+#include "../model/model.h"
 #include "base_mesh.h"
 
 class SimpleMesh : public BaseMesh

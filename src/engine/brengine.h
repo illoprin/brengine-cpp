@@ -5,47 +5,55 @@
 #define STB_IMAGE_IMPLEMENTATION
 #define STB_TRUETYPE_IMPLEMENTATION
 
-#include "utils/deps.h"
+#include "util/deps.h"
 
-// Renderer
-#include "render/renderer.h"
-
-// Model
-#include "mesh/model.h"
+// Mesh
 #include "mesh/base_mesh.h"
 #include "mesh/simple_mesh.h"
 
-// Level
-#include "game_resources/level_data.h"
+// Model
+#include "model/model.h"
 
-// World
-#include "camera.h"
-#include "render/texture.h"
-#include "render/program.h"
-#include "game_object/transform.h"
-#include "game_object/entity.h"
+// Level
+#include "level/level.h"
+
+// Core
+#include "core/camera.h"
+#include "core/engine.h"
+#include "core/default_assets.h"
+
+// Entity
+#include "entity/transform.h"
+#include "entity/entity.h"
 
 // GUI
-#include "ui/gui_item.h"
-#include "ui/gui_image.h"
-#include "ui/gui_text.h"
-#include "ui/gui_scene.h"
-#include "ui/gui_font.h"
+#include "gui/gui_item.h"
+#include "gui/gui_image.h"
+#include "gui/gui_text.h"
+#include "gui/gui_scene.h"
+#include "gui/gui_font.h"
+#include "gui/debug_gui.h"
 
-// Scene
-#include "scene_3d.h"
+// Render
+#include "render/master_renderer.h"
+#include "render/program.h"
 
-// Engine
-#include "render/renderer.h"
+// Renderer types
+#include "render/level_renderer.h"
+#include "render/entity_renderer.h"
+#include "render/gui_renderer.h"
+
+// Texture
+#include "texture/texture.h"
+#include "texture/texture_model.h"
+#include "texture/texture_storage.h"
 
 // Utils
-#include "utils/utils.h"
+#include "util/utils.h"
 
 // Game
-#include "editor_controller.h"
-#include "assets.h"
-
-// Engine interface
-#include "engine.h"
+#include "player/editor_controller.h"
+#include "game/game_handler.h"
+#include "level/level.h"
 
 #endif

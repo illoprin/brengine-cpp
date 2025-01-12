@@ -1,6 +1,6 @@
 #include "framebuffer.h"
 
-#include "../engine.h"
+#include "../core/engine.h"
 
 using namespace b_Texture;
 
@@ -35,7 +35,7 @@ void Framebuffer::changeSize(unsigned w, unsigned h)
 void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 {
 	this->bind();
-	this->color_attachment = new TextureImage2D{false};
+	this->color_attachment = new Texture{};
 	this->color_attachment->width = w;
 	this->color_attachment->height = h;
 	this->color_attachment->components = 4;
@@ -51,7 +51,7 @@ void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 {
 	this->bind();
-	this->depth_attachment = new TextureImage2D(false);
+	this->depth_attachment = new Texture{};
 	this->depth_attachment->width = w;
 	this->depth_attachment->height = h;
 	this->depth_attachment->components = 1;
@@ -70,6 +70,7 @@ void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 
 void Framebuffer::check()
 {
+	this->bind();
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
 	{
 		b_log->logf("[INFO] Framebuffer.%s id = %u - attachments completed!\n",
@@ -80,6 +81,7 @@ void Framebuffer::check()
 		b_log->logf("[WARNING] Framebuffer.%s id = %u - attachments binding not completed\n",
 			this->name.c_str(), this->id);
 	};
+	this->unbind();
 }
 
 void Framebuffer::bind()
@@ -102,6 +104,7 @@ void Framebuffer::clear(glm::vec4 c)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(c.r, c.g, c.b, c.a);
 
+	this->unbind();
 };
 
 // --- Getters
@@ -113,11 +116,11 @@ std::string Framebuffer::getName()
 {
 	return this->name;
 };
-TextureImage2D* Framebuffer::getColorAttachment()
+Texture* Framebuffer::getColorAttachment()
 {
 	return this->color_attachment;
 };
-TextureImage2D* Framebuffer::getDepthAttachment()
+Texture* Framebuffer::getDepthAttachment()
 {
 	return this->depth_attachment;
 };

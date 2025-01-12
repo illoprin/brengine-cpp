@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../utils/deps.h"
+#include "../util/deps.h"
 
-#include "model.h"
+#include "../model/model.h"
 
 using namespace b_Model;
 

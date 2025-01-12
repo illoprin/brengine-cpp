@@ -1,6 +1,6 @@
 #include "simple_mesh.h"
 
-#include "../engine.h"
+#include "../core/engine.h"
 
 void SimpleMesh::initFromModel(ModelTriangles* tris)
 {

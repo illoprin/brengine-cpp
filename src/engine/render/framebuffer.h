@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../utils/deps.h"
-#include "texture.h"
-#include "../log.h"
+#include "../util/deps.h"
+#include "../texture/texture.h"
 
 
 struct Framebuffer
@@ -13,19 +12,20 @@ public:
 	void initColorAttachment(unsigned, unsigned);
 	void initDepthAttachment(unsigned, unsigned);
 	void bind();
+	void unbind();
 	void clear(glm::vec4);
 	void check();
 	void changeSize(unsigned w, unsigned h);
 	// -- Getters
 	GLuint getID();
-	b_Texture::TextureImage2D* getColorAttachment();
-	b_Texture::TextureImage2D* getDepthAttachment();
+	b_Texture::Texture* getColorAttachment();
+	b_Texture::Texture* getDepthAttachment();
 	std::string getName();
 private:
 	GLuint id;
 	std::string name{"fb_custom"};
-	void unbind();
 
-	b_Texture::TextureImage2D* color_attachment = nullptr;
-	b_Texture::TextureImage2D* depth_attachment = nullptr;
+	b_Texture::Texture* color_attachment = nullptr;
+	b_Texture::Texture* depth_attachment = nullptr;
 };
+
