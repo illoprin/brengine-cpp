@@ -1,6 +1,7 @@
 #include "framebuffer.h"
 
 #include "../core/engine.h"
+#include "../core/context.h"
 
 using namespace b_Texture;
 
@@ -43,6 +44,7 @@ void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 	this->color_attachment->setImagePointer(GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	// Mipmap level is 0
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->color_attachment->getID(), 0);
+	b_CheckError(); // Checking OpenGL errors
 	
 	b_log->logf("[INFO] Framebuffer.%s id = %u - color attachment created\n",
 		this->name.c_str(), this->id);
@@ -62,6 +64,7 @@ void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 		GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D,
 		this->depth_attachment->getID(), 0
 	);
+	b_CheckError(); // Checking OpenGL errors
 
 	b_log->logf("[INFO] Framebuffer.%s id = %u - depth attachment created\n",
 		this->name.c_str(), this->id);

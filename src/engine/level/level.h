@@ -15,16 +15,15 @@ namespace b_Level
 	public:
 		Level(std::string filename, b_Game::GameData* gd);
 
-		void useTextureStorage(b_Texture::TextureStorage3D*);
+		void useAtlas(b_Texture::TextureStorage3D*);
 		void usePalette(b_Texture::TextureStorage3D*);
 		
 		b_Texture::TextureStorage3D* getTextureStorage() const;
 		b_Texture::TextureStorage3D* getPalette() const;
 
-
-		BaseMesh* getMesh() const;
+		BaseMesh* getMesh();
 		void update();
-		~Level();
+		~Level() = default;
 	private:
 		b_Game::GameData* game_data;
 		b_Level::LevelData level_data;
@@ -32,7 +31,7 @@ namespace b_Level
 		b_Texture::TextureStorage3D* palette = nullptr;
 		
 		
-		BaseMesh* m_level;
+		BaseMesh m_level{"LevelMesh"};
 		std::vector<b_GameObject::Entity> objects;
 	};
 };

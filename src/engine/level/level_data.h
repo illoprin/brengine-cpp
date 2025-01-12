@@ -39,7 +39,7 @@ namespace b_Level
 		std::string name = "nothing";
 		std::string game_name = "nothing";
 		std::vector<glm::vec2> verts;
-		std::map<uint16_t, Sector> sectors{};
+		std::map<uint16_t, Sector> sectors;
 		std::map<uint16_t, Wall> walls;
 
 		void print();

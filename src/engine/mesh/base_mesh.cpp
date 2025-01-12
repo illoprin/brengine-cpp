@@ -1,6 +1,7 @@
 #include "base_mesh.h"
 
 #include "../core/engine.h"
+#include "../core/context.h"
 
 uint16_t b_draw_calls = 0;
 uint16_t b_total_vertices = 0;
@@ -47,6 +48,7 @@ GLuint BaseMesh::AddBuffer(void* data, size_t size_bytes)
 	
 	this->vbos.push_back(vbo);
 	
+	b_CheckError();
 	b_log->logf("[INFO] Mesh.%s - Generated new buffer object index = %u with size %lu bytes\n",
 		this->name.c_str(), vbo, size_bytes);
 	return vbo;
@@ -71,6 +73,7 @@ GLuint BaseMesh::AddDynamicBuffer(
 
 	this->vbos.push_back(vbo);
 	
+	b_CheckError();
 	b_log->logf("[INFO] Mesh.%s - Generated new dynamic buffer object index = %u with size %lu bytes\n",
 		this->name.c_str(), vbo, (size + reserve));
 
@@ -101,6 +104,7 @@ void BaseMesh::SetDataPointer(
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glEnableVertexAttribArray(next_attr);
 	glVertexAttribPointer(next_attr, components, GL_FLOAT, GL_FALSE, stride, (void*)offset);
+	b_CheckError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Unbind VAO object after setting up 
@@ -129,6 +133,7 @@ void BaseMesh::SetDataIntegerPointer(
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glEnableVertexAttribArray(next_attr);
 	glVertexAttribIPointer(next_attr, components, GL_INT, stride, (void*)offset);
+	b_CheckError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Unbind VAO object after setting up 
@@ -159,6 +164,7 @@ void BaseMesh::SetDataPointerWithDivisior(
 	glEnableVertexAttribArray(next_attr);
 	glVertexAttribPointer(next_attr, components, type, GL_FALSE, stride, (void*)offset);
 	glVertexAttribDivisor(next_attr, instances);
+	b_CheckError();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	// Unbind VAO object after setting up

@@ -11,8 +11,8 @@ static void bl_TriangulateWall(
 	float wl,              // Wall length
 	float wh,              // Wall height
 	glm::vec3 nrm,         // Normal
-	uint16_t tid,          // Texture id
-	uint8_t ttype,         // Texture type
+	int tid,          // Texture id
+	int ttype,         // Texture type
 	float glowi,           // Glow intensity
 	std::vector<b_Level::LevelVertex>& vl
 )
@@ -40,8 +40,8 @@ static void bl_TriangulateWall(
 static void bl_TriangulateFloor(
 	std::vector<glm::vec2>& sv,
 	const b_Level::Sector& s,
-	uint16_t tid,          // Texture id
-	uint8_t ttype,         // Texture type
+	int tid,          // Texture id
+	int ttype,         // Texture type
 	float glowi,           // Glow intensity
 	std::vector<b_Level::LevelVertex>& vl
 )
@@ -110,8 +110,8 @@ static void bl_TriangulateFloor(
 static void bl_TriangulateCeiling(
 	std::vector<glm::vec2>& sv,
 	const b_Level::Sector& s,
-	uint16_t tid,          // Texture id
-	uint8_t ttype,         // Texture type
+	int tid,          // Texture id
+	int ttype,         // Texture type
 	float glowi,           // Glow intensity
 	std::vector<b_Level::LevelVertex>& vl
 )
@@ -133,9 +133,9 @@ static void bl_TriangulateCeiling(
 		}
 
 		// Only one triangle
-		b_Level::LevelVertex lv1{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv2{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv3{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv1{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv2{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv3{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
 		// Push vertices to list
 		vl.push_back(lv3);
 		vl.push_back(lv2);
@@ -160,14 +160,14 @@ static void bl_TriangulateCeiling(
 		}
 
 		// Left top triangle
-		b_Level::LevelVertex lv1{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv2{fv4, tc[3], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv3{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv1{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv2{fv4, tc[3], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv3{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
 
 		// Right bottom triangle
-		b_Level::LevelVertex lv4{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv5{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv6{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv4{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv5{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv6{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
 
 		// Push it to list
 		vl.push_back(lv3); vl.push_back(lv2);
@@ -179,17 +179,17 @@ static void bl_TriangulateCeiling(
 
 static void bl_BuildAppearanceData (
 	const b_Game::LevelAppearanceData& ap,
-	uint16_t& tid, uint8_t& ttype, float& gi
+	int& tid, int& ttype, float& gi
 )
 {
 	if (ap.icolor == 0) 
 	{
-		tid = ap.itexture;
+		tid = ap.itexture - 1;
 		ttype = b_Level::BL_TEXTURE_FLAT;
 	}
 	else
 	{
-		tid = ap.icolor;
+		tid = ap.icolor - 1;
 		ttype = b_Level::BL_TEXTURE_COLOR;
 	};
 	gi = ap.glow_intensity;
@@ -250,8 +250,8 @@ void b_Level::LevelDataToVertices(
 				float h_delta;
 
 				// Build wall appearance
-				uint16_t tid = 0;
-				uint8_t ttype = BL_TEXTURE_NULL;
+				int tid = 0;
+				int ttype = BL_TEXTURE_NULL;
 				float gi = 0.f;
 
 				if (w.iappearance != 0)
@@ -327,8 +327,8 @@ void b_Level::LevelDataToVertices(
 			}
 			
 			// Form floor and ceiling
-			uint16_t tid = 0;
-			uint8_t ttype = BL_TEXTURE_NULL;
+			int tid = 0;
+			int ttype = BL_TEXTURE_NULL;
 			float gi = 0.f;
 
 			// Triangulate floor and push it to list

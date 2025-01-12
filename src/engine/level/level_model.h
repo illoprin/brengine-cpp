@@ -7,13 +7,13 @@
 
 namespace b_Level
 {
-	struct LevelVertex // 56 bytes
+	struct LevelVertex // 44 bytes
 	{
 		glm::vec3 position; // 12 bytes
 		glm::vec2 texcoord; // 8 bytes
 		glm::vec3 normal; // 12 bytes
-		uint16_t textureId; // 2 bytes
-		uint8_t textureType; // From enum FlatTypes
+		int textureId; // 2 bytes
+		int textureType; // From enum FlatTypes
 		float glow_intensity; // 4 bytes
 	};
 

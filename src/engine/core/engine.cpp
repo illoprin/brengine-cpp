@@ -26,12 +26,12 @@ static void init_window();
 static void init_io();
 
 // Create unique pointers to single classes (bu_ = brengine unique)
-static std::unique_ptr<Log> bu_log = std::make_unique<Log>();
+static std::unique_ptr<Log> bu_log;
 static std::unique_ptr<Clock> bu_clock;
 static std::unique_ptr<MasterRenderer> bu_renderer;
 
 // Base
-Log* b_log = bu_log.get(); // Global Log ptr
+Log* b_log = nullptr; // Global Log ptr
 static Clock* b_clock;
 static MasterRenderer* b_renderer;
 static Input* b_input;
@@ -57,6 +57,10 @@ void b_Engine::Init()
 	b_Files::InitFilesystem();
 
 	init_window();
+
+	// Init logger
+	bu_log = std::make_unique<Log>();
+	b_log = bu_log.get();
 
 	// Init clock
 	bu_clock = std::make_unique<Clock>();

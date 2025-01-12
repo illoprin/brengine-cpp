@@ -59,14 +59,6 @@ enum EntityType {
 	ENTITY_ON_LEVEL,
 };
 
-// Game
-enum GameState {
-	GS_NONE = 0,
-	GS_MAIN_MENU = 0,
-	GS_LEVEL,
-	GS_PAUSED,
-};
-
 // Camera
 #define CAM_FOV 90.f
 #define CAM_NEAR .01f
@@ -94,6 +86,13 @@ enum PlayerActionList {
 
 // Game data
 #define BGD_FIELD_EOF "NULL"
-#define BGD_PALETTE_TILE_SIZE (10)
+#define BGD_PALETTE_TILE_SIZE 10
+enum GameState {
+	GS_NONE = 0,
+	GS_MAIN_MENU = 0,
+	GS_LEVEL,
+	GS_PAUSED,
+};
+#define B_FLAT_TEXTURE_SIZE 64
 
 #endif

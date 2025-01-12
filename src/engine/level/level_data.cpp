@@ -48,7 +48,7 @@ void LevelData::clear()
 void b_Level::FromBLF(std::string file, LevelData& ld)
 {
 	std::string file_path{
-		fs::path("assets") / "levels" / (file + ".blf")
+		fs::path(FS_ASSETS_PATH) / FS_LEVELS_PATH / (file + ".blf")
 	};
 
 	std::ifstream src{file_path};

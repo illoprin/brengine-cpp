@@ -1,6 +1,7 @@
 #include "texture.h"
 
 #include "../core/engine.h"
+#include "../core/context.h"
 
 using namespace b_Texture;
 
@@ -42,6 +43,8 @@ void Texture::setImagePointer(
 		this->width, this->height, 0,
 		format, dataType, data
 	);
+	b_CheckError(); // Checking OpenGL errors
+
 	b_log->logf("[INFO] Texture id = %u data pointer created\n", this->id);
 };
 

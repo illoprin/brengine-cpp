@@ -1,6 +1,7 @@
 #include "level.h"
 
 #include "../core/engine.h"
+#include "../core/context.h"
 
 using namespace b_Level;
 
@@ -16,27 +17,47 @@ Level::Level(std::string fn, b_Game::GameData* gd)
 	}
 
 	// Build level mesh
-	std::vector<b_Level::LevelVertex> vl;
-	b_Level::LevelDataToVertices(level_data, *gd, vl);
+	std::vector<b_Level::LevelVertex> vertex_list;
+	b_Level::LevelDataToVertices(level_data, *gd, vertex_list);
 
-	m_level = new BaseMesh{"LevelMesh"};
 	// Store data in VBO object
-	GLuint lb = m_level->AddBuffer(vl.data(), vl.size() * sizeof(b_Level::LevelVertex));
+	GLuint lb = m_level.AddBuffer(vertex_list.data(), vertex_list.size() * sizeof(LevelVertex));
+	
 	// Add attributes
-	m_level->SetDataPointer(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, position.x));
-	m_level->SetDataPointer(lb, 2, sizeof(LevelVertex), offsetof(LevelVertex, texcoord.x));
-	m_level->SetDataPointer(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, normal.x));
-	m_level->SetDataIntegerPointer(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureId));
-	m_level->SetDataIntegerPointer(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureType));
-	m_level->SetDataPointer(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, glow_intensity));
+	m_level.SetDataPointer
+		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, position));
+	m_level.SetDataPointer
+		(lb, 2, sizeof(LevelVertex), offsetof(LevelVertex, texcoord));
+	m_level.SetDataPointer
+		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, normal));
+	
+	m_level.SetDataIntegerPointer
+		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureId));
+	m_level.SetDataIntegerPointer
+		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureType));
+	
+	m_level.SetDataPointer
+		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, glow_intensity));
+
+	m_level.setTotal(vertex_list.size());
 
 	b_log->logf("[INFO] Level %s - Mesh created!\n", level_data.name.c_str());
 };
 
-BaseMesh* Level::getMesh() const
+void b_Level::Level::usePalette(b_Texture::TextureStorage3D* palette)
 {
-	return m_level;
+	this->palette = palette;
 };
+void b_Level::Level::useAtlas(b_Texture::TextureStorage3D* atlas)
+{
+	this->textures = atlas;
+};
+
+BaseMesh* Level::getMesh()
+{
+	return &m_level;
+};
+
 b_Texture::TextureStorage3D* Level::getTextureStorage() const
 {
 	return this->textures;
@@ -50,10 +71,4 @@ b_Texture::TextureStorage3D* Level::getPalette() const
 void Level::update()
 {
 
-};
-
-Level::~Level()
-{
-	// Release VAO object
-	delete m_level;
 };

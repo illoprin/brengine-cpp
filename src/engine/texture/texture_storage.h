@@ -12,6 +12,7 @@ namespace b_Texture
 	private:
 
 	public:
+		GLsizei layers;
 		/*
 			Several textures with one size in one TextureObject
 		*/
@@ -34,7 +35,5 @@ namespace b_Texture
 			GLuint    dataType,
 			void*     pixels
 		);
-
-		uint8_t layers;
 	};
 };

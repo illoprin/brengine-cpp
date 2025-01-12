@@ -28,11 +28,12 @@ namespace b_Game
 
 		// Globals
 		EditorController p_player;
-		b_Texture::TextureStorage3D* t_atlas;
-		b_Texture::TextureStorage3D* t_palette;
+		b_Texture::TextureStorage3D t_atlas;
+		b_Texture::TextureStorage3D t_palette;
 
 		// Current loaded level
 		std::unique_ptr<b_Level::Level> level_up;
+		// Current loaded gui
 		std::unique_ptr<b_GUI::GUIScene> gui_up;
 
 		GameState game_state = GameState::GS_MAIN_MENU;

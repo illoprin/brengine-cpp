@@ -13,9 +13,9 @@ namespace b_Texture
 		Texture();
 		~Texture();
 		
-		uint16_t width;
-		uint16_t height;
-		u_char components;
+		GLsizei width;
+		GLsizei height;
+		GLsizei components;
 
 		/*
 			You can use this color (1.0, 0.09, 0.79) #ff17c9 to indicate transperent areas in your image

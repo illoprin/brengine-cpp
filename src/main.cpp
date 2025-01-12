@@ -1,7 +1,5 @@
 #include "engine/brengine.h"
 
-
-
 void key_callback(int key, int action, int mods)
 {
 	if (action == GLFW_PRESS)
@@ -15,6 +13,9 @@ int main()
 	b_Engine::Init();
 	b_Engine::getIO()->setKeyCallback(key_callback);
 	
+	b_Game::GameHandler game_handler{"initial"};
+	game_handler.installLevel(0);
+
 	b_Texture::TextureModel t_rock;
 	t_rock.FromPNG("brown_rock");
 
@@ -48,11 +49,19 @@ int main()
 
 	b_GUI::GUIItem ui_crosshair{};
 	ui_crosshair.setScaling({.015f, .015f});
+
+	b_GUI::GUIText ui_pay_text{b_AssetManager::getDefaultGameFont(), "PAY\n NOW"};
+	ui_pay_text.setScaling({7, 7});
+	ui_pay_text.setColor({ 0.92, 0.64, 0.05 });
+	ui_pay_text.setPosition({-.7, -.7});
+
 	b_GUI::GUIScene s_ui;
 	s_ui.append(&ui_crosshair);
+	s_ui.append(&ui_pay_text);
 
 	MasterRenderer* r_master = b_Engine::getRenderer();
 	EntityRenderer r_entity{r_master->getSceneFramebuffer()};
+	LevelRenderer r_level{r_master->getSceneFramebuffer()};
 	GUIRenderer r_gui{r_master->getUIFramebuffer()};
 
 	// Game loop
@@ -65,10 +74,15 @@ int main()
 		b_Engine::UpdateDebugGUI(cam);
 		player.update();
 
+		// Update GUI
+		ui_pay_text.setScaling(
+			glm::vec2{ 5.f + 2.f * fabs(sinf( (float)b_Engine::getClock()->getTime() )) }
+		);
+
 		// Render
 		r_master->Clear();
 
-		r_entity.Render(l_entity, cam);
+		r_level.Render(game_handler.getCurrentLevel(), cam);
 		r_gui.Render(s_ui.getItems());
 		b_Engine::RenderDebugGUI(r_gui);
 		

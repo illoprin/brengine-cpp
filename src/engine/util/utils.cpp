@@ -112,7 +112,6 @@ void b_ImageIO::FlipY(unsigned char* b, unsigned c, unsigned w, unsigned h)
 	delete tmp;
 };
 
-
 void b_Files::InitFilesystem()
 {
 	if (!fs::is_directory(FS_TEMP_PATH))
