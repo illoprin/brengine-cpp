@@ -1,14 +1,18 @@
 #include "game_handler.h"
 
 using namespace b_Game;
+using namespace b_GUI;
 
 GameHandler::GameHandler(std::string filename)
 {
 	// Load game data
 	GameDataFromBGD(filename, game_data);
+	
+	game_data.print();
+
+	// Building textures
 	build_texture_storage();
 	build_palette();
-	game_data.print();
 };
 
 void GameHandler::installLevel(uint16_t index)
@@ -17,10 +21,10 @@ void GameHandler::installLevel(uint16_t index)
 	std::unique_ptr<b_Level::Level> lvl_ptr{
 		new b_Level::Level{level_name, &game_data}
 	};
+	lvl_ptr->usePalette(&t_palette);
+	lvl_ptr->useAtlas(&t_atlas);
 
 	level_up = std::move(lvl_ptr);
-	level_up->usePalette(&t_palette);
-	level_up->useAtlas(&t_atlas);
 };
 
 void GameHandler::releaseLevel()
@@ -40,20 +44,24 @@ b_Level::Level* GameHandler::getCurrentLevel() const
 {
 	return level_up.get();
 };
+GUIScene* GameHandler::getCurrentGUI() const
+{
+	return gui_up.get();
+};
 
 void GameHandler::build_texture_storage()
 {
 	int width, height, channels;
-
-	GLsizei flat_size = B_FLAT_TEXTURE_SIZE;
 	
 	// Init OpenGL texture object
 	// All textures will be one size
-	t_atlas.width = flat_size;
-	t_atlas.height = flat_size;
+	t_atlas.width = B_FLAT_TEXTURE_SIZE;
+	t_atlas.height = B_FLAT_TEXTURE_SIZE;
 	t_atlas.components = 3;
 	t_atlas.layers = (GLsizei)game_data.textures.size();
 	t_atlas.InitStorage(GL_RGB8);
+	t_atlas.setFiltering(GL_NEAREST);
+	t_atlas.setWrapping(GL_REPEAT);
 
 	unsigned index = 0u;
 	for(const auto& pair : game_data.textures)
@@ -68,29 +76,29 @@ void GameHandler::build_texture_storage()
 		);
 		stbi_set_flip_vertically_on_load(0);
 
-		if (bytes != NULL)
+		if (bytes != NULL && channels == 3)
 		{
 			// Load bytes to OpenGL
 			t_atlas.setImagePointer(
-				index, 0, 0, GL_RGB, GL_UNSIGNED_BYTE, bytes
-			);			
-			
-			// Release bytes
-			stbi_image_free(bytes);
+				index, 0u, 0u, GL_RGB, GL_UNSIGNED_BYTE, bytes
+			);
+
 			printf(
 				"GameHandler - Texture with path %s loaded, storage pointer index is %u\n", file_path.c_str(), index
 			);
 			++index;
+			
 		}
 		else
 		{
 			printf("GameHandler - Could not load texture with path %s\n", file_path.c_str());
 		};
 
+		// Release bytes
+		if (bytes != NULL) stbi_image_free(bytes);
 	};
 
-	t_atlas.setFiltering(GL_NEAREST);
-	t_atlas.setWrapping(GL_REPEAT);
+	
 };
 
 void GameHandler::build_palette()
@@ -101,6 +109,8 @@ void GameHandler::build_palette()
 	t_palette.layers = game_data.palletes.size();
 	t_palette.components = 3;
 	t_palette.InitStorage(GL_RGB8);
+	t_palette.setFiltering(GL_NEAREST);
+	t_palette.setWrapping(GL_REPEAT);
 
 	uint16_t pw = BGD_PALETTE_TILE_SIZE;
 	unsigned index = 0u;
@@ -125,16 +135,13 @@ void GameHandler::build_palette()
 
 		// Load pixels to storage
 		t_palette.setImagePointer(
-			index, 0, 0, GL_RGB, GL_UNSIGNED_BYTE, pixels
+			index, 0u, 0u, GL_RGB, GL_UNSIGNED_BYTE, (void*)pixels
 		);
 		++index;
 
 		// Release pixels
 		free(pixels);
 	};
-
-	t_palette.setFiltering(GL_NEAREST);
-	t_palette.setWrapping(GL_REPEAT);
 };
 
 GameHandler::~GameHandler()

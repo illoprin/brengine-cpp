@@ -7,6 +7,7 @@
 #include "../mesh/base_mesh.h"
 #include "../texture/texture_storage.h"
 #include "../gui/gui_scene.h"
+#include "../core/default_assets.h"
 
 namespace b_Game
 {
@@ -35,6 +36,8 @@ namespace b_Game
 		std::unique_ptr<b_Level::Level> level_up;
 		// Current loaded gui
 		std::unique_ptr<b_GUI::GUIScene> gui_up;
+		// GUI items vector
+		std::vector<b_GUI::GUIItem> gui_items_list;
 
 		GameState game_state = GameState::GS_MAIN_MENU;
 

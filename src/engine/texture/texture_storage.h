@@ -12,7 +12,7 @@ namespace b_Texture
 	private:
 
 	public:
-		GLsizei layers;
+		GLsizei layers = 1;
 		/*
 			Several textures with one size in one TextureObject
 		*/
@@ -28,12 +28,18 @@ namespace b_Texture
 			Or you can use different pixel-arrays with zero offset
 		*/
 		void setImagePointer(
-			uint8_t   layer_index,
-			uint16_t  offsetX,
-			uint16_t  offsetY,
+			unsigned  layer_index,
+			unsigned  offsetX,
+			unsigned  offsetY,
 			GLuint    format,
 			GLuint    dataType,
 			void*     pixels
 		);
+
+		void bind() override;
+
+		void setWrapping(GLint type) override;
+		void setFiltering(GLint type) override;
+
 	};
 };

@@ -63,9 +63,9 @@ static void bl_TriangulateFloor(
 		}
 
 		// Only one triangle
-		b_Level::LevelVertex lv1{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv1{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv2{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv3{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv3{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
 		// Push vertices to list
 		vl.push_back(lv1);
 		vl.push_back(lv2);
@@ -90,23 +90,32 @@ static void bl_TriangulateFloor(
 		}
 
 		// Left top triangle
-		b_Level::LevelVertex lv1{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv1{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv2{fv4, tc[3], {0, 1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv3{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
 
 		// Right bottom triangle
 		b_Level::LevelVertex lv4{fv1, tc[0], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv5{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv6{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv5{fv2, tc[1], {0, 1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv6{fv3, tc[2], {0, 1, 0}, tid, ttype, glowi};
 
 		// Push it to list
-		vl.push_back(lv1); vl.push_back(lv2);
-		vl.push_back(lv3); vl.push_back(lv4);
-		vl.push_back(lv5); vl.push_back(lv6);
+
+		// Left top triangle
+		vl.push_back(lv1);
+		vl.push_back(lv2);
+		vl.push_back(lv3);
+		// Right bottom triangle
+		vl.push_back(lv4);
+		vl.push_back(lv5);
+		vl.push_back(lv6);
 	}
 
 };
 
+/*
+	Vertices order is from left bottom in clockwise order
+*/
 static void bl_TriangulateCeiling(
 	std::vector<glm::vec2>& sv,
 	const b_Level::Sector& s,
@@ -137,15 +146,15 @@ static void bl_TriangulateCeiling(
 		b_Level::LevelVertex lv2{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv3{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
 		// Push vertices to list
-		vl.push_back(lv3);
-		vl.push_back(lv2);
 		vl.push_back(lv1);
+		vl.push_back(lv2);
+		vl.push_back(lv3);
 	}
 	// Ceiling is 4 vertices
 	if (sv.size() == 4)
 	{
-		glm::vec3 fv1 {sv[0].x, s.ceiling_height, sv[0].y};
-		glm::vec3 fv2 {sv[1].x, s.ceiling_height, sv[1].y};
+		glm::vec3 fv1 {sv[0].x, s.ceiling_height, sv[0].y}; // 2
+		glm::vec3 fv2 {sv[1].x, s.ceiling_height, sv[1].y}; // 1
 		glm::vec3 fv3 {sv[2].x, s.ceiling_height, sv[2].y};
 		glm::vec3 fv4 {sv[3].x, s.ceiling_height, sv[3].y};
 
@@ -160,19 +169,25 @@ static void bl_TriangulateCeiling(
 		}
 
 		// Left top triangle
-		b_Level::LevelVertex lv1{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv1{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv2{fv4, tc[3], {0, -1, 0}, tid, ttype, glowi};
 		b_Level::LevelVertex lv3{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
 
 		// Right bottom triangle
 		b_Level::LevelVertex lv4{fv1, tc[0], {0, -1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv5{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
-		b_Level::LevelVertex lv6{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv5{fv2, tc[1], {0, -1, 0}, tid, ttype, glowi};
+		b_Level::LevelVertex lv6{fv3, tc[2], {0, -1, 0}, tid, ttype, glowi};
 
 		// Push it to list
-		vl.push_back(lv3); vl.push_back(lv2);
-		vl.push_back(lv1); vl.push_back(lv6);
-		vl.push_back(lv5); vl.push_back(lv4);
+
+		// Left top triangle
+		vl.push_back(lv3);
+		vl.push_back(lv2);
+		vl.push_back(lv1);
+		// Right bottom triangle
+		vl.push_back(lv6);
+		vl.push_back(lv5);
+		vl.push_back(lv4);
 	}
 
 };
@@ -356,5 +371,24 @@ void b_Level::LevelDataToVertices(
 		}
 
 	}
-	printf("Level %s total face count is: %ld\n", ld.name.c_str(), vl.size() / 3);
+	printf("b_Level::LevelDataToVertices - Level.%s total face count is: %ld\n", ld.name.c_str(), vl.size() / 3);
+};
+
+void b_Level::printLevelVertices(
+	const std::vector<b_Level::LevelVertex>& l
+)
+{
+	printf("\n");
+	
+	for (unsigned i = 0; i < l.size(); ++i)
+	{
+		const b_Level::LevelVertex& v = l[i];
+		printf("Vertex %u: vX: %.2f vY: %.2f vZ: %.2f U: %.2f V: %.2f nX: %.2f nY: %.2f nZ: %.2f tid: %d tt: %d gi: %.2f\n",
+			i, v.position.x, v.position.y, v.position.z,
+			v.texcoord.x, v.texcoord.y,
+			v.normal.x, v.normal.y, v.normal.z,
+			v.textureId, v.textureType, v.glow_intensity);
+	};
+
+	printf("\n");
 };

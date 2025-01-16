@@ -78,12 +78,17 @@ int main()
 		ui_pay_text.setScaling(
 			glm::vec2{ 5.f + 2.f * fabs(sinf( (float)b_Engine::getClock()->getTime() )) }
 		);
-
+		
 		// Render
 		r_master->Clear();
 
+		// ERROR: Walls depth test is incorrect on unknown reason
+		// ERROR: Floor 4 vertex mesh building is incorrect
+		// ERROR: Texture storage loading produces some OpenGL errors
 		r_level.Render(game_handler.getCurrentLevel(), cam);
 		r_gui.Render(s_ui.getItems());
+		if (game_handler.getCurrentGUI() != nullptr)
+			r_gui.Render(game_handler.getCurrentGUI()->getItems());
 		b_Engine::RenderDebugGUI(r_gui);
 		
 		r_master->Flush();

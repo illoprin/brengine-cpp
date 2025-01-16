@@ -19,29 +19,41 @@ Level::Level(std::string fn, b_Game::GameData* gd)
 	// Build level mesh
 	std::vector<b_Level::LevelVertex> vertex_list;
 	b_Level::LevelDataToVertices(level_data, *gd, vertex_list);
+	b_Level::printLevelVertices(vertex_list);
 
 	// Store data in VBO object
 	GLuint lb = m_level.AddBuffer(vertex_list.data(), vertex_list.size() * sizeof(LevelVertex));
 	
 	// Add attributes
+
+	// 1. In position
 	m_level.SetDataPointer
 		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, position));
+	// 2. In texcoord
 	m_level.SetDataPointer
 		(lb, 2, sizeof(LevelVertex), offsetof(LevelVertex, texcoord));
+	// 3. In normal
 	m_level.SetDataPointer
 		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, normal));
 	
+	// 4. Texture id
 	m_level.SetDataIntegerPointer
 		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureId));
+	// 5. Texture type
 	m_level.SetDataIntegerPointer
 		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureType));
-	
+	// 6. Glow intensity
 	m_level.SetDataPointer
 		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, glow_intensity));
 
 	m_level.setTotal(vertex_list.size());
 
 	b_log->logf("[INFO] Level %s - Mesh created!\n", level_data.name.c_str());
+};
+
+void Level::update()
+{
+
 };
 
 void b_Level::Level::usePalette(b_Texture::TextureStorage3D* palette)
@@ -53,11 +65,7 @@ void b_Level::Level::useAtlas(b_Texture::TextureStorage3D* atlas)
 	this->textures = atlas;
 };
 
-BaseMesh* Level::getMesh()
-{
-	return &m_level;
-};
-
+// -- Getters
 b_Texture::TextureStorage3D* Level::getTextureStorage() const
 {
 	return this->textures;
@@ -66,9 +74,11 @@ b_Texture::TextureStorage3D* Level::getPalette() const
 {
 	return this->palette;
 };
-
-
-void Level::update()
+const b_Level::LevelData& b_Level::Level::getLevelData() const
 {
-
+	return this->level_data;
+};
+BaseMesh* Level::getMesh()
+{
+	return &m_level;
 };

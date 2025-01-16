@@ -91,19 +91,19 @@ from initial.bgd
 
 # sector 10
 36 16 17 9 4
-37 20 16 NULL 4
-38 17 20 NULL 4
+37 20 16 NULL 6
+38 17 20 NULL 5
 
 
 [SECTORS]
 # <index (starts from 1)> <wall_start> <num_walls> <floor_height> <ceiling_height> <ceil_appearance?> <floor_appearance?>
-1 0 4 0 3.5 3 3
-2 4 4 -0.5 5 5 3
-3 8 4 0 3.5 3 3
-4 12 4 0 3.5 3 3
-5 16 4 0 3.5 3 3
-6 20 4 0 3.5 3 3
-7 24 4 0 3.5 3 3
-8 28 4 0 3.5 3 3
-9 32 4 0 3.5 3 3
+1 0 4 0 3.5 3 2
+2 4 4 -0.5 5 5 2
+3 8 4 0 3.5 3 2
+4 12 4 0 3.5 3 2
+5 16 4 0 3.5 3 2
+6 20 4 0 3.5 3 2
+7 24 4 0 3.5 3 2
+8 28 4 0 3.5 3 2
+9 32 4 0 3.5 3 2
 10 36 3 1 1.64 4 4

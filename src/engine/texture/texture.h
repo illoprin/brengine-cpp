@@ -13,9 +13,9 @@ namespace b_Texture
 		Texture();
 		~Texture();
 		
-		GLsizei width;
-		GLsizei height;
-		GLsizei components;
+		GLsizei width = 64;
+		GLsizei height = 64;
+		GLsizei components = 3;
 
 		/*
 			You can use this color (1.0, 0.09, 0.79) #ff17c9 to indicate transperent areas in your image
@@ -36,7 +36,7 @@ namespace b_Texture
 		*/
 		virtual void setImagePointer(GLint internalFormat, GLint format, GLint dataType, void* data);
 
-		void bind();
+		virtual void bind();
 
 		GLuint getID();
 	};

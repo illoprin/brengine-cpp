@@ -17,6 +17,8 @@ namespace b_Level
 		float glow_intensity; // 4 bytes
 	};
 
+	void printLevelVertices(const std::vector<LevelVertex>&); 
+
 	// BL - Brengine level
 	enum FlatType
 	{

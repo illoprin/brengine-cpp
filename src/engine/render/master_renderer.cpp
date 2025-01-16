@@ -91,6 +91,6 @@ void MasterRenderer::switchRenderMode()
 	current_mode = (current_mode + 1) % 4;
 	b_render_mode = (RenderMode)current_mode;
 	b_log->logf(
-		"[INFO] Renderer - render mode switched to %d\n", 
+		"[INFO] MasterRenderer - render mode switched to %d\n", 
 		(int)b_render_mode);
 };

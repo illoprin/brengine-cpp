@@ -21,6 +21,8 @@ namespace b_Level
 		b_Texture::TextureStorage3D* getTextureStorage() const;
 		b_Texture::TextureStorage3D* getPalette() const;
 
+		const b_Level::LevelData& getLevelData() const;
+
 		BaseMesh* getMesh();
 		void update();
 		~Level() = default;

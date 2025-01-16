@@ -29,8 +29,8 @@ void DebugGUI::updateInfo(
 	const float& p_yaw = cam->getYaw();
 	ui_player_text.text = {"Position - X: " 
 		+ std::to_string(player_pos.x)
-		+ " Y: " + std::to_string(player_pos.x)
-		+ " Z: " + std::to_string(player_pos.x)
+		+ " Y: " + std::to_string(player_pos.y)
+		+ " Z: " + std::to_string(player_pos.z)
 		+ "\nDirection - X: "
 		+ std::to_string(player_dir.x)
 		+ " Y: " + std::to_string(player_dir.y)

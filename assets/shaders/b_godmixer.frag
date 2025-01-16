@@ -8,8 +8,6 @@ uniform sampler2D _ui;
 uniform float u_contrast = 1.04;
 uniform float u_brightness = 1.0;
 
-uniform float u_pixelate = 1.2;
-
 out vec4 _fragColor;
 void main()
 {

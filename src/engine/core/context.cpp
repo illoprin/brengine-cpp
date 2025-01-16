@@ -44,7 +44,7 @@ void b_Context::EnableFaceCulling()
 };
 void b_Context::DisableFaceCulling()
 {
-	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
 };
 void b_Context::EnableDepthTest()
 {
@@ -52,7 +52,7 @@ void b_Context::EnableDepthTest()
 };
 void b_Context::DisableDepthTest()
 {
-	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
 };
 
 GLenum b_Context::CheckError(const char *file, int line)

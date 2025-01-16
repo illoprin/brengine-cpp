@@ -10,7 +10,7 @@ layout (location = 5) in float in_glow_intensity;
 out vec3 out_normal;
 out vec2 out_uv;
 out vec3 out_fragcoord;
-flat out int out_texture_layer;
+flat out int out_texture_id;
 flat out int out_texture_type;
 out float out_glow_intensity;
 
@@ -22,7 +22,7 @@ void main()
 	out_normal = normalize(in_normal);
 	out_uv = in_texcoord;
 	out_fragcoord = in_position;
-	out_texture_layer = in_texture_layer;
+	out_texture_id = in_texture_layer;
 	out_texture_type = in_texture_type;
 	out_glow_intensity = in_glow_intensity;
 
