@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdint>
+#include <algorithm>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -48,13 +49,7 @@ void window_key_callback(
 		// Handle close action
 		if (key == GLFW_KEY_ESCAPE) glfwSetWindowShouldClose(window, 1);
 		// Handle switch image action
-		if (key == GLFW_KEY_S)
-		{
-			current_image = (current_image + 1) % INUM;
-			// удали блять это колхоз
-			current_image = current_image >= INUM ? 0 : current_image;
-		} 
-			
+		if (key == GLFW_KEY_S) current_image = (current_image + 1) % INUM;			
 	}
 };
 
@@ -99,6 +94,8 @@ int init_window()
 		fprintf(stderr, "Could not create window\n");
 		return 0;
 	}
+
+	glfwSwapInterval(1); // VSync
 
 	glfwFocusWindow(window);
 
@@ -190,86 +187,87 @@ GLuint create_texture(unsigned char* data, uint16_t width, uint16_t height)
 	dither - dither image ?
 */
 unsigned char* image_dither(
-	unsigned char* src, int width, int height, uch bpp, bool dither
+	unsigned char* src, uint16_t width, uint16_t height, uch bpp, bool dither
 )
 {
 	unsigned char* dithered = (unsigned char*)malloc(width * height * 3);
 	memcpy(dithered, src, width * height * 3);
 
 	unsigned x, y;
-	uch new_r, new_g, new_b;
+	double new_r, new_g, new_b;
+	int err_r, err_g, err_b;
 	uch old_r, old_g, old_b;
 	for (unsigned i = 0; i < width * height; ++i)
 	{
 		x = i % width;
-		y = i / width;
+		y = (unsigned)floor((double)i / (double)width);
 
 		// Save old pixel
 		old_r = dithered[i * 3 + 0];
 		old_g = dithered[i * 3 + 1];
 		old_b = dithered[i * 3 + 2];
 
-		// Compute new pixel (1 bit RGB for this reason)
-		new_r = old_r > 128u ? 255u : 0u;
-		new_g = old_g > 128u ? 255u : 0u;
-		new_b = old_b > 128u ? 255u : 0u;
+		// Compute new pixel
+		new_r = round(((double)old_r / 255.0) * (double)bpp) * (255.0 / (double)bpp);
+		new_g = round(((double)old_g / 255.0) * (double)bpp) * (255.0 / (double)bpp);
+		new_b = round(((double)old_b / 255.0) * (double)bpp) * (255.0 / (double)bpp);
 		
 		// Set quantized pixel
-		dithered[i * 3 + 0] = new_r;
-		dithered[i * 3 + 1] = new_g;
-		dithered[i * 3 + 2] = new_b;
+		dithered[i * 3 + 0] = (uch)new_r;
+		dithered[i * 3 + 1] = (uch)new_g;
+		dithered[i * 3 + 2] = (uch)new_b;
 
 		if (dither)
 		{
 			// Compute quantization error
-			int err_r = old_r - new_r;
-			int err_g = old_g - new_g;
-			int err_b = old_b - new_b;
+			err_r = old_r - (int)new_r;
+			err_g = old_g - (int)new_g;
+			err_b = old_b - (int)new_b;
 
-			unsigned byte_offset_1 = (x + 1) + y * width;
-			unsigned byte_offset_2 = (x - 1) + (y + 1) * width;
-			unsigned byte_offset_3 = x + (y + 1) * width;
-			unsigned byte_offset_4 = (x + 1) + (y + 1) * width;
+			int byte_offset_1 = (x + 1) + y * width;
+			int byte_offset_2 = (x - 1) + (y + 1) * width;
+			int byte_offset_3 = x + (y + 1) * width;
+			int byte_offset_4 = (x + 1) + (y + 1) * width;
 			
 			// Floyd-Steinberg dithering
 			if (x < width - 1)
 			{
 				dithered[byte_offset_1 * 3 + 0] = 
-					dithered[byte_offset_1 * 3 + 0] + (uch)((float)err_r * ((float)7.f / (float)16.f));
+					dithered[byte_offset_1 * 3 + 0] + (uch)(err_r * ((float)7.f / (float)16.f));
 				dithered[byte_offset_1 * 3 + 1] = 
-					dithered[byte_offset_1 * 3 + 1] + (uch)((float)err_g * ((float)7.f / (float)16.f));
+					dithered[byte_offset_1 * 3 + 1] + (uch)(err_g * ((float)7.f / (float)16.f));
 				dithered[byte_offset_1 * 3 + 2] = 
-					dithered[byte_offset_1 * 3 + 2] + (uch)((float)err_b * ((float)7.f / (float)16.f));
+					dithered[byte_offset_1 * 3 + 2] + (uch)(err_b * ((float)7.f / (float)16.f));
 			}
 
 			if (x > 0 && y < height - 1)
 			{
 				dithered[byte_offset_2 * 3 + 0] = 
-					dithered[byte_offset_2 * 3 + 0] + (uch)((float)err_r * ((float)3.f / (float)16.f));
+					dithered[byte_offset_2 * 3 + 0] + (uch)(err_r * ((float)3.f / (float)16.f));
 				dithered[byte_offset_2 * 3 + 1] = 
-					dithered[byte_offset_2 * 3 + 1] + (uch)((float)err_g * ((float)3.f / (float)16.f));
+					dithered[byte_offset_2 * 3 + 1] + (uch)(err_g * ((float)3.f / (float)16.f));
 				dithered[byte_offset_2 * 3 + 2] = 
-					dithered[byte_offset_2 * 3 + 2] + (uch)((float)err_b * ((float)3.f / (float)16.f));
+					dithered[byte_offset_2 * 3 + 2] + (uch)(err_b * ((float)3.f / (float)16.f));
 			}
 
 			if (y < height - 1)
 			{
 				dithered[byte_offset_3 * 3 + 0] = 
-					dithered[byte_offset_3 * 3 + 0] + (uch)((float)err_r * ((float)5.f / (float)16.f));
+					dithered[byte_offset_3 * 3 + 0] + (uch)(err_r * ((float)5.f / (float)16.f));
 				dithered[byte_offset_3 * 3 + 1] = 
-					dithered[byte_offset_3 * 3 + 1] + (uch)((float)err_g * ((float)5.f / (float)16.f));
+					dithered[byte_offset_3 * 3 + 1] + (uch)(err_g * ((float)5.f / (float)16.f));
 				dithered[byte_offset_3 * 3 + 2] = 
-					dithered[byte_offset_3 * 3 + 2] + (uch)((float)err_b * ((float)5.f / (float)16.f));
+					dithered[byte_offset_3 * 3 + 2] + (uch)(err_b * ((float)5.f / (float)16.f));
 			}
 
 			if (x < width - 1 && y < height - 1)
 			{
 				dithered[byte_offset_4 * 3 + 0] = 
-					dithered[byte_offset_4 * 3 + 0] + (uch)((float)err_r * ((float)1.f / (float)16.f));
+					dithered[byte_offset_4 * 3 + 0] + (uch)(err_r * ((float)1.f / (float)16.f));
 				dithered[byte_offset_4 * 3 + 1] = 
-					dithered[byte_offset_4 * 3 + 1] + (uch)((float)err_g * ((float)1.f / (float)16.f));
+					dithered[byte_offset_4 * 3 + 1] + (uch)(err_g * ((float)1.f / (float)16.f));
 				dithered[byte_offset_4 * 3 + 2] = 
-					dithered[byte_offset_4 * 3 + 2] + (uch)((float)err_b * ((float)1.f / (float)16.f));
+					dithered[byte_offset_4 * 3 + 2] + (uch)(err_b * ((float)1.f / (float)16.f));
 			}
 		}
 	};
@@ -331,7 +329,7 @@ int main()
 		float iaspect = 1.f;
 
 		stbi_set_flip_vertically_on_load(1);
-		unsigned char* iimage = stbi_load("tmp/image_to_dither.bmp", &iwidth, &iheight, &icomponents, 0);
+		unsigned char* iimage = stbi_load("tmp/image_to_dither_2.bmp", &iwidth, &iheight, &icomponents, 3);
 		if (iimage != NULL)
 		{
 			printf("Image loaded!\n");
