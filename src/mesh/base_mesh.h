@@ -1,10 +1,14 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <util/c_includes.h>
+#include <util/cpp_includes.h>
+#include <core/log.h>
+#include <util/defs.h>
+#include <util/gl_includes.h>
+#include <model/model.h>
 
-#include "../model/model.h"
-
-using namespace b_Model;
+extern uint16_t b_draw_calls;
+extern uint16_t b_total_vertices;
 
 class BaseMesh
 {
@@ -27,14 +31,13 @@ public:
 		size_t	size,
 		size_t	reserve
 	);
-	void AddElementBuffer(std::vector<int>& elements);
 
 	/*
 		Add vertex array attribute poiner
 		AttributePoiner - is description of buffer data that you sent to shader on draw call
 	*/
 	void SetDataPointer(
-		GLuint   buffer_id,
+		uch      index,
 		unsigned components,
 		size_t   stride,
 		size_t   offset
@@ -45,7 +48,7 @@ public:
 		AttributePoiner - is description of buffer data that you sent to shader on draw call
 	*/
 	void SetDataIntegerPointer(
-		GLuint   buffer_id,
+		uch      index,
 		unsigned components,
 		size_t   stride,
 		size_t   offset
@@ -61,7 +64,7 @@ public:
 			Add divisor for this attribute
 	*/
 	void SetDataPointerWithDivisior(
-		GLuint    buffer_id,
+		uch       index,
 		GLenum    type,
 		unsigned  components,
 		size_t    stride,
@@ -74,7 +77,7 @@ public:
 
 	// Update (for dynamic VBO objects)
 	void UpdateBuffer(
-		GLuint  b_id,
+		uch     index,
 		size_t  offset,
 		size_t  size,
 		void*   data
@@ -96,15 +99,14 @@ public:
 	void setTotal(unsigned verts);
 	
 	unsigned getTotal() const;
-	const std::vector<GLuint>& BufferList() const;
+	const std::vector<GLuint>& buffers() const;
 	GLuint getLastBuffer() const;
 	std::string getName() const;
-	virtual ModelTriangles* getTriangles() const;
 protected:
 	GLuint vao;
 	std::string name;
 	std::vector<GLuint> vbos;
-	std::vector<GLuint> attrs_list;
+	GLuint attributes = 0;
 	unsigned total_count = 0;
 
 	void enable_attributes();

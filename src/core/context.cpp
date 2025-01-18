@@ -9,14 +9,13 @@ void b_Context::Init()
 
 	if (glewInit() != GLEW_OK)
 	{
-		printf("Could not init GLEW\n");
+		LOG_ERR("Could not init GLEW\n");
 		exit(EXIT_FAILURE);
 	};
 
 	glewExperimental = true;
 
-	b_log->logf(
-		"[INFO] Context - OpenGL initialized, render mode is %d %d\n",
+	LOG_MSG("Context initialized with render mode %d %d",
 		b_Engine::getVidMode().x, b_Engine::getVidMode().y);
 };
 void b_Context::Prepare()
@@ -71,7 +70,7 @@ GLenum b_Context::CheckError(const char *file, int line)
             case GL_OUT_OF_MEMORY:                 error = "OUT_OF_MEMORY"; break;
             case GL_INVALID_FRAMEBUFFER_OPERATION: error = "INVALID_FRAMEBUFFER_OPERATION"; break;
         }
-		b_log->logf("[WARNING] Context error - %s | %s line %d\n", error.c_str(), file, line);
+		LOG_WAR("%s | %s line %d", error.c_str(), file, line);
     }
     return errorCode;
 }

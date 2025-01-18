@@ -1,13 +1,12 @@
 #pragma once
 
-#include "program.h"
-#include "renderer.h"
-#include "framebuffer.h"
-#include "../core/camera.h"
-#include "../entity/entity_view.h"
-#include "../texture/texture.h"
-#include "../entity/entity.h"
-#include "../core/context.h"
+#include <render/program.h>
+#include <render/renderer.h>
+#include <render/framebuffer.h>
+#include <core/camera.h>
+#include <texture/texture.h>
+#include <entity/entity.h>
+#include <core/context.h>
 
 
 class EntityRenderer : public Renderer

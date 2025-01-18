@@ -1,12 +1,11 @@
 #pragma once
 
-#include <cstdarg>
-#include <cstdio>
+#include <util/c_includes.h>
 
-void log_init();
+void LoggerInit();
 // Universal function for log message
-void u_log_msg(int type, const char* file, unsigned line, const char* format, ...);
-void log_release();
+void __LogMessage(int type, const char* file, unsigned line, const char* format, ...);
+void LoggerRelease();
 
 // Color codes for colorful output in stdout
 #define RESET       "\033[0m"
@@ -34,6 +33,6 @@ enum LogType
 	LOG_WARNING
 };
 
-#define LOG_MSG(...) u_log_msg(LOG_INFO, __BASE_FILE__, __LINE__, __VA_ARGS__)
-#define LOG_ERR(...) u_log_msg(LOG_ERROR, __BASE_FILE__, __LINE__, __VA_ARGS__)
-#define LOG_WAR(...) u_log_msg(LOG_WARNING, __BASE_FILE__, __LINE__, __VA_ARGS__)
+#define LOG_MSG(...) __LogMessage(LOG_INFO, __BASE_FILE__, __LINE__, __VA_ARGS__)
+#define LOG_ERR(...) __LogMessage(LOG_ERROR, __BASE_FILE__, __LINE__, __VA_ARGS__)
+#define LOG_WAR(...) __LogMessage(LOG_WARNING, __BASE_FILE__, __LINE__, __VA_ARGS__)

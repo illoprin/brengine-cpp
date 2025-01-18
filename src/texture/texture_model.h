@@ -1,6 +1,7 @@
 #pragma once
 
-#include "texture.h"
+#include <texture/texture.h>
+#include <core/files.h>
 
 namespace b_Texture
 {

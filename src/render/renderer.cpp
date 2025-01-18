@@ -1,5 +1,7 @@
 #include "renderer.h"
 
+#include <core/context.h>
+
 Renderer::Renderer()
 {
 

@@ -1,6 +1,11 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <util/math_includes.h>
+#include <util/c_includes.h>
+#include <util/cpp_includes.h>
+
+#include <core/log.h>
+#include <core/files.h>
 
 namespace b_Model
 {
@@ -22,7 +27,7 @@ namespace b_Model
 
 	typedef std::vector<Triangle> ModelTriangles;
 
-	void loadFromOBJ(
+	void ModelFromOBJ(
 		std::string filename, std::string& name,
 		std::vector<Triangle>& tris
 	);

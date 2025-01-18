@@ -1,12 +1,11 @@
 #ifndef B_ASSETS
 #define B_ASSETS
 
-#include "../util/deps.h"
-#include "../model/model.h"
-#include "../texture/texture_model.h"
-#include "../mesh/base_mesh.h"
-#include "../mesh/simple_mesh.h"
-#include "../gui/gui_font.h"
+#include <model/model.h>
+#include <texture/texture_model.h>
+#include <mesh/base_mesh.h>
+#include <mesh/simple_mesh.h>
+#include <gui/gui_font.h>
 
 namespace b_AssetManager
 {

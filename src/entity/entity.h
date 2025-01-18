@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../mesh/base_mesh.h"
-#include "transform.h"
-#include "entity_view.h"
-#include "entity_view.h"
+#include <util/deps.h>
+#include <mesh/base_mesh.h>
+#include <entity/transform.h>
+#include <entity/entity_view.h>
+#include <entity/entity_view.h>
 
 namespace b_GameObject
 {

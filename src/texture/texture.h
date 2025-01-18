@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <core/context.h>
+#include <util/deps.h>
+#include <core/log.h>
 
 namespace b_Texture
 {

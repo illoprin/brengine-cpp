@@ -1,7 +1,5 @@
 #include "gui_scene.h"
 
-#include "../core/engine.h"
-
 using namespace b_GUI;
 
 void GUIScene::append(GUIItem* i)

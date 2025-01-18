@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../model/model.h"
-#include "base_mesh.h"
+#include <model/model.h>
+#include <mesh/base_mesh.h>
+#include <core/log.h>
 
 class SimpleMesh : public BaseMesh
 {
@@ -10,9 +11,9 @@ public:
 
 	// Destructor of BaseMesh copied automatically
 
-	void initFromModel(ModelTriangles* tris);
+	void initFromModel(b_Model::ModelTriangles* tris);
 
-	ModelTriangles* getTriangles() const override;
+	b_Model::ModelTriangles* getTriangles() const;
 protected:
-	ModelTriangles* triangles;
+	b_Model::ModelTriangles* triangles;
 };

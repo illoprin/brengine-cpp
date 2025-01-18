@@ -9,7 +9,7 @@ Input::Input()
 
 Input::~Input()
 {
-	printf("IO - Released\n");
+	LOG_MSG("IO released");
 };
 
 void Input::resetMouse()
@@ -31,22 +31,22 @@ void Input::updateMouse()
 void Input::setKeyCallback(b_UserKeyCallback func)
 {
 	this->u_kc = func;
-	b_log->logf("[INFO] IO - User key callback function 0x%X attached\n", func);
+	LOG_MSG("IO User key callback function 0x%X attached", func);
 };
 void Input::setMouseButtonCallback(b_UserMouseButtonCallback func)
 {
 	this->u_mbc = func;
-	b_log->logf("[INFO] IO - User mouse callback function 0x%X attached\n", func);
+	LOG_MSG("IO User key callback function 0x%X attached", func);
 };
 void Input::setMouseMotionCallback(b_UserMouseMotionCallback func)
 {
 	this->u_mmc = func;
-	b_log->logf("[INFO] IO - User cursor motion callback function 0x%X attached\n", func);
+	LOG_MSG("IO User key callback function 0x%X attached", func);
 };
 void Input::setCharacterCallback(b_UserCharacterCallback func)
 {
 	this->u_cc = func;
-	b_log->logf("[INFO] IO - User keyboard input callback function 0x%X attached\n", func);
+	LOG_MSG("IO User key callback function 0x%X attached", func);
 };
 
 b_UserKeyCallback Input::getKeyCallback() const

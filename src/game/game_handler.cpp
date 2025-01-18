@@ -1,7 +1,7 @@
 #include "game_handler.h"
 
+using namespace b_Level;
 using namespace b_Game;
-using namespace b_GUI;
 
 GameHandler::GameHandler(std::string filename)
 {
@@ -17,7 +17,7 @@ GameHandler::GameHandler(std::string filename)
 
 void GameHandler::installLevel(uint16_t index)
 {
-	std::string level_name = game_data.levels[index];
+	std::string level_name{game_data.levels[index] + ".blf"};
 	std::unique_ptr<b_Level::Level> lvl_ptr{
 		new b_Level::Level{level_name, &game_data}
 	};
@@ -44,10 +44,6 @@ b_Level::Level* GameHandler::getCurrentLevel() const
 {
 	return level_up.get();
 };
-GUIScene* GameHandler::getCurrentGUI() const
-{
-	return gui_up.get();
-};
 
 void GameHandler::build_texture_storage()
 {
@@ -64,10 +60,9 @@ void GameHandler::build_texture_storage()
 	t_atlas.setWrapping(GL_REPEAT);
 
 	unsigned index = 0u;
-	for(const auto& pair : game_data.textures)
+	for(const std::string& file : game_data.textures)
 	{
-		std::string file_path
-			{fs::path(FS_ASSETS_PATH) / "textures" / (pair.second + ".bmp")};
+		std::string file_path{TEXTURE_FILE_PATH(file)};
 		
 		// Load bytes from file
 		stbi_set_flip_vertically_on_load(1);
@@ -83,15 +78,13 @@ void GameHandler::build_texture_storage()
 				index, 0u, 0u, GL_RGB, GL_UNSIGNED_BYTE, bytes
 			);
 
-			printf(
-				"GameHandler - Texture with path %s loaded, storage pointer index is %u\n", file_path.c_str(), index
-			);
+			LOG_MSG("Texture %u loaded to storage", index);
 			++index;
 			
 		}
 		else
 		{
-			printf("GameHandler - Could not load texture with path %s\n", file_path.c_str());
+			LOG_WAR("Could not load texture with path %s\n", file_path.c_str());
 		};
 
 		// Release bytes
@@ -104,33 +97,27 @@ void GameHandler::build_texture_storage()
 void GameHandler::build_palette()
 {
 	// Init OpenGL texture object
-	t_palette.width = BGD_PALETTE_TILE_SIZE;
-	t_palette.height = BGD_PALETTE_TILE_SIZE;
-	t_palette.layers = game_data.palletes.size();
+	t_palette.width = B_PALETTE_TILE_SIZE;
+	t_palette.height = B_PALETTE_TILE_SIZE;
+	t_palette.layers = game_data.pallete.size();
 	t_palette.components = 3;
 	t_palette.InitStorage(GL_RGB8);
 	t_palette.setFiltering(GL_NEAREST);
 	t_palette.setWrapping(GL_REPEAT);
 
-	uint16_t pw = BGD_PALETTE_TILE_SIZE;
+	uint16_t pw = B_PALETTE_TILE_SIZE;
 	unsigned index = 0u;
-	for (const auto& pair : game_data.palletes)
+	for (const glm::ivec3& color : game_data.pallete)
 	{
-		// Get clamped color
-		const glm::vec3& colc = pair.second;
-		unsigned char r = (unsigned char)(colc.r * 255.f);
-		unsigned char g = (unsigned char)(colc.g * 255.f);
-		unsigned char b = (unsigned char)(colc.b * 255.f);
-
 		// Allocate memory for pixels
 		unsigned char* pixels = (unsigned char*)malloc(pw * pw * 3);
 
 		// Fill this pixel area with one color
 		for (unsigned i = 0; i < pw * pw; ++i)
 		{
-			pixels[i * 3 + 0] = r;
-			pixels[i * 3 + 1] = g;
-			pixels[i * 3 + 2] = b;
+			pixels[i * 3 + 0] = (uch)color.r;
+			pixels[i * 3 + 1] = (uch)color.g;
+			pixels[i * 3 + 2] = (uch)color.b;
 		};
 
 		// Load pixels to storage

@@ -7,12 +7,12 @@ void b_Game::GameDataFromBGD(
 )
 {
 	gd.file_name = file_name;
-	std::string file_path{"assets/game_data/" + file_name + ".bgd"}; 
-	std::ifstream file{fs::path(file_path)};
+	std::ifstream file{GAME_DATA_FILE_PATH(file_name)};
 
 	if (!file.is_open())
 	{
 		LOG_ERR("Could not open file %s\n", file_name.c_str());
+		abort();
 		return;
 	};
 
@@ -48,7 +48,7 @@ void b_Game::GameDataFromBGD(
 				// buf is - filename.ext
 				sline >> buf;
 				std::string filename, extension;
-				b_Utils::file_name_and_ext_from_str(buf, filename, extension);
+				b_Utils::SplitFilename(buf, filename, extension);
 				if (extension == "bmp")
 				{
 					gd.textures.push_back(buf);
@@ -127,34 +127,34 @@ void b_Game::GameData::print()
 {
 	printf("Game name: %s\n", game_name.c_str());
 			
-	printf("Levels:\n");
+	puts("Levels:\n");
 	for (const auto& l : levels)
 	{
 		printf("\tUsing level %s\n", l.c_str());
 	}
 
-	printf("Textures:\n");
+	puts("Textures:\n");
 	for (const std::string& s : textures)
 	{
 		printf("\tUsing texture %s\n", s.c_str());
 	};
 
-	printf("Models:\n");
+	puts("Models:\n");
 	for (const std::string& s : models)
 	{
 		printf("\tUsing model %s\n", s.c_str());
 	};
 
-	printf("Level appearance:\n");
+	puts("Level appearance:\n");
 	for (const b_Game::LevelAppearanceData& la : lvl_appearance)
 	{
 		printf("\tTexIndex: %u ColorIndex: %u GlowIntensity: %.2f\n",
 			la.itexture, la.icolor, la.glow_intensity);
 	};
 
-	printf("Palettes:\n");
+	puts("Palettes:\n");
 	for (const glm::ivec3& col : pallete)
 	{
-		printf("\tColor R: %.2f %.2f %.2f\n", col.r, col.g, col.b);
+		printf("\tColor R: %d %d %d\n", col.r, col.g, col.b);
 	};
 };

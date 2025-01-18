@@ -1,6 +1,15 @@
 #pragma once
 
-#include <util/deps.h>
+#include <util/cpp_includes.h>
+#include <util/math_includes.h>
+
+#define DIR_UP glm::vec3(0, 1, 0)
+#define DIR_RIGHT glm::vec3(1, 0, 0)
+#define DIR_FORWARD glm::vec3(0, 0, 1)
+
+#define CAM_FOV 90.f
+#define CAM_NEAR .01f
+#define CAM_FAR 100.f
 
 class Camera
 {

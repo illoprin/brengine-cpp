@@ -1,12 +1,10 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "level_data.h"
-#include "level_model.h"
-#include "../game/game_data.h"
-#include "../mesh/base_mesh.h"
-#include "../entity/entity.h"
-#include "../texture/texture_storage.h"
+#include <texture/texture_storage.h>
+#include <level/level_model.h>
+#include <mesh/base_mesh.h>
+#include <entity/entity.h>
+#include <core/log.h>
 
 namespace b_Level
 {

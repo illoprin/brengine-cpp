@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../mesh/base_mesh.h"
-#include "../texture/texture.h"
-#include "gui_font.h"
+#include <util/deps.h>
+#include <mesh/base_mesh.h>
+#include <texture/texture.h>
+#include <gui/gui_font.h>
 
 namespace b_GUI
 {

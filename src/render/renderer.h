@@ -1,7 +1,20 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "program.h"
+#include <render/program.h>
+
+
+// Render
+enum RenderMode
+{
+	RENDER_TEXTURED = 0,
+	RENDER_NORMAL,
+	RENDER_WIRE,
+	RENDER_DEPTH,
+};
+
+extern RenderMode b_render_mode;
+
+
 
 class Renderer
 {

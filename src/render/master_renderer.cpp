@@ -1,7 +1,7 @@
 #include "master_renderer.h"
 
-#include "../core/engine.h"
-#include "../core/context.h"
+#include <core/context.h>
+#include <core/engine.h>
 
 RenderMode b_render_mode = RENDER_TEXTURED;
 
@@ -10,14 +10,14 @@ MasterRenderer::MasterRenderer()
 	// Use this to render screenquad and do basic post process
 	p_main.InitVertexAndFragment("b_godmixer");
 
-	fb_scene = new Framebuffer{"Framebuffer_Scene"};
+	fb_scene = new Framebuffer{"Scene"};
 	fb_scene->bind();
 	fb_scene->initColorAttachment(WIN_WIDTH, WIN_HEIGHT);
 	fb_scene->initDepthAttachment(WIN_WIDTH, WIN_HEIGHT);
 	fb_scene->check();
 	fb_scene->unbind();
 
-	fb_ui = new Framebuffer{"Framebuffer_GUI"};
+	fb_ui = new Framebuffer{"GUI"};
 	fb_ui->initColorAttachment(WIN_WIDTH, WIN_HEIGHT);
 	fb_ui->check();
 };
@@ -90,7 +90,5 @@ void MasterRenderer::switchRenderMode()
 	int current_mode = (int)b_render_mode;
 	current_mode = (current_mode + 1) % 4;
 	b_render_mode = (RenderMode)current_mode;
-	b_log->logf(
-		"[INFO] MasterRenderer - render mode switched to %d\n", 
-		(int)b_render_mode);
+	LOG_MSG("Render mode switched to %u", b_render_mode);
 };

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "gui_font.h"
-#include "gui_text.h"
-#include "gui_scene.h"
-#include "../core/default_assets.h"
-#include "../core/camera.h"
+#include <util/deps.h>
+#include <gui/gui_item.h>
+#include <gui/gui_text.h>
+#include <gui/gui_scene.h>
+#include <core/default_assets.h>
+#include <core/camera.h>
 
 namespace b_GUI
 {

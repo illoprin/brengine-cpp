@@ -26,12 +26,10 @@ static void init_window();
 static void init_io();
 
 // Create unique pointers to single classes (bu_ = brengine unique)
-static std::unique_ptr<Log> bu_log;
 static std::unique_ptr<Clock> bu_clock;
 static std::unique_ptr<MasterRenderer> bu_renderer;
 
 // Base
-Log* b_log = nullptr; // Global Log ptr
 static Clock* b_clock;
 static MasterRenderer* b_renderer;
 static Input* b_input;
@@ -58,10 +56,6 @@ void b_Engine::Init()
 
 	init_window();
 
-	// Init logger
-	bu_log = std::make_unique<Log>();
-	b_log = bu_log.get();
-
 	// Init clock
 	bu_clock = std::make_unique<Clock>();
 	b_clock = bu_clock.get();
@@ -86,7 +80,7 @@ void b_Engine::Init()
 
 void b_Engine::Release()
 {
-	b_log->logf("[INFO] Engine - Closing...\n");
+	LOG_MSG("Closing...");
 	glfwDestroyWindow(b_window);
 	glfwTerminate();
 	
@@ -128,7 +122,7 @@ void b_Engine::TakeScreenshot()
 
 		// Get filename
 		std::string file_name{
-			fs::path(FS_SCREENSHOTS_PATH) / ("Screenshot " + b_Utils::current_time_s() + ".png")
+			fs::path(FS_SCREENSHOTS_PATH) / ("Screenshot " + b_Utils::TimeString() + ".png")
 		};
 		
 		// Write pixels to image
@@ -138,7 +132,7 @@ void b_Engine::TakeScreenshot()
 			3, pixels, w_vid_mode.x * 3
 		);
 		if (!write_status)
-			b_log->logf("[WARNING] Engine - Could not take screenshot\n");
+			LOG_WAR("Could not take screenshot");
 		stbi_flip_vertically_on_write(0);
 
 		free(pixels);
@@ -323,7 +317,7 @@ static void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 	w_vid_mode.x = width; w_vid_mode.y = height;
 	w_aspect = (float) w_vid_mode.x / (float) w_vid_mode.y;
 
-	b_log->logf("[INFO] Engine - window resized %d %d\n", width, height);
+	LOG_MSG("Window resized %d %d\n", width, height);
 	b_renderer->WindowSizeChangeCallback();
 }
 /* ==================================================== */

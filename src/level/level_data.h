@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../util/utils.h"
+#include <util/deps.h>
+#include <util/utils.h>
+#include <core/files.h>
+#include <core/log.h>
 
 namespace b_Level
 {
@@ -37,10 +39,9 @@ namespace b_Level
 	struct LevelData
 	{
 		std::string name = "nothing";
-		std::string game_name = "nothing";
 		std::vector<glm::vec2> verts;
-		std::map<uint16_t, Sector> sectors;
-		std::map<uint16_t, Wall> walls;
+		std::vector<Sector> sectors;
+		std::vector<Wall> walls;
 
 		void print();
 		size_t get_size();

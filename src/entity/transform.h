@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
 
 namespace b_GameObject
 {

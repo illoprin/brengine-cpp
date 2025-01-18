@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../texture/texture.h"
+#include <glm/glm.hpp>
+#include <texture/texture.h>
 
 namespace b_GameObject
 {

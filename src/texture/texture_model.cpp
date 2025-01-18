@@ -1,6 +1,6 @@
 #include "texture_model.h"
 
-#include "../core/engine.h"
+
 
 using namespace b_Texture;
 
@@ -11,8 +11,7 @@ TextureModel::TextureModel(bool mp)
 
 void TextureModel::FromPNG(std::string fn)
 {
-	std::string file_path = 
-		fs::path(FS_ASSETS_PATH) / "textures" / (fn + ".png");
+	std::string file_path{TEXTURE_FILE_PATH(fn)};
 
 	int _width, _height, _channels;
 
@@ -49,22 +48,17 @@ void TextureModel::FromPNG(std::string fn)
 
 		stbi_image_free(bytes);
 
-		b_log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
-			this->id, file_path.c_str()
-		);
+		LOG_MSG("Texture id = %u loaded from file with path %s", id, file_path.c_str());
 	}
 	else
 	{
-		b_log->logf("[ERROR] Texture: Could not open image with path %s\n",
-			file_path.c_str()
-		);
+		LOG_WAR("Could not open image with path %s", file_path.c_str());
 	}
 };
 
 void TextureModel::FromBMP(std::string fn)
 {
-	std::string file_path
-		{fs::path(FS_ASSETS_PATH) / "textures" / (fn + ".bmp")};
+	std::string file_path{TEXTURE_FILE_PATH(fn)};
 
 	int _width, _height, _channels;
 
@@ -100,15 +94,11 @@ void TextureModel::FromBMP(std::string fn)
 
 		stbi_image_free(bytes);
 
-		b_log->logf("[INFO] Texture id = %u loaded from file with path %s\n",
-			this->id, file_path.c_str()
-		);
+		LOG_MSG("Texture id = %u loaded from file with path %s", id, file_path.c_str());
 	}
 	else
 	{
-		b_log->logf("[WARNING] Texture: Could not open image with path %s\n",
-			file_path.c_str()
-		);
+		LOG_WAR("Could not open image with path %s", file_path.c_str());
 	}
 };
 

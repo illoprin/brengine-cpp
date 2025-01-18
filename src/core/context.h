@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <util/gl_includes.h>
 
 #define b_CheckError() b_Context::CheckError(__FILE__, __LINE__) 
 

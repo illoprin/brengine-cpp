@@ -2,8 +2,9 @@
 
 #include "engine.h"
 
-using namespace b_AssetManager;
 namespace b_GuiFont = b_GUI::b_Font;
+using namespace b_AssetManager;
+using namespace b_Model;
 
 b_Texture::TextureModel* TextureNull;
 b_Texture::TextureModel* TextureNullAlpha;
@@ -31,23 +32,22 @@ void b_AssetManager::InitAssets()
 {
 	// --- Textures
 	TextureNull = new b_Texture::TextureModel{};
-	TextureNull->FromBMP("NULL");
+	TextureNull->FromBMP("NULL.bmp");
 
 	TextureNullAlpha = new b_Texture::TextureModel{};
-	TextureNullAlpha->FromBMP("NULL_ALPHA");
+	TextureNullAlpha->FromBMP("NULL_ALPHA.bmp");
 	TextureNullAlpha->use_transperency_mask = 1;
 
 	// --- Meshes
-	GLuint lb;
 	MeshBasicQuad = new BaseMesh{"AssetMesh_BasicQuad"};
-	lb = MeshBasicQuad->AddBuffer(quad_data, 24 * sizeof(float));
+	MeshBasicQuad->AddBuffer(quad_data, 24 * sizeof(float));
 	// 1. Attribute: in_position
 	MeshBasicQuad->SetDataPointer(
-		lb, 2, 4 * sizeof(float), 0);
+		0, 2, 4 * sizeof(float), 0);
 	// 2. Attribute: in_texcoord
 	MeshBasicQuad->SetDataPointer(
-		lb, 2, 4 * sizeof(float), 2 * sizeof(float));
-	MeshBasicQuad->setTotal(6); // 6 vertices
+		0, 2, 4 * sizeof(float), 2 * sizeof(float));
+	MeshBasicQuad->setTotal(6u); // 6 vertices
 
 	MeshQuad = new SimpleMesh{"AssetMesh_Quad"};
 	MeshQuad->initFromModel(&quad_model);
@@ -57,13 +57,13 @@ void b_AssetManager::InitAssets()
 
 	// --- Fonts
 	FontMono = new b_GuiFont::Font{"AssetFont_Mono"};
-	FontMono->FromTTF("mono", 64, 512, 512);
+	FontMono->FromTTF("mono.ttf", 64, 512, 512);
 	
 	FontSans = new b_GuiFont::Font{"AssetFont_Sans"};
-	FontSans->FromTTF("sans", 64, 1024, 1024);
+	FontSans->FromTTF("sans.ttf", 64, 1024, 1024);
 
 	FontGame = new b_GuiFont::Font{"AssetFont_Game"};
-	FontGame->FromTTF("game", 32, 512, 512);
+	FontGame->FromTTF("game.ttf", 55, 512, 512);
 };
 
 void b_AssetManager::ReleaseAssets()

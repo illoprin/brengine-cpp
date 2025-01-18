@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../core/camera.h"
+#include <player/player.h>
+#include <core/camera.h>
 
 class EditorController
 {

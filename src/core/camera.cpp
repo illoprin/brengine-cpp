@@ -1,6 +1,6 @@
 #include "camera.h"
 
-#include "engine.h"
+#include <core/engine.h>
 
 Camera::Camera(glm::vec3 pos)
 {

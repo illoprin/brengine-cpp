@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../texture/texture.h"
-#include "../util/utils.h"
-
+#include <util/deps.h>
+#include <texture/texture.h>
+#include <util/utils.h>
+#include <core/log.h>
+#include <core/files.h>
 
 /*
 	BFC - Brengine Font Cache Format

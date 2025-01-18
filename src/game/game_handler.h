@@ -1,13 +1,20 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "game_data.h"
-#include "../level/level.h"
-#include "../player/editor_controller.h"
-#include "../mesh/base_mesh.h"
-#include "../texture/texture_storage.h"
-#include "../gui/gui_scene.h"
-#include "../core/default_assets.h"
+#include <util/deps.h>
+#include <game/game_data.h>
+#include <level/level.h>
+#include <player/editor_controller.h>
+#include <texture/texture_storage.h>
+
+#define B_PALETTE_TILE_SIZE 10
+#define B_FLAT_TEXTURE_SIZE 64
+
+enum GameState {
+	GS_NONE = 0,
+	GS_MAIN_MENU = 0,
+	GS_LEVEL,
+	GS_PAUSED,
+};
 
 namespace b_Game
 {
@@ -17,7 +24,6 @@ namespace b_Game
 		GameHandler(std::string);
 		~GameHandler();
 		b_Level::Level* getCurrentLevel() const;
-		b_GUI::GUIScene* getCurrentGUI() const;
 
 		void installLevel(uint16_t);
 		void releaseLevel();
@@ -34,10 +40,6 @@ namespace b_Game
 
 		// Current loaded level
 		std::unique_ptr<b_Level::Level> level_up;
-		// Current loaded gui
-		std::unique_ptr<b_GUI::GUIScene> gui_up;
-		// GUI items vector
-		std::vector<b_GUI::GUIItem> gui_items_list;
 
 		GameState game_state = GameState::GS_MAIN_MENU;
 

@@ -1,14 +1,11 @@
 #include "texture.h"
 
-#include "../core/engine.h"
-#include "../core/context.h"
-
 using namespace b_Texture;
 
 Texture::Texture()
 {
 	glGenTextures(1, &this->id);
-	b_log->logf("[INFO] Texture id = %u - Generated new texture object\n", id);
+	LOG_MSG("Texture id = %u created new texture object", id);
 };
 
 void Texture::bind()
@@ -45,7 +42,7 @@ void Texture::setImagePointer(
 	);
 	b_CheckError(); // Checking OpenGL errors
 
-	b_log->logf("[INFO] Texture id = %u data pointer created\n", this->id);
+	LOG_MSG("Texture id = %u data pointer created", id);
 };
 
 
@@ -56,7 +53,7 @@ GLuint Texture::getID()
 
 Texture::~Texture()
 {
-	b_log->logf("[INFO] Texture id = %u released\n", this->id);
+	LOG_MSG("Texture id = %u released", id);
 	glDeleteTextures(1, &this->id);
 };
 

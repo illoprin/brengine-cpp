@@ -3,6 +3,7 @@
 #include <util/deps.h>
 #include <util/utils.h>
 #include <core/log.h>
+#include <core/files.h>
 
 namespace b_Game
 {

@@ -1,7 +1,7 @@
 #include "debug_gui.h"
 
-#include "../core/engine.h"
-#include "../mesh/base_mesh.h" // Stores information about total number of draw calls
+#include <core/engine.h>
+#include <mesh/base_mesh.h> // Stores information about total number of draw calls
 
 using namespace b_GUI;
 
@@ -57,5 +57,4 @@ void DebugGUI::updateFPSText()
 	else
 		fps_color = {.93f, .07f, .12f}; // Red color
 	ui_fps_text.setColor(fps_color);
-
 }

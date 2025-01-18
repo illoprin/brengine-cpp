@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "log.h"
+#include <util/deps.h>
 
 struct Mouse
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../texture/texture.h"
-
+#include <util/deps.h>
+#include <texture/texture.h>
+#include <core/log.h>
 
 struct Framebuffer
 {

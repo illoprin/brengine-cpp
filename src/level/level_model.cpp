@@ -209,7 +209,6 @@ static void bl_BuildAppearanceData (
 	};
 	gi = ap.glow_intensity;
 	if (gi > 0.f) ttype = b_Level::BL_GLOWING;
-
 };
 
 static bool bl_isUniqueVec2InList(glm::vec2& v, std::vector<glm::vec2>& l)
@@ -234,9 +233,8 @@ void b_Level::LevelDataToVertices(
 	std::vector<LevelVertex>& vl
 )
 {
-	for (auto& pair : ld.sectors)
+	for (b_Level::Sector& sector : ld.sectors)
 	{
-		const b_Level::Sector& sector = pair.second;
 		if (sector.wall_num == 0)
 			continue;
 		else
@@ -272,7 +270,7 @@ void b_Level::LevelDataToVertices(
 				if (w.iappearance != 0)
 				{
 					b_Game::LevelAppearanceData& wa =
-						gd.lvl_appearance.at(w.iappearance);
+						gd.lvl_appearance.at(w.iappearance - 1);
 					bl_BuildAppearanceData(wa, tid, ttype, gi);
 				}
 				
@@ -299,7 +297,7 @@ void b_Level::LevelDataToVertices(
 				// If it is portal - form top and bottom quad triangles
 				else
 				{
-					b_Level::Sector& p_sector = ld.sectors.at(w.portal);
+					b_Level::Sector& p_sector = ld.sectors.at(w.portal - 1);
 
 					// Form bottom triangles, if floor height of current sector
 					// is less then floor height of next sector
@@ -352,7 +350,7 @@ void b_Level::LevelDataToVertices(
 			if (sector.iafloor != 0)
 			{
 				const b_Game::LevelAppearanceData& sa =
-					gd.lvl_appearance.at(sector.iafloor);
+					gd.lvl_appearance.at(sector.iafloor - 1);
 				bl_BuildAppearanceData(sa, tid, ttype, gi);
 			}
 			bl_TriangulateFloor(sv, sector, tid, ttype, gi, vl);
@@ -363,7 +361,7 @@ void b_Level::LevelDataToVertices(
 			if (sector.iaceil != 0)
 			{
 				const b_Game::LevelAppearanceData& sa =
-					gd.lvl_appearance.at(sector.iafloor);
+					gd.lvl_appearance.at(sector.iaceil - 1);
 				bl_BuildAppearanceData(sa, tid, ttype, gi);
 			};
 			bl_TriangulateCeiling(sv, sector, tid, ttype, gi, vl);
@@ -371,7 +369,7 @@ void b_Level::LevelDataToVertices(
 		}
 
 	}
-	printf("b_Level::LevelDataToVertices - Level.%s total face count is: %ld\n", ld.name.c_str(), vl.size() / 3);
+	LOG_MSG("Level.%s total face count is: %ld", ld.name.c_str(), vl.size() / 3);
 };
 
 void b_Level::printLevelVertices(

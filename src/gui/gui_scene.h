@@ -1,9 +1,6 @@
 #pragma once
 
-#include "../mesh/base_mesh.h"
-#include "../util/deps.h"
-#include "gui_item.h"
-#include "gui_text.h"
+#include <gui/gui_item.h>
 
 namespace b_GUI
 {
@@ -16,6 +13,8 @@ namespace b_GUI
 		GUIScene& operator=(GUIScene&) = delete;
 		GUIScene(const GUIScene&) = delete;
 		GUIScene(GUIScene&) = delete;
+
+		
 		void append(GUIItem*);
 		const std::vector<GUIItem *>& getItems() const;
 	private:

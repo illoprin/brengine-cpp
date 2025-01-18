@@ -1,6 +1,6 @@
 #include "editor_controller.h"
 
-#include "../core/engine.h"
+#include <core/engine.h>
 
 EditorController::EditorController()
 {

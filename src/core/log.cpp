@@ -1,17 +1,17 @@
 #include "log.h"
 
-void log_init()
+void LoggerInit()
 {
 	// TODO: Create log file
 };
 
-void log_release()
+void LoggerRelease()
 {
 	// TODO: Close log file
 };
 
 
-void u_log_msg(
+void __LogMessage(
 	int logType, const char* file, unsigned line, const char* format, ...)
 {
 	va_list arglist;

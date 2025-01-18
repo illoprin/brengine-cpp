@@ -2,38 +2,40 @@
 
 using namespace b_Model;
 
-void b_Model::loadFromOBJ(
+void b_Model::ModelFromOBJ(
 	std::string filename, std::string& name, std::vector<Triangle>& tris
 )
 {
-	std::string filepath{
-		fs::path(FS_ASSETS_PATH) / "models" / (filename + ".obj")
-	};
+	std::string filepath{MODEL_FILE_PATH(name)};
+
+
+	FILE* obj_src = fopen(filepath.c_str(), "r");
+	if (!obj_src)
+	{
+		perror(filepath.c_str());
+		return;
+	}
 
 	std::vector<float> raw_vertices;
 	std::vector<float> raw_texcoords;
 	std::vector<float> raw_normals;
 
-	FILE* obj_src = fopen(filepath.c_str(), "r");
-	if (!obj_src)
-	{
-		fprintf(stderr, "OBJ Loader - Could not open file with path %s\n", filepath.c_str());
-		return;
-	}
-
-	char line[256];
-	while (fgets(line, 256, obj_src) != NULL)
+	char line[MAX_BUFFER];
+	while (fgets(line, MAX_BUFFER, obj_src))
 	{
 		char* token = strtok(line, " ");
-		if (strcmp(token, "o") == 0)
+		if (!strcmp(token, "o"))
 		{
 			// Get name
 			char* raw_name = strtok(NULL, " ");
+			
 			// Length of obj name without \n escape sequence
-			unsigned name_len = strlen(raw_name) - 1;
+			size_t name_len = strlen(raw_name);
 			
 			char _name[name_len]; 
 			strncpy(_name, raw_name, name_len);
+
+			_name[name_len - 1] = '\0';
 
 			name = {_name};
 			printf("OBJ Loader - Loading obj named %s\n", _name);
@@ -80,7 +82,7 @@ void b_Model::loadFromOBJ(
 			tris.push_back(new_face);
 		}
 	}
-	// Close obj file source
+	// Close file
 	fclose(obj_src);
 
 	printf("OBJ Loader - loaded model with name %s from file %s\n", 
@@ -91,7 +93,7 @@ void b_Model::printTriangles(ModelTriangles& tris)
 {
 	for (Triangle& tri : tris)
 	{
-		printf("- Face\n");
+		puts("- Face\n");
 		for (unsigned i = 0; i < 3; i++)
 		{
 			printf("\tCoord: %.1f %.1f %.1f\n\tTexcoord: %.1f %.1f\n\tNormal: %.1f %.1f %.1f\n",
@@ -99,8 +101,8 @@ void b_Model::printTriangles(ModelTriangles& tris)
 				tri.vertex[i].tu, tri.vertex[i].tv, 
 				tri.vertex[i].nx, tri.vertex[i].ny, tri.vertex[i].nz
 			);
-			printf("\n");
+			putchar('\n');
 		}
-		printf("\n");
+		putchar('\n');
 	}
 };

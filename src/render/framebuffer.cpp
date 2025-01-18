@@ -1,7 +1,6 @@
 #include "framebuffer.h"
 
-#include "../core/engine.h"
-#include "../core/context.h"
+
 
 using namespace b_Texture;
 
@@ -10,6 +9,8 @@ Framebuffer::Framebuffer(const char* name)
 	this->name = {name};
 
 	glGenFramebuffers(1, &this->id);
+
+	LOG_MSG("Framebuffer.%s created", name);
 };
 
 void Framebuffer::changeSize(unsigned w, unsigned h)
@@ -46,8 +47,7 @@ void Framebuffer::initColorAttachment(unsigned w, unsigned h)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->color_attachment->getID(), 0);
 	b_CheckError(); // Checking OpenGL errors
 	
-	b_log->logf("[INFO] Framebuffer.%s id = %u - color attachment created\n",
-		this->name.c_str(), this->id);
+	LOG_MSG("Framebuffer.%s color attachment created X: %u Y: %u", name.c_str(), w, h);
 	this->unbind();
 };
 void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
@@ -66,8 +66,7 @@ void Framebuffer::initDepthAttachment(unsigned w, unsigned h)
 	);
 	b_CheckError(); // Checking OpenGL errors
 
-	b_log->logf("[INFO] Framebuffer.%s id = %u - depth attachment created\n",
-		this->name.c_str(), this->id);
+	LOG_MSG("Framebuffer.%s depth attachment created X: %u Y: %u", name.c_str(), w, h);
 	this->unbind();
 };
 
@@ -76,13 +75,11 @@ void Framebuffer::check()
 	this->bind();
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE)
 	{
-		b_log->logf("[INFO] Framebuffer.%s id = %u - attachments completed!\n",
-			this->name.c_str(), this->id);
+		LOG_MSG("Framebuffer.%s attachments completed", name.c_str());
 	}
 	else
 	{
-		b_log->logf("[WARNING] Framebuffer.%s id = %u - attachments binding not completed\n",
-			this->name.c_str(), this->id);
+		LOG_MSG("Framebuffer.%s attachments bindings not completed", name.c_str());
 	};
 	this->unbind();
 }
@@ -134,17 +131,16 @@ Framebuffer::~Framebuffer()
 	glDeleteFramebuffers(1, &this->id);
 	if (this->color_attachment != nullptr)
 	{
-		b_log->logf("[INFO] Framebuffer.%s id = %u - color attachment id = %u deleted\n", 
-			this->name.c_str(), this->id, this->color_attachment->getID());
+		LOG_MSG("Framebuffer.%s color attachment id = %u deleted", name.c_str(),
+			color_attachment->getID());
 		delete this->color_attachment;
 	};
 	if (this->depth_attachment != nullptr)
 	{
-		b_log->logf("[INFO] Framebuffer.%s id = %u - depth attachment id = %u deleted\n", 
-			this->name.c_str(), this->id, this->depth_attachment->getID());
+		LOG_MSG("Framebuffer.%s depth attachment id = %u deleted", name.c_str(),
+			depth_attachment->getID());
 		delete this->depth_attachment;
 	};
 
-	b_log->logf("[INFO] Framebuffer.%s id = %u - deleted\n",
-		this->name.c_str(), this->id);
+	LOG_MSG("Framebuffer.%s released", name.c_str());
 };

@@ -1,54 +1,46 @@
 #include "level.h"
 
-#include "../core/engine.h"
-#include "../core/context.h"
-
 using namespace b_Level;
 
 Level::Level(std::string fn, b_Game::GameData* gd)
 {
 	game_data = gd;
 	b_Level::FromBLF(fn, level_data);
-	if (level_data.game_name != gd->file_name)
-	{
-		printf("b_Level::Level - Warning - Level named %s is from another game named %s\n",
-			level_data.name.c_str(), game_data->file_name.c_str());
-		return;
-	}
+
+	level_data.print();
 
 	// Build level mesh
 	std::vector<b_Level::LevelVertex> vertex_list;
 	b_Level::LevelDataToVertices(level_data, *gd, vertex_list);
-	b_Level::printLevelVertices(vertex_list);
 
 	// Store data in VBO object
-	GLuint lb = m_level.AddBuffer(vertex_list.data(), vertex_list.size() * sizeof(LevelVertex));
+	m_level.AddBuffer(vertex_list.data(), vertex_list.size() * sizeof(LevelVertex));
 	
 	// Add attributes
 
 	// 1. In position
 	m_level.SetDataPointer
-		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, position));
+		(0, 3, sizeof(LevelVertex), offsetof(LevelVertex, position));
 	// 2. In texcoord
 	m_level.SetDataPointer
-		(lb, 2, sizeof(LevelVertex), offsetof(LevelVertex, texcoord));
+		(0, 2, sizeof(LevelVertex), offsetof(LevelVertex, texcoord));
 	// 3. In normal
 	m_level.SetDataPointer
-		(lb, 3, sizeof(LevelVertex), offsetof(LevelVertex, normal));
+		(0, 3, sizeof(LevelVertex), offsetof(LevelVertex, normal));
 	
 	// 4. Texture id
 	m_level.SetDataIntegerPointer
-		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureId));
+		(0, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureId));
 	// 5. Texture type
 	m_level.SetDataIntegerPointer
-		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureType));
+		(0, 1, sizeof(LevelVertex), offsetof(LevelVertex, textureType));
 	// 6. Glow intensity
 	m_level.SetDataPointer
-		(lb, 1, sizeof(LevelVertex), offsetof(LevelVertex, glow_intensity));
+		(0, 1, sizeof(LevelVertex), offsetof(LevelVertex, glow_intensity));
 
 	m_level.setTotal(vertex_list.size());
 
-	b_log->logf("[INFO] Level %s - Mesh created!\n", level_data.name.c_str());
+	LOG_MSG("Level.%s mesh created!", level_data.name.c_str());
 };
 
 void Level::update()

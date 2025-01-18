@@ -1,9 +1,10 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "renderer.h"
-#include "framebuffer.h"
-
+#include <core/default_assets.h>
+#include <render/framebuffer.h>
+#include <render/renderer.h>
+#include <util/deps.h>
+#include <core/log.h>
 
 /*
 	Renderer Program Types:

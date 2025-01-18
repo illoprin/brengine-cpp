@@ -1,23 +1,22 @@
 #ifndef _B_ENGINE_H_
 #define _B_ENGINE_H_
 
-#include "../util/deps.h"
-#include "log.h"
-#include "clock.h"
-#include "input.h"
-#include "camera.h"
+#include <util/cpp_includes.h>
+#include <core/log.h>
+#include <core/clock.h>
+#include <core/input.h>
+#include <core/files.h>
 
-#include "../gui/gui_scene.h"
-#include "../gui/debug_gui.h"
+#include <gui/gui_scene.h>
+#include <gui/debug_gui.h>
 
-#include "../render/master_renderer.h"
-#include "../render/gui_renderer.h"
-#include "default_assets.h"
-#include "context.h"
+#include <render/master_renderer.h>
+#include <render/gui_renderer.h>
+#include <core/default_assets.h>
+#include <core/context.h>
 
 // Fuck classes, I use namespaces
 
-extern Log* b_log;
 namespace b_Engine
 {
 	void Init();

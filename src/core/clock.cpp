@@ -1,7 +1,9 @@
 #include "clock.h"
 
 Clock::Clock()
-{};
+{
+	LOG_MSG("Clock created");
+};
 
 double Clock::getDeltaTime()
 {
@@ -29,5 +31,5 @@ void Clock::end()
 
 Clock::~Clock()
 {
-	printf("Clock - Released\n");
+	LOG_MSG("Clock released");
 };

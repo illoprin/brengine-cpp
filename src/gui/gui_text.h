@@ -1,9 +1,9 @@
 #pragma once
 
-#include "gui_font.h"
-#include "gui_item.h"
-#include "../mesh/base_mesh.h"
-#include "../model/model.h"
+#include <gui/gui_font.h>
+#include <gui/gui_item.h>
+#include <mesh/base_mesh.h>
+#include <model/model.h>
 
 namespace b_GUI
 {
@@ -17,7 +17,7 @@ namespace b_GUI
 		void update() override;
 		std::vector<b_Model::SimpleVertex2D> verts{6 * GUI_MAX_STRING_LEN};
 
-		std::string text = "";
+		std::string text{""};
 
 		BaseMesh* getMesh() const override;
 		b_Font::Font* getFont() const override;
@@ -27,4 +27,6 @@ namespace b_GUI
 		BaseMesh* mesh;
 		b_Font::Font* font;
 	};
+
+	void StringToMesh(GUIText*);
 };

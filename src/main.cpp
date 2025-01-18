@@ -1,4 +1,4 @@
-#include "engine/brengine.h"
+#include "brengine.h"
 
 void key_callback(int key, int action, int mods)
 {
@@ -13,14 +13,14 @@ int main()
 	b_Engine::Init();
 	b_Engine::getIO()->setKeyCallback(key_callback);
 	
-	b_Game::GameHandler game_handler{"initial"};
+	b_Game::GameHandler game_handler{"initial.bgd"};
 	game_handler.installLevel(0);
 
 	b_Texture::TextureModel t_rock;
-	t_rock.FromPNG("brown_rock");
+	t_rock.FromPNG("brown_rock.png");
 
 	b_Texture::TextureModel t_brick;
-	t_brick.FromPNG("brick_1");
+	t_brick.FromPNG("brick_1.png");
 
 	// Rock appearance
 	b_GameObject::EntityAppearance a_rock;
@@ -51,7 +51,7 @@ int main()
 	ui_crosshair.setScaling({.015f, .015f});
 
 	b_GUI::GUIText ui_pay_text{b_AssetManager::getDefaultGameFont(), "PAY\n NOW"};
-	ui_pay_text.setScaling({7, 7});
+	ui_pay_text.setScaling({5, 5});
 	ui_pay_text.setColor({ 0.92, 0.64, 0.05 });
 	ui_pay_text.setPosition({-.7, -.7});
 
@@ -84,8 +84,6 @@ int main()
 
 		r_level.Render(game_handler.getCurrentLevel(), cam);
 		r_gui.Render(s_ui.getItems());
-		if (game_handler.getCurrentGUI() != nullptr)
-			r_gui.Render(game_handler.getCurrentGUI()->getItems());
 		b_Engine::RenderDebugGUI(r_gui);
 		
 		r_master->Flush();

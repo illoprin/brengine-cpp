@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <util/gl_includes.h>
+#include <core/log.h>
 
 class Clock
 {

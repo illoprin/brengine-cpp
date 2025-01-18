@@ -1,8 +1,6 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "gui_item.h"
-
+#include <gui/gui_item.h>
 
 namespace b_GUI
 {

@@ -1,6 +1,8 @@
 #include "utils.h"
 
-void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
+
+
+void b_Utils::ReadFileLines(const char* filepath, std::string& buffer)
 {
 	FILE* src = fopen(filepath, "r");
 	if (!src)
@@ -9,7 +11,7 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 		return;
 	}
 
-	char line_buffer[MAX_FILE_LINE];
+	char line_buffer[MAX_BUFFER];
 	unsigned long line_counter = 0;
 	while (fgets(line_buffer, sizeof(line_buffer), src) != NULL)
 	{
@@ -26,7 +28,7 @@ void b_Utils::read_file_lines(const char* filepath, std::string& buffer)
 	}
 };
 
-std::string b_Utils::current_time_s()
+std::string b_Utils::TimeString()
 {
 	time_t current_time = time(NULL);
 	char c_time_str[256];
@@ -39,7 +41,7 @@ std::string b_Utils::current_time_s()
 	return time_s;
 };
 
-void b_Utils::file_name_and_ext_from_str(
+void b_Utils::SplitFilename(
 	std::string  src,
 	std::string& filename,
 	std::string& ext
@@ -65,34 +67,6 @@ void b_ImageIO::GenBytes(std::vector<unsigned char>& bytes, unsigned width, unsi
 		// RGB - stride is 3
 		bytes[i * 3 + 0] = r; bytes[i * 3 + 1] = g; bytes[i * 3 + 2] = b;
 	}
-};
-
-void b_ImageIO::WriteBytes(
-	std::vector<unsigned char>& byteData,
-	int width, 
-	int height, 
-	int components, 
-	const char* path
-)
-{
-	if (byteData.size() < (unsigned)components)
-	{
-		fprintf(stderr, "ImageIO - Could not write, byte data size is less then %d\n", components);
-		return;
-	}
-
-	if (strlen(path) < 2)
-	{
-		fprintf(stderr, "ImageIO - Could not write, file path field is empty\n");
-		return;
-	}
-	
-	if (!stbi_write_png(path, width, height, components, &byteData[0], components * width))
-	{
-		fprintf(stderr, "ImageIO - ERROR Could not write\n");
-		return;
-	}
-	printf("ImageIO - png file with path %s writed!\n", path);
 };
 
 void b_ImageIO::FlipY(unsigned char* b, unsigned c, unsigned w, unsigned h)

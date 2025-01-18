@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../game/game_data.h"
-#include "level_data.h"
+#include <util/deps.h>
+#include <game/game_data.h>
+#include <level/level_data.h>
 
 
 namespace b_Level

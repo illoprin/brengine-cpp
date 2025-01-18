@@ -1,11 +1,9 @@
 #include "program.h"
 
-#include "../core/engine.h"
-
 Program::Program()
 {
 	this->id = glCreateProgram();
-	b_log->logf("[INFO] Program - id = %u created\n", this->id);
+	LOG_MSG("Program id = %u created", id);
 };
 
 void Program::InitVertexAndFragment(std::string progname)
@@ -13,13 +11,11 @@ void Program::InitVertexAndFragment(std::string progname)
 	std::string fs_source = "\0";
 	std::string vs_source = "\0";
 
-	std::string vs_filepath =
-		fs::path(FS_ASSETS_PATH) / "shaders" / (progname + ".vert");
-	std::string fs_filepath = 
-		fs::path(FS_ASSETS_PATH) / "shaders" / (progname + ".frag");
+	std::string vs_filepath{SHADER_FILE_PATH(progname) + ".vert"};
+	std::string fs_filepath{SHADER_FILE_PATH(progname) + ".frag"};
 
-	b_Utils::read_file_lines(vs_filepath.c_str(), vs_source);
-	b_Utils::read_file_lines(fs_filepath.c_str(), fs_source);
+	b_Utils::ReadFileLines(vs_filepath.c_str(), vs_source);
+	b_Utils::ReadFileLines(fs_filepath.c_str(), fs_source);
 	
 	if (vs_source[0] != '\0' && fs_source[0] != '\0')
 	{
@@ -33,12 +29,12 @@ void Program::InitVertexAndFragment(std::string progname)
 		}
 		catch (...)
 		{
-			fprintf(stderr, "Exception: Shader program initialization error!\n");
+			LOG_ERR("Link error");
 		}
 	}
 	else
 	{
-		fprintf(stderr, "Warning: Shaders file source is empty\n");
+		LOG_WAR("Shader source file is empty");
 	}
 }
 
@@ -48,12 +44,12 @@ Program::~Program()
 	{
 		glDetachShader(this->id, s_id);
 		glDeleteShader(s_id);
-		b_log->logf("[INFO] Program - Shader id = %u released\n", s_id);
+		LOG_MSG("Program shader id = %u released", s_id);
 	};
 
 	glDeleteProgram(this->id);
 
-	b_log->logf("[INFO] Program - id = %u released\n", this->id);
+	LOG_MSG("Program id = %u released", id);
 };
 
 GLuint Program::CompileShader(const char* source, GLuint type)
@@ -71,25 +67,20 @@ GLuint Program::CompileShader(const char* source, GLuint type)
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
 
 		glGetShaderInfoLog(id, log_length, &log_length, &compile_log[0]);
-		b_log->logf("[WARNING] Program - Shader with type 0x%X compiled with errors\nError log: %s\n", type, compile_log);
+		LOG_ERR("Shader type 0x%X compilation error\nError log: %s", type, compile_log);
 		glDeleteShader(id);
 		throw "Shader compilation error";
 	}
 
-	b_log->logf("[INFO] Program - shader id = %u type = 0x%X compiled successfully!\n", id, type);
+	LOG_MSG("Shader id = %u type = 0x%X compiled", id, type);
 	return id;
 };
 void Program::LinkProgram(size_t count, ...)
 {
-	va_list shaders;
-	va_start(shaders, count);
+	va_list args;
+	va_start(args, count);
 	for (size_t i = 0; i < count; i++)
-	{
-		GLuint s_id = va_arg(shaders, GLuint);
-		glAttachShader(this->id, s_id);
-		b_log->logf("[INFO] Program - id = %u shader id = %u attached\n", this->id, s_id);
-
-	};
+		glAttachShader(this->id, va_arg(args, GLuint));
 
 	glLinkProgram(this->id);
 
@@ -98,21 +89,17 @@ void Program::LinkProgram(size_t count, ...)
 	if (success == GL_FALSE)
 	{
 		glGetProgramInfoLog(this->id, 512, NULL, info_log);
-		b_log->logf("[WARNING] Program id = %u linked with errors\nError log: %s", this->id, info_log);
+		LOG_ERR("Program id = %u link error\nError log: %s", this->id, info_log);
 		throw "Program link error!";
 	}
-	b_log->logf("[INFO] Program id = %u linked successfully\n", this->id);
+	LOG_MSG("Program id = %u linked successfully", this->id);
 };
 
 GLuint Program::GetUniformID(GLuint programID, const char* name)
 {
 	GLuint id = glGetUniformLocation(programID, name);
 	if (id < 0)
-	{
-		b_log->logf("[WARNING] Program %u - Non-existent uniform with name %s\n", programID, name);
-		return -1;
-	};
-	// printf("Program: Uniform named %s id is %u\n", name, id);
+		LOG_WAR("Program id = %u undefined uniform name %s", programID, name);
 	return id;
 };
 

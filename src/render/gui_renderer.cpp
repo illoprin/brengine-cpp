@@ -1,9 +1,6 @@
 #include "gui_renderer.h"
 
-#include "../core/context.h"
-#include "../core/default_assets.h"
-#include "../gui/gui_text_meshgen.h"
-#include "../core/engine.h"
+#include <core/engine.h>
 
 GUIRenderer::GUIRenderer(Framebuffer* fb)
 {

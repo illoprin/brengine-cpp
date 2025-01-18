@@ -1,7 +1,5 @@
 #include "gui_font.h"
 
-#include "../core/engine.h"
-
 using namespace b_GUI;
 
 // ASCII English symbols index range
@@ -23,7 +21,7 @@ void b_Font::BufferFromTTF(
 	FILE* ttf_src = fopen(fp, "rb"); // Open TTF file in read bytes mode
 	if (!ttf_src)
 	{
-		printf("b_Font::BufferFromTTF - Could not open file with path %s\n", fp);
+		perror(fp);
 		return;
 	}
 
@@ -33,9 +31,10 @@ void b_Font::BufferFromTTF(
 
 	*buffer = (unsigned char*)malloc(*size); // Allocate memory for ttf bytes
 	fread(*buffer, *size, 1, ttf_src); // Read bytes from file
+
 	fclose(ttf_src); // Close file
 	
-	printf("b_Font::LoadTTFBytes - Opened file %s, size of bytes is %lu\n", fp, *size);
+	LOG_MSG("Opened file %s, nbytes is %lu", fp, *size);
 };
 
 /* ============ FONT ============ */
@@ -89,24 +88,20 @@ void b_Font::Font::FromTTF(
 	
 	this->info = (stbtt_fontinfo*)calloc(sizeof(stbtt_fontinfo), 1);
 
-	if (this->info == nullptr)
+	if (!info)
 	{
-		b_log->logf("[WARNING] Font.%s - Could not allocate memory for stbtt_fontinfo struct\n",
-			this->name.c_str());
+		LOG_ERR("Font.%s could not allocate memory", this->name.c_str());
 		return;		
 	}
 
-	std::string filepath{
-		"assets/fonts/" + filename + ".ttf"
-	};
+	std::string filepath{FONT_FILE_PATH(filename)};
 	this->ttf_buffer = NULL; size_t ttf_size;
 	BufferFromTTF(filepath.c_str(), &ttf_buffer, &ttf_size);
 
 	if (!stbtt_InitFont(this->info, ttf_buffer, 0))
 	{
 		this->cleanUp();
-		b_log->logf("[WARNING] Font.%s - Could not init from file %s\n",
-			this->name.c_str(), filename.c_str());
+		LOG_WAR("Font.%s Could not init font from file %s", filepath.c_str());
 		return;
 	}
 	int line_gap;
@@ -116,7 +111,7 @@ void b_Font::Font::FromTTF(
 	this->ascent = (int)roundf(this->ascent * scale_em);
 	this->descent = (int)roundf(this->descent * scale_em);
 
-	b_log->logf("[INFO] Font.%s - Inited\n", name.c_str());
+	LOG_MSG("Font.%s inited!", name.c_str());
 
 	if (this->buildAtlas(width, height))
 	{
@@ -134,14 +129,10 @@ void b_Font::Font::cleanUp()
 
 bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 {
-	this->atlas = (unsigned char*)calloc(
-		this->atlas_w * this->atlas_h,
-		sizeof(unsigned char)
-	);
-	if (this->atlas == nullptr)
+	atlas = (uch*)calloc(atlas_w * atlas_h, sizeof(uch));
+	if (!atlas)
 	{
-		b_log->logf("[WARNING] Font.%s - Could not allocate memory for atlas\n",
-			this->name.c_str());
+		LOG_ERR("Font.%s could not allocate memory for atlas", name.c_str());
 		return false;
 	}
 
@@ -207,13 +198,13 @@ bool b_Font::Font::buildAtlas(unsigned w, unsigned h)
 	this->ave_lsb =
 		(int)round((double)ave_lsb / (double)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX));
 
-	b_log->logf("[INFO] Font.%s - Atlas with width %u height %u builded\n", name.c_str(), this->atlas_w, this->atlas_h);
+	LOG_MSG("Font.%s atlas X: %u Y: %u builded", name.c_str(), atlas_w, atlas_h);
 	return true;
 };
 
 std::string b_Font::Font::getCacheFileName()
 {
-	return {"tmp/" + this->name + ".bfc"};
+	return {TMP_FILE_PATH(name) + ".bfc"};
 };
 
 void b_Font::Font::cacheData(const char* filename)
@@ -223,8 +214,8 @@ void b_Font::Font::cacheData(const char* filename)
 	FILE* file = fopen(filename, "wb");
 	if (!file)
 	{
-		b_log->logf("[WARNING] Font %s - Could not create cache file\n",
-			this->name.c_str());
+		LOG_WAR("Font %s could not create cache file", name.c_str());
+		perror(filename);
 		return;
 	}
 
@@ -279,8 +270,7 @@ void b_Font::Font::cacheData(const char* filename)
 	size_t pixels_total = this->atlas_w * this->atlas_h;
 	fwrite(this->atlas, sizeof(unsigned char), pixels_total, file);
 
-	b_log->logf("[INFO] Font.%s - Cached to file %s\n",
-		this->name.c_str(), filename);
+	LOG_MSG("Font.%s cached to file %s", name.c_str(), filename);
 
 	// Close file
 	fclose(file);
@@ -292,8 +282,8 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	FILE* file = fopen(filename, "rb");
 	if (!file)
 	{
-		b_log->logf("[WARNING] Font.%s - Could not open cache file\n",
-			this->name.c_str());
+		LOG_WAR("Font.%s could not open cache file", name.c_str());
+		perror(filename);
 		return false;
 	}
 	// Read line height
@@ -301,8 +291,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	fread(&lh, sizeof(uint16_t), 1, file);
 	if ((int)lh != this->line_height)
 	{
-		printf("Font.%s - Could not process cache file with path %s\n",
-			this->name.c_str(), filename);
+		LOG_MSG("Font.%s could not process cache file with path %s", name.c_str(), filename);
 		fclose(file);
 		return false;
 	};
@@ -319,8 +308,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 	fread(&num_char, sizeof(uint16_t), 1, file);
 	if (num_char != (uint16_t)(SYMBOLS_END_INDEX - SYMBOLS_START_INDEX))
 	{
-		b_log->logf("[INFO] Font.%s - Could not process cache file with path %s\n",
-			this->name.c_str(), filename);
+		LOG_MSG("Font.%s could not process cache file", name.c_str());
 		fclose(file);
 		return false;
 	}
@@ -376,8 +364,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	if (this->atlas_w != (unsigned)a_w || this->atlas_h != (unsigned)a_h)
 	{
-		b_log->logf("[INFO] Font.%s - Could not process cache file with path %s\n",
-			this->name.c_str(), filename);
+		LOG_MSG("Font.%s could not process cache file", name.c_str());
 		this->char_map.clear();
 		fclose(file);
 		return false;
@@ -385,8 +372,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 
 	size_t pixels_total = a_w * a_h;
 	unsigned char* new_atlas = (unsigned char*)malloc(pixels_total);
-	b_log->logf("[INFO] Font.%s - Atlas width is %u height is %u\n",
-			this->name.c_str(), a_w, a_h);
+	LOG_MSG("Font.%s atlas X: %u Y: %u", name.c_str(), a_w, a_h);
 	
 	fread(new_atlas, sizeof(unsigned char), pixels_total, file);
 	
@@ -394,7 +380,7 @@ bool b_Font::Font::loadFromCache(const char* filename)
 		free(this->atlas);
 	this->atlas = new_atlas;
 	
-	b_log->logf("[INFO] Font.%s - Loaded from cache\n", this->name.c_str());
+	LOG_MSG("Font.%s loaded from cache", name.c_str());
 
 	return true;
 };
@@ -403,5 +389,5 @@ b_Font::Font::~Font()
 {
 	// Release atlas byte data
 	if (this->atlas) free(this->atlas);
-	b_log->logf("[INFO] Font.%s - Released\n", this->name.c_str());
+	LOG_MSG("Font.%s released", name.c_str());
 };

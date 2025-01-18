@@ -20,7 +20,7 @@ Entity::Entity(std::string n, Transform t)
 void Entity::init_view()
 {
 	this->mesh = nullptr;
-	printf("Entity.%s - Created!\n", this->name.c_str());
+	LOG_MSG("Entity.%s created", name.c_str());
 };
 
 bool Entity::hasView()
@@ -35,7 +35,7 @@ void Entity::update()
 
 Entity::~Entity()
 {
-
+	LOG_MSG("Entity.%s released", name.c_str());
 };
 
 // -- Setters

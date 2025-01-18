@@ -1,5 +1,7 @@
 #include "level_renderer.h"
 
+using namespace b_Level;
+
 LevelRenderer::LevelRenderer(Framebuffer* v)
 {
 	fb_scene = v;
