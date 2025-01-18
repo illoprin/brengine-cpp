@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../util/deps.h"
+#include <util/deps.h>
 
 class Camera
 {

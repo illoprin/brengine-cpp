@@ -317,7 +317,7 @@ int main()
 			printf("Image loaded!\n");
 
 			unsigned char* iquantized = image_ordered_dither(iimage, iwidth, iheight, 6, false);
-			unsigned char* idithered = image_ordered_dither(iimage, iwidth, iheight, 4, true);
+			unsigned char* idithered = image_ordered_dither(iimage, iwidth, iheight, 7, true);
 			quantized_tex = create_texture(iquantized, iwidth, iheight);
 			dithered_tex = create_texture(idithered, iwidth, iheight);
 			image_tex = create_texture(iimage, iwidth, iheight);

@@ -3,9 +3,9 @@
 // Standart C includes
 #include <cstdio>
 #include <cstdarg>
-#include <ctime>
 #include <cstring>
 #include <cstdint>
+#include <ctime>
 
 // Standart CPP includes
 #include <vector>

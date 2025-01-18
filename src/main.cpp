@@ -82,9 +82,6 @@ int main()
 		// Render
 		r_master->Clear();
 
-		// ERROR: Walls depth test is incorrect on unknown reason
-		// ERROR: Floor 4 vertex mesh building is incorrect
-		// ERROR: Texture storage loading produces some OpenGL errors
 		r_level.Render(game_handler.getCurrentLevel(), cam);
 		r_gui.Render(s_ui.getItems());
 		if (game_handler.getCurrentGUI() != nullptr)

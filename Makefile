@@ -4,15 +4,14 @@ CFLAGS=-std=c++17 -Wall -g
 LDFLAGS=-lm -lGL -lglfw -lGLEW -lGLU
 
 SRC_DIR=src
-OBJ_DIR=obj
 BIN_DIR=bin
 
 TARGET=app
 
 SRCS:=$(shell find $(SRC_DIR) -name '*.cpp')
-OBJS:=$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
+OBJS:=$(patsubst $(SRC_DIR)/%.cpp, $(BIN_DIR)/%.o, $(SRCS))
 
-INCLUDES = -I include
+INCLUDES = -I include -I $(SRC_DIR)
 
 TEST_SRC?=_test/parse_blf.cpp
 TEST_TARGET=test
@@ -23,19 +22,16 @@ $(BIN_DIR)/$(TARGET): $(OBJS) | $(BIN_DIR)
 	@echo Linking...
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
+$(BIN_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BIN_DIR)
 	@mkdir -p $(dir $@)
 	@echo Compiling $<...
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
-$(OBJ_DIR):
+$(BIN_DIR):
 	mkdir -p $@
 
-$(BIN_DIR):
-	@mkdir $@
-
 clean:
-	rm -rdf $(OBJ_DIR) $(BIN_DIR)
+	rm -rdf $(BIN_DIR)
 
 clean_tmp:
 	rm -drf tmp screenshots

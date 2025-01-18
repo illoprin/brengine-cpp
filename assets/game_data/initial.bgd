@@ -1,10 +1,10 @@
 # Mindstorm
 
 # All textures will be cached in atlas to load in OpenGL
-using brick_1.bmp as 1
-using gray_rock.bmp as 2
-using brown_rock.bmp as 3
-using tiles_1.bmp as 4
+using brick_1.bmp
+using gray_rock.bmp
+using brown_rock.bmp
+using tiles_1.bmp
 
 # Models
 using zombie.obj as 1
@@ -12,27 +12,29 @@ using zombie.obj as 1
 # Levels
 using d0.blf
 
+# all indices starts from 1
+
 [ENT_APPEARANCE]
 
 
 [LVL_APPEARANCE]
 # color 0 is fully white
-# <index> <texture_index?> <color_index?> <glowing?> <glow_intencity?>
+# <texture_index?> <color_index?> <glowing?> <glow_intencity?>
 
 # brick_1
-1 1 NULL 0 NULL
+1 0 0
 # gray_rock
-2 2 NULL 0 NULL
+2 0 0
 # brown_rock
-3 3 NULL 0 NULL
+3 0 0
 # tiles_1
-4 4 NULL 0 NULL
+4 0 0
 # blue glowing
-5 NULL 1 1 3
+0 1 3
 # red glowing
-6 NULL 2 1 4
+0 2 4
 
 [PALETTE]
 # <index> <r> <g> <b>
-1 34 144 182
-2 244 27 36
+34 144 182
+244 27 36

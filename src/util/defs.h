@@ -1,25 +1,19 @@
 #ifndef B_DEFS
 #define B_DEFS
 
+#include "deps.h"
+
 typedef void (*b_UserKeyCallback)(int key, int action, int mods);
 typedef void (*b_UserMouseButtonCallback)(int button, int action);
 typedef void (*b_UserMouseMotionCallback)(double x, double y);
 typedef void (*b_UserCharacterCallback)(int scancode);
 typedef void (*b_UserUpdateFunc)(float time, float deltaTime);
 
-#define FS_TEMP_PATH "tmp"
-#define FS_SCREENSHOTS_PATH "screenshots"
-#define FS_LEVELS_PATH "levels"
-#define FS_ASSETS_PATH "assets"
-#define FS_LOG_PATH "log"
+typedef unsigned char uch;
 
 #define WIN_WIDTH 1280
 #define WIN_HEIGHT 720
 #define WIN_TITLE "Brengine 3D Alpha"
-
-#define MAX_PATH 256
-#define MAX_FILENAME 64
-#define MAX_FILE_LINE 128
 
 // GUI
 enum GUIItemType
@@ -85,7 +79,6 @@ enum PlayerActionList {
 #define LVL_SCALING 1.f
 
 // Game data
-#define BGD_FIELD_EOF "NULL"
 #define BGD_PALETTE_TILE_SIZE 10
 enum GameState {
 	GS_NONE = 0,

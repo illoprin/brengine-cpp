@@ -111,29 +111,3 @@ void b_ImageIO::FlipY(unsigned char* b, unsigned c, unsigned w, unsigned h)
 	memcpy(b, tmp, w * h * c);
 	delete tmp;
 };
-
-void b_Files::InitFilesystem()
-{
-	if (!fs::is_directory(FS_TEMP_PATH))
-	{
-		fs::create_directory(fs::path(FS_TEMP_PATH));
-		printf("b_Files::InitFilesystem - %s directory created\n", FS_TEMP_PATH);
-	};
-
-	if (!fs::is_directory(FS_SCREENSHOTS_PATH))
-	{
-		fs::create_directory(fs::path(FS_SCREENSHOTS_PATH));
-		printf("b_Files::InitFilesystem - %s directory created\n", FS_SCREENSHOTS_PATH);
-	};
-
-	fs::path log_dir{ fs::path(FS_TEMP_PATH) / fs::path(FS_LOG_PATH) };
-	if (!fs::is_directory(log_dir))
-	{
-		fs::create_directory(log_dir);
-	};
-
-	if (!fs::is_directory(FS_ASSETS_PATH))
-	{
-		fs::create_directory(fs::path(FS_ASSETS_PATH));
-	};
-};

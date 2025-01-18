@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../util/deps.h"
-#include "../util/utils.h"
+#include <util/deps.h>
+#include <util/utils.h>
+#include <core/log.h>
 
 namespace b_Game
 {
@@ -9,7 +10,6 @@ namespace b_Game
 	{
 		uint16_t itexture; // Index of texture
 		uint16_t icolor; // Index of color
-		bool glowing;
 		float glow_intensity;
 	};
 
@@ -22,13 +22,13 @@ namespace b_Game
 		// All pathes to levels
 		std::vector<std::string> levels;
 		// All pathes to textures (*.bmp only)
-		std::map<uint16_t, std::string> textures;
+		std::vector<std::string> textures;
 		// All pathes to 3d models (*.obj or *.fbx)
-		std::map<uint16_t, std::string> models;
+		std::vector<std::string> models;
 		// Colors in palletes
-		std::map<uint16_t, glm::vec3> palletes;
+		std::vector<glm::ivec3> pallete;
 		// Level flat surfaces types
-		std::map<uint16_t, LevelAppearanceData> lvl_appearance;
+		std::vector<LevelAppearanceData> lvl_appearance;
 
 		void print();
 	};
