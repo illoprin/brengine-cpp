@@ -2,7 +2,7 @@
 
 Full scale 3D game engine for personal proposes
 
-![image3](https://github.com/user-attachments/assets/f06d1640-34c3-4778-810c-869e9c398bda)
+![Image](https://github.com/user-attachments/assets/31769d49-54e7-47ed-86a4-8a618b268946)
 
 # Controls
 
